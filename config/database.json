@@ -1,0 +1,20 @@
+{ "development":
+  { "driver":   "mongoose"
+  , "url": "mongodb://localhost/railway-test"
+  }
+, "test":
+  { "driver":   "redis"
+  , "host":     "localhost"
+  , "database": 2
+  }
+, "staging":
+  { "driver":   "redis"
+  , "host":     "localhost"
+  , "database": 1
+  }
+, "production":
+  { "driver":   "redis"
+  , "host":     "localhost"
+  , "database": 0
+  }
+}
