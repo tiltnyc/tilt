@@ -1,6 +1,6 @@
 { "development":
   { "driver":   "mongoose"
-  , "url": "mongodb://localhost/railway-test"
+  , "url": "mongodb://localhost/tilt"
   }
 , "test":
   { "driver":   "redis"
