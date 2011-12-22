@@ -13,8 +13,7 @@
   , "database": 1
   }
 , "production":
-  { "driver":   "redis"
-  , "host":     "localhost"
-  , "database": 0
+  { "driver":   "mongoose"
+  , "url": ENV['MONGOLAB_URI']
   }
 }
