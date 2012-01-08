@@ -1,0 +1,11 @@
+{
+  "development" : {
+    "mongo_uri": "mongodb://localhost/tilt_dev"
+  },
+  "staging" : {
+    "mongo_uri": "mongodb://localhost/tilt_stag"
+  },
+  "production" : {
+    "mongo_uri": "mongodb://localhost/tilt_prod"
+  }
+}
