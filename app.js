@@ -1,44 +1,28 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , routes = require('./routes')
 
 var app = module.exports = express.createServer();
 
-// Configuration
+// load configuration
+require('./settings').boot(app);
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.set('view options', { layout: 'layouts/default' });
-
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-
-  app.use(express.cookieParser());
-  app.use(express.session({ secret: 'your secret here' }));
-  
-  app.use(require('stylus').middleware({ src: __dirname + '/public' }));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
+app.dynamicHelpers({
+  base: function(){
+    // return the app's mount-point
+    // so that urls can adjust. For example
+    // if you run this example /post/add works
+    // however if you run the mounting example
+    // it adjusts to /blog/post/add
+    return '/' == app.route ? '' : app.route;
+  },
+  appName: function(req, res){ return 'node.js express demo'  }
 });
 
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler()); 
-});
-
-// Routes
-
+// Routes - todo.. include all routes here as made
 app.get('/', routes.index);
+
 
 var port = process.env.PORT || 3000;
 
 app.listen(port);
-console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+console.log("Express server listening on port %d in %s mode", port, app.settings.env);

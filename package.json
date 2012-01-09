@@ -1,17 +1,18 @@
 {
-    "name": "tilt"
-  , "description": "live event app for tilt"
-  , "version": "0.0.1"
-  , "private": true
-  , "author": "Justin J. Moses (http://about.me/justinj)"
+    "name":         "tilt"
+  , "description":  "live event app for tilt"
+  , "version":      "0.0.1"
+  , "private":      true
+  , "author":       "Justin J. Moses (http://about.me/justinj)"
   , "engines": {
-      "node": ">= 0.4.7"
+      "node":     ">= 0.4.7"
     }
   , "dependencies": {
-      "express": "2.5.4"
-    , "stylus": ">= 0.13.7"
-    , "jade": ">= 0.12.4"
+      "express":  ">= 2.5.4"
+    , "stylus":   ">= 0.13.7"
+    , "jade":     ">= 0.12.4"
     , "mongoose": ">= 1.4.0"
+    , "gzippo":   ">= 0.0.4"   
     , "express-messages" : ">= 0.0.2"
   }
 }
