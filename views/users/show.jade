@@ -1,0 +1,14 @@
+h2 User details
+
+p 
+  strong username 
+  #{user.username}
+
+p
+  
+p
+  a(href='/user/'+user._id+'/edit', title="edit") Edit
+  &nbsp;
+  a(class='destroy', href='/user/'+user._id, title="delete") Delete
+  &nbsp;
+  a(href='/users', title="back") Back

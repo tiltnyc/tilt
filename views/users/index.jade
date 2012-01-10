@@ -4,7 +4,15 @@ h2= title
 
 div#users
   - if(users.length)
-    != partial('user_list', {collection: users, as: 'users'})
+    table.users_list
+      tr
+        th username
+        th email
+        th actions 
+      != partial('user_list', {collection: users, as: 'user'})
   - else
     #no-results No users found. Create one
       a(href='/users/new') here
+
+hr
+a(href='/users/new') create new

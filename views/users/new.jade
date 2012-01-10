@@ -1,0 +1,18 @@
+h2= title
+p Create a new user
+
+form(method="post",action="/users")
+  //input(type="hidden", name="csrf", value=csrf)
+  p 
+    label Username
+    br
+    input(type="text", name="user[username]")
+  
+  p
+    label Email
+    br
+    input(type="text", name="user[email]")
+
+  input(type="submit", value="Submit")
+  &nbsp;
+  a(href="/users", title="[back]") [back]

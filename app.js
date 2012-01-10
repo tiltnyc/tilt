@@ -15,7 +15,7 @@ app.dynamicHelpers({
     // it adjusts to /blog/post/add
     return '/' == app.route ? '' : app.route;
   },
-  appName: function(req, res){ return 'node.js express demo'  }
+  appName: function(req, res){ return 'tilt investor app'  }
 });
 
 // Routes - todo.. include all routes here as made

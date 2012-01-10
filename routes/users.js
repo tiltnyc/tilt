@@ -15,4 +15,45 @@ module.exports = function(app){
       });
   });
 
+  // New User
+  app.get('/users/new', function(req, res){
+    res.render('users/new', {
+      title: 'New User'
+    });
+  });
+
+  // Create User
+  app.post('/users', function(req, res){
+    user = new User(req.body.user);
+    user.save(function(err) {
+      req.flash('notice', 'Created.');
+      res.redirect('/user/' + user._id);
+    });
+  });
+
+  app.param('id', function(req, res, next, id){
+    User
+      .findOne({ _id: req.params.id }, function(err, user) {
+        if (err) return next(err);
+        if (!user) return next(new Error("Failed loading user " + id));
+        req.user = user;
+        next(); 
+      });
+  });
+
+  // View User
+  app.get('/user/:id', function(req, res){
+    res.render('users/show', {
+      title: req.user.username,
+      user: req.user
+    });
+  });
+
+  // Edit User
+  app.get('/user/:id/edit', function(req, res){
+    res.render('users/edit', {
+      title: 'Edit '+req.user.username,
+      user: req.user
+    });
+  });
 };

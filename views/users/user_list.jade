@@ -1,0 +1,9 @@
+tr(class="user")
+  td.user_username 
+    a(href='/user/'+user._id, title=user.username) #{user.username}
+  td.user_email
+    =user.email
+  td
+    a(href='/user/'+user._id+'/edit', title="edit") Edit
+    &nbsp;
+    a(class='destroy', href="/user/"+user._id, title="delete") Del

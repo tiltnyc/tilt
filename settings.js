@@ -1,5 +1,6 @@
 //deps
-var stylus = require('stylus'),
+var fs = require('fs'),
+    stylus = require('stylus'),
     express = require('express'),
     basicAuth = require('express').basicAuth,
     gzippo = require('gzippo');
@@ -29,12 +30,22 @@ function bootApplication(app) {
     app.use(app.router);
   });
 
-  /*
   app.dynamicHelpers({
-    
 
+    request: function(req){
+      return req;
+    },
+
+    hasMessages: function(req){
+      if (!req.session) return false;
+      return Object.keys(req.session.flash || {}).length;
+    },
+
+    // flash messages
+    messages: require('express-messages'),
+
+    
   });
-  */
 
   function compile(str, path) {
     return stylus(str)
