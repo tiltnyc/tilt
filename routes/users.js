@@ -31,6 +31,7 @@ module.exports = function(app){
     });
   });
 
+  // load user from ID parameter
   app.param('id', function(req, res, next, id){
     User
       .findOne({ _id: req.params.id }, function(err, user) {
@@ -56,4 +57,28 @@ module.exports = function(app){
       user: req.user
     });
   });
+
+  // Update User
+  app.put('/users/:id', function(req, res){
+    user = req.user;
+
+    if (req.body.user.username) user.username = req.body.user.username;
+    if (req.body.user.email) user.email = req.body.user.email;
+
+    user.save(function(err, doc) {
+      if (err) throw err;
+      req.flash('notice', 'Updated successfully');
+      res.redirect('/user/' + user._id);
+
+    });
+  });
+
+  app.del('/user/:id', function(req, res){
+    user = req.user;
+    user.remove(function(err){
+      req.flash('notice', 'Deleted');
+      res.redirect('/users');
+    });
+  });
+  
 };

@@ -1,10 +1,13 @@
+!= messages()
+
 h2 User details
 
 p 
   strong username 
-  #{user.username}
-
+  &nbsp; #{user.username}
 p
+  strong email
+  &nbsp; #{user.email}
   
 p
   a(href='/user/'+user._id+'/edit', title="edit") Edit
