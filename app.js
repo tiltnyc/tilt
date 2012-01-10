@@ -21,8 +21,8 @@ app.dynamicHelpers({
 // Routes - todo.. include all routes here as made
 app.get('/', routes.index);
 
+require('./routes/users')(app);
 
 var port = process.env.PORT || 3000;
-
 app.listen(port);
 console.log("Express server listening on port %d in %s mode", port, app.settings.env);

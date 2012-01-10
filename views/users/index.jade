@@ -1,0 +1,10 @@
+//!= messages()
+
+h2= title
+
+div#users
+  - if(users.length)
+    != partial('user_list', {collection: users, as: 'users'})
+  - else
+    #no-results No users found. Create one
+      a(href='/users/new') here
