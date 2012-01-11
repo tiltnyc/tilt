@@ -2,6 +2,9 @@
   "development" : {
     "mongo_uri": "mongodb://localhost/tilt_dev"
   },
+  "test" : {
+    "mongo_uri": "mongodb://localhost/tilt_test"
+  },
   "staging" : {
     "mongo_uri": "mongodb://localhost/tilt_stag"
   },

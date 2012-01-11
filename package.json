@@ -8,14 +8,19 @@
       "node":     ">= 0.4.7"
     }
   , "devDependencies": {
-      "cucumber": "latest"
+      "cucumber"    : "latest"
+    , "mocha"       : "*"
+    , "should"      : "*"
+    , "sinon"       : "*"
+    , "zombie"      : "*"
+    , "html5"       : "*"
   }
   , "dependencies": {
-      "express":  ">= 2.5.4"
-    , "stylus":   ">= 0.13.7"
-    , "jade":     ">= 0.12.4"
-    , "mongoose": ">= 2.4.0"
-    , "gzippo":   ">= 0.0.4"   
-    , "express-messages" : ">= 0.0.2"
+      "express"           : ">= 2.5.4"
+    , "stylus"            : ">= 0.13.7"
+    , "jade"              : ">= 0.12.4"
+    , "mongoose"          : ">= 2.4.0"
+    , "gzippo"            : ">= 0.0.4"   
+    , "express-messages"  : ">= 0.0.2"
   }
 }
