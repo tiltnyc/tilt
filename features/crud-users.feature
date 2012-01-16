@@ -6,7 +6,9 @@ Feature: Admins CRUD of Users
   Scenario: See the list of users
     Given I am an administrator
     And there exists users:
-    | username    | email               |
-    | justin      | justin@example.com  |
+      | username    | email               |
+      | justin      | justin@example.com  | 
+      | paul        | pppp                |
     When I visit the list of users
     Then I should see "justin"
+    And the database should be cleaned

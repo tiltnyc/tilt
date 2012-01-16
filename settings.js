@@ -77,6 +77,11 @@ function bootApplication(app) {
     app.use(express.static(__dirname + '/public', { maxAge: oneYear }));
   });
 
+  app.configure('test', function(){
+    app.set('showStackError', true);
+    app.use(express.static(__dirname + '/public', { maxAge: oneYear }));
+  });
+
   // gzip only in staging and production envs
 
   app.configure('staging', function(){
