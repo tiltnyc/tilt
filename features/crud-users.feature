@@ -21,3 +21,4 @@ Feature: Admins CRUD of Users
     And I click "Submit"
     Then I should see "peter"
     And I should see "peter@example.com"
+    And the database should be cleaned

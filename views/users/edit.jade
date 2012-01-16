@@ -3,14 +3,14 @@ h2= title
 form(method="post", action="/users/"+user._id)
   input(name="_method", value='PUT', type='hidden')
   p
-    label Username
+    label(for='user[username]') Username
     &nbsp;
-    input(type='text', name='user[username]', value=user.username)
+    input(type='text', id='user[username]', name='user[username]', value=user.username)
 
   p
-    label Email
+    label(for='user[email]') Email
     &nbsp;
-    input(type='text', name='user[email]', value=user.email)
+    input(type='text', id='user[email]', name='user[email]', value=user.email)
 
   input(type="hidden", name="user[_id]", value=user._id)
 

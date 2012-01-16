@@ -4,14 +4,14 @@ p Create a new user
 form(method="post",action="/users")
   //input(type="hidden", name="csrf", value=csrf)
   p 
-    label Username
+    label(for='user[username]') Username
     br
-    input(type="text", name="user[username]")
+    input(type="text", id="user[username]", name="user[username]")
   
   p
-    label Email
+    label(for='user[email]') Email
     br
-    input(type="text", name="user[email]")
+    input(type="text", id="user[email]", name="user[email]")
 
   input(type="submit", value="Submit")
   &nbsp;
