@@ -9,6 +9,15 @@ Feature: Admins CRUD of Users
       | username    | email               |
       | justin      | justin@example.com  | 
       | paul        | pppp                |
-    When I visit the list of users
+    When I go to the list of users
     Then I should see "justin"
     And the database should be cleaned
+
+  Scenario: Create a new user
+    Given I am an administrator
+    When I go to create a new user
+    And I enter "peter" as the "Username"
+    And I enter "peter@example.com" as the "Email"
+    And I click "Submit"
+    Then I should see "peter"
+    And I should see "peter@example.com"

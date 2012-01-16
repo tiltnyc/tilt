@@ -1,5 +1,5 @@
 var sharedSteps = module.exports = function(){
-  this.World = require('../support/world');
+  this.World = require('../support/world').World;
 
   this.Given(/^I am on the home page$/, function(next) {
     this.visit('/', next);

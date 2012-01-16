@@ -1,0 +1,2 @@
+#!/bin/bash
+NODE_ENV=test PORT=5555 cucumber.js

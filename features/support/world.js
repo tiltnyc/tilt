@@ -5,9 +5,9 @@
   , databaseCleaner = require('database-cleaner')
   , dbCleaner = new DatabaseCleaner('mongodb');
 
-var World = module.exports = function(){
+exports.World = function(callback){
   this.browser = new zombie.Browser({runScripts:true, debug:false, htmlParser: HTML5});
-
+ 
   this.page = function(path){
    return "http://localhost:" + server.address().port + path
   };
@@ -21,4 +21,6 @@ var World = module.exports = function(){
   this.clean = function(callback){
      dbCleaner.clean(mongoose.connection.db, callback);
   }
+
+  callback(this);
 };
