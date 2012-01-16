@@ -13,11 +13,15 @@ This is the web application for tilt, coming in april twenty twelve.
 
 #Running
 * to run the app, simply run:
+        
         node app.js
+
 * alternatively, to change the port:
+        
         PORT=5000 node app.js
 
 #Tests
 * to run the cucumber integration tests, run 
+        
         NODE_ENV=test PORT=3333 cucumber.js
 
