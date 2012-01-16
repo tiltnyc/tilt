@@ -1,7 +1,9 @@
-var zombie = require('zombie')
+  var zombie = require('zombie')
   , HTML5  = require('html5')
   , should = require('should')
-  , server = require('../../app');
+  , server = require('../../app')
+  , databaseCleaner = require('database-cleaner')
+  , dbCleaner = new DatabaseCleaner('mongodb');
 
 var World = module.exports = function(){
   this.browser = new zombie.Browser({runScripts:true, debug:false, htmlParser: HTML5});
@@ -15,4 +17,8 @@ var World = module.exports = function(){
       callback(err, browser, status);
     });
   };
+
+  this.clean = function(callback){
+     dbCleaner.clean(mongoose.connection.db, callback);
+  }
 };

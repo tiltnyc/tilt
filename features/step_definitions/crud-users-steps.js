@@ -1,8 +1,5 @@
 var User = require('../../models/user');
 
-var DatabaseCleaner = require('database-cleaner')
-  , databaseCleaner = new DatabaseCleaner('mongodb');
-
 module.exports = function(){
   this.World = require('../support/world').World;
 
@@ -26,6 +23,6 @@ module.exports = function(){
 
   this.Then(/^the database should be cleaned$/, function(next) {
     //JM: this should go into an after scenario hook once that is implemented in cucumber-js
-    databaseCleaner.clean(mongoose.connection.db, next);
+    this.clean(next);
   });
 };
