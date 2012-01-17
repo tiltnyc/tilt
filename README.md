@@ -1,8 +1,13 @@
 This is the web application for tilt, coming in april twenty twelve. 
 
+
+#Status
+Story management in Pivotal Tracker: [https://www.pivotaltracker.com/projects/440359](https://www.pivotaltracker.com/projects/440359).
+
+
 #Requirements
 * Local installation of [mongodb (v2.0.2+)](http://www.mongodb.org/downloads).
-* XCode
+* Ensure XCode (OS X) or other gcc compiler is available
 * Install `npm` package manager via `curl http://npmjs.org/install.sh | sh` (via [npmjs.org](http://npmjs.org/)) 
 * Install `n` [node version manager](https://github.com/visionmedia/n) via `npm install -g n`
     * install node v0.4.7 (for native heroku support) - run `n 0.4.7` 
@@ -13,6 +18,7 @@ This is the web application for tilt, coming in april twenty twelve.
 * execute `node app.js` to start server (port 3000 by default).
 
 #Running
+* ensure mongodb is running (`sudo mongod` )
 * to run the app, simply run:
         
         node app.js
@@ -22,6 +28,9 @@ This is the web application for tilt, coming in april twenty twelve.
         PORT=5000 node app.js
 
 #Tests
+##Installation
+* in the root of the app, run `npm install -g cucumber`
+* then run `npm install --dev` (see [cucumber.js docs](https://github.com/cucumber/cucumber-js))
 * to run the cucumber integration tests, run 
         
         NODE_ENV=test PORT=3333 cucumber.js
