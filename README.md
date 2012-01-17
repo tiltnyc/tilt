@@ -1,8 +1,10 @@
 This is the web application for tilt, coming in april twenty twelve. 
 
+[![Build Status](https://secure.travis-ci.org/justinjmoses/tilt.png)](http://travis-ci.org/justinjmoses/tilt)
 
 #Status
 Story management in Pivotal Tracker: [https://www.pivotaltracker.com/projects/440359](https://www.pivotaltracker.com/projects/440359).
+
 
 
 #Requirements
