@@ -3,15 +3,21 @@ var User = require('../models/user');
 module.exports = function(app){
 
   // List of Users  
-  app.get('/users', function(req, res){
+  app.get('/users.:format?', function(req, res){
     User
       .find({})
       .asc('username')
       .run(function(err, users) {
-        res.render('users/index', {
-          title: 'List of Users',
-          users: users
-        });
+        if (req.params.format == 'json') {
+          res.contentType('application/json');
+          res.send(JSON.stringify(users));
+        }
+        else {
+          res.render('users/index', {
+            title: 'List of Users',
+            users: users
+          });
+        }
       });
   });
 
