@@ -32,8 +32,15 @@ module.exports = function(){
     this.browser.pressButton(button, callback);
   });
 
+  this.When(/^I click the link "([^"]*)" for user "([^"]*)"$/, function(link, username, callback) {
+     this.browser.clickLink(link, callback);
+     callback();
+     //this.browser.evaluate("$('a[title=\"delete\"]').click()");  
+  });
+
   //JM: this should go into an after scenario hook once that is implemented in cucumber-js  
   this.Then(/^the database should be cleaned$/, function(next) {
     this.clean(next);
   });
+
 };

@@ -22,3 +22,5 @@ Feature: Admins CRUD of Users
     Then I should see "peter"
     And I should see "peter@example.com"
     And the database should be cleaned
+  
+  

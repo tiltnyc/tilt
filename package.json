@@ -12,7 +12,7 @@
     , "mocha"       : "*"
     , "should"      : "*"
     , "sinon"       : "*"
-    , "zombie"      : "*"
+    , "zombie"      : "latest"
     , "html5"       : "*"
     , "database-cleaner" : "*"
   }
