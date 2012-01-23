@@ -23,4 +23,13 @@ Feature: Admins CRUD of Users
     And I should see "peter@example.com"
     And the database should be cleaned
   
-  
+  Scenario: Delete a user
+    Given I am an administrator
+    And there exists users:
+      | username    | email               |
+      | justin      | justin@example.com  | 
+      | paul        | pppp                |
+    When I go to the list of users
+    And I click the link "Del" for user "paul"
+    Then I should see "justin"
+    And I should not see "paul"

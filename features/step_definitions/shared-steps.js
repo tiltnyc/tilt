@@ -11,10 +11,7 @@ var sharedSteps = module.exports = function(){
   });
 
   this.Then(/^I should not see "([^"]*)"$/, function(text, next) {
-    console.log(this.browser.location._url);  
-    this.browser.viewInBrowser(); 
-
-    //this.browser.text('body').should.not.include(text);
-   //  next();
+    this.browser.text('body').should.not.include(text);
+    next();
   });
 }

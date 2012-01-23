@@ -19,7 +19,6 @@ module.exports = function(){
     this.visit('/users', next);
   });
 
-
   this.When(/^I go to create a new user$/, function(next) {
     this.visit('/users/new', next);
   });
@@ -33,9 +32,8 @@ module.exports = function(){
   });
 
   this.When(/^I click the link "([^"]*)" for user "([^"]*)"$/, function(link, username, callback) {
-     this.browser.clickLink(link, callback);
-     callback();
-     //this.browser.evaluate("$('a[title=\"delete\"]').click()");  
+    this.browser.onconfirm(function(text){ return true; });
+    this.browser.clickLink("tr:contains(" + username + ") a:contains(" + link +")", callback);
   });
 
   //JM: this should go into an after scenario hook once that is implemented in cucumber-js  
