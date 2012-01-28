@@ -12,6 +12,12 @@ form(method="post", action="/users/"+user._id)
     &nbsp;
     input(type='text', id='user[email]', name='user[email]', value=user.email)
 
+  p 
+    label(for='user[team]') Team
+    &nbsp;
+    select(id='user[team]', name='user[team]')
+      
+
   input(type="hidden", name="user[_id]", value=user._id)
 
   input(type="submit", value="Submit")

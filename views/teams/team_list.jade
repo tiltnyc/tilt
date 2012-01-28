@@ -1,0 +1,8 @@
+li(class="team") 
+    a(href='/team/'+team._id, title=team.name) #{team.name} | 
+
+    #{team.users}
+    
+    a(href='/team/'+team._id+'/edit', title="edit") Edit
+    &nbsp;
+    a(class='destroy', href="/team/"+team._id, title="delete") Del

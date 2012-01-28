@@ -1,0 +1,14 @@
+!= messages()
+
+h2= title
+
+div#teams
+  - if(teams.length)
+    ul.teams_list
+      != partial('team_list', {collection: teams, as: 'team'})
+  - else
+    #no-results No teams found. Create one
+      a(href='/teams/new') here
+
+hr
+a(href='/teams/new') create new
