@@ -20,8 +20,9 @@ app.dynamicHelpers({
 
 // Routes - todo.. include all routes here as made
 app.get('/', routes.index);
-
 require('./routes/users')(app);
+require('./routes/teams')(app);
+
 
 var port = process.env.PORT || 3000;
 app.listen(port);

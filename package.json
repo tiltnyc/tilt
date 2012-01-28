@@ -20,8 +20,8 @@
       "express"           : ">= 2.5.4"
     , "stylus"            : ">= 0.13.7"
     , "jade"              : ">= 0.12.4"
-    , "mongoose"          : ">= 2.4.0"
-    , "gzippo"            : ">= 0.0.4"   
+    , "mongoose"          : ">= 2.5.0"
+    , "gzippo"            : ">= 0.0.7"   
     , "express-messages"  : ">= 0.0.2"
   }
 }

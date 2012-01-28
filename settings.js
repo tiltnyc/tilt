@@ -52,7 +52,7 @@ function bootApplication(app) {
       .set('filename', path)
       .set('warn', true)
       .set('compress', true)
-   // .define('url', stylus.url({ paths: [__dirname + '/public/images'], limit:1000000 }));
+  // .define('url', stylus.url({ paths: [__dirname + '/public/images'], limit:1000000 }));
   };
 
   // add the stylus middleware, which re-compiles when
