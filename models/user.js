@@ -14,7 +14,8 @@ var Team = require('./team');
 User.pre('save', function (next) {
   var user = this; 
     
-  if (this.oldTeam) {
+  //switched teams  
+  if (this.oldTeam && this.team != this.oldTeam) {
     Team
     .findOne({ _id: this.oldTeam }, function(err, team) {
       if (err) return next(err);
@@ -23,7 +24,10 @@ User.pre('save', function (next) {
         if (err) return next(err);
       });  
     });
-  } else if (this.team) {
+  //added to team
+  } 
+
+  if (this.team) {
     Team
     .findOne({ _id: this.team }, function(err, team) {
       if (err) return next(err);
