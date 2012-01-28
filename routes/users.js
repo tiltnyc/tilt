@@ -79,8 +79,11 @@ module.exports = function(app){
 
     if (req.body.user.username) user.username = req.body.user.username;
     if (req.body.user.email) user.email = req.body.user.email;
+    if (user.team && req.body.user.team == "") user.oldTeam = user.team.id;
+    
     user.team = (req.body.user.team != "") ? req.body.user.team : null;
     
+
     user.save(function(err, doc) {
       if (err) throw err;
       req.flash('notice', 'Updated successfully');

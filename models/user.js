@@ -12,8 +12,18 @@ var User = new Schema({
 var Team = require('./team');
 
 User.pre('save', function (next) {
-  if (this.team) {
-    var user = this; 
+  var user = this; 
+    
+  if (this.oldTeam) {
+    Team
+    .findOne({ _id: this.oldTeam }, function(err, team) {
+      if (err) return next(err);
+      team.users.splice(team.users.indexOf(user._id), 1);
+      team.save(function(err) {
+        if (err) return next(err);
+      });  
+    });
+  } else if (this.team) {
     Team
     .findOne({ _id: this.team }, function(err, team) {
       if (err) return next(err);
