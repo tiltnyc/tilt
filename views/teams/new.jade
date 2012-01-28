@@ -1,0 +1,13 @@
+h2= title
+p Create a new team
+
+form(method="post",action="/teams")
+  //input(type="hidden", name="csrf", value=csrf)
+  p 
+    label(for='team[name]') Name
+    br
+    input(type="text", id="team[name]", name="team[name]")
+  
+  input(type="submit", value="Submit")
+  &nbsp;
+  a(href="/teams", title="[back]") [back]

@@ -9,9 +9,11 @@ $().ready(function(){
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(msg) {
-        selector.options = []; 
+        selector.options = [];
+        $(new Option("(none)","",true)).appendTo(selector);
         $.each(msg, function(index, item) {
-          $(new Option(item.name, item._id)).appendTo(selector);
+          var selected = item._id == selector.data('team');
+          $(new Option(item.name, item._id, false, selected)).appendTo(selector);
         }); 
       },
       error: function() {

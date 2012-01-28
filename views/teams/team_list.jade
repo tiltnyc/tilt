@@ -1,8 +1,15 @@
-li(class="team") 
-    a(href='/team/'+team._id, title=team.name) #{team.name} | 
+tr(class="team") 
+  td
+    a(href='/team/'+team._id, title=team.name) #{team.name}
 
-    #{team.users}
-    
+  td
+    each user in team.users
+      #{user.username},
+  
+  td
+    #{team.users.length}
+       
+  td 
     a(href='/team/'+team._id+'/edit', title="edit") Edit
     &nbsp;
     a(class='destroy', href="/team/"+team._id, title="delete") Del

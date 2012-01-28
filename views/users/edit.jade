@@ -15,8 +15,10 @@ form(method="post", action="/users/"+user._id)
   p 
     label(for='user[team]') Team
     &nbsp;
-    select(id='user[team]', name='user[team]')
-      
+    - if (user.team)
+      select(id='user[team]', name='user[team]', data-team='#{user.team.id}')
+    - else 
+      select(id='user[team]', name='user[team]')  
 
   input(type="hidden", name="user[_id]", value=user._id)
 

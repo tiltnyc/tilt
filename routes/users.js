@@ -31,7 +31,9 @@ module.exports = function(app){
 
   // Create User
   app.post('/users', function(req, res){
+    if (req.body.user.team == "") req.body.user.team = null;
     user = new User(req.body.user);
+    
     user.save(function(err) {
       req.flash('notice', 'Created.');
       res.redirect('/user/' + user._id);
@@ -77,7 +79,8 @@ module.exports = function(app){
 
     if (req.body.user.username) user.username = req.body.user.username;
     if (req.body.user.email) user.email = req.body.user.email;
-
+    user.team = (req.body.user.team != "") ? req.body.user.team : null;
+    
     user.save(function(err, doc) {
       if (err) throw err;
       req.flash('notice', 'Updated successfully');

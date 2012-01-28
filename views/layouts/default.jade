@@ -1,6 +1,17 @@
 doctype transitional
 html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
   != partial('../includes/head')
-  body!= body
+  body
+  
+  ul#top-nav
+    li 
+      a(href='/',title='home') home
+    li 
+      a(href='/users',title='users') users 
+    li 
+      a(href='/teams',title='teams') teams 
+        
+  #content 
+    != body
   
   != partial('../includes/foot')

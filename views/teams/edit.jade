@@ -1,0 +1,12 @@
+h2= title
+
+form(method="post", action="/teams/"+team._id)
+  input(name="_method", value='PUT', type='hidden')
+  p 
+    label(for='team[name]') Name
+    br
+    input(type="text", id="team[name]", name="team[name]", value=team.name)
+  
+  input(type="submit", value="Submit")
+  &nbsp;
+  a(href="/teams", title="[back]") [back]
