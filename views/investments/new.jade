@@ -1,0 +1,29 @@
+h2= title
+p Invest in a team
+
+form(method="post",action="/investments")
+  //input(type="hidden", name="csrf", value=csrf)
+
+  p 
+    label(for='investment[user]') User
+    &nbsp;
+    select(id='investment[user]', name='investment[user]')
+
+  p 
+    label(for='investment[team]') Team
+    &nbsp;
+    select(id='investment[team]', name='investment[team]')
+  
+  p 
+    label(for='investment[amount]') Amount 
+    br
+    input(type="text", id="investment[amount]", name="investment[amount]")
+  
+  p 
+    label(for='investment[stage]') Stage
+    br
+    input(type="text", id="investment[stage]", name="investment[stage]", value="round 1")
+
+  input(type="submit", value="Submit")
+  &nbsp;
+  a(href="/", title="[back]") [back]
