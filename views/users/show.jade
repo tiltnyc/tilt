@@ -8,14 +8,21 @@ p
 p
   strong email
   &nbsp; #{user.email}
-
+p
+  strong funds
+  - if (user.funds < 0)
+    span(class="in-the-red") 
+      &nbsp; $#{user.funds}
+  - else 
+    span
+      &nbsp; $#{user.funds}
 p 
   strong team
   - if (user.team)
     &nbsp #{user.team.name}
   - else
     span#unassigned &nbsp none assigned 
-p
+p 
   a(href='/user/'+user._id+'/edit', title="edit") Edit
   &nbsp;
   a(class='destroy', href='/user/'+user._id, title="delete") Delete

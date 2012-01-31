@@ -3,6 +3,12 @@ tr(class="user")
     a(href='/user/'+user._id, title=user.username) #{user.username}
   td.user_email
     =user.email
+  - if (user.funds < 0)
+    td.user_funds.in-the-red
+      =user.funds
+  - else 
+    td.user_funds
+      =user.funds
   td.user_team
     - if (user.team)
       a(href='/team/'+user.team._id, title=user.team.name) #{user.team.name}
