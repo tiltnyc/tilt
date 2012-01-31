@@ -21,6 +21,4 @@ Investment.pre('save', function (next) {
   });
 });
 
-//on save: update team investment
-
 var exports = module.exports = mongoose.model('Investment', Investment);

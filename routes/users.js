@@ -1,4 +1,5 @@
 var User = require('../models/user');
+var Transaction = require('../models/transaction');
 
 module.exports = function(app){
 
@@ -43,26 +44,36 @@ module.exports = function(app){
   // load user from ID parameter
   app.param('id', function(req, res, next, id){
     User
-      .findOne({ _id: req.params.id }, function(err, user) {
-        if (err) return next(err);
+      .findOne({ _id: req.params.id })
+      .populate('team')
+      .run(function(err, user) {
+        if (err) return next(err); 
         if (!user) return next(new Error("Failed loading user " + id));
         req.user = user;
         next(); 
-      }).populate('team');
+      });
   });
 
   // View User
   app.get('/user/:id.:format?', function(req, res){
-    if (req.params.format == 'json') {
-      res.contentType('application/json');
-      res.send(JSON.stringify(req.user));
-    }
-    else {
-      res.render('users/show', {
-        title: req.user.username,
-        user: req.user
+    
+    Transaction
+      .find({user: req.user._id})
+      .run(function(err, transactions) {
+        if (err) return;
+        req.user.transactions = transactions;
+
+        if (req.params.format == 'json') {
+          res.contentType('application/json');
+          res.send(JSON.stringify(req.user));
+        }
+        else {
+          res.render('users/show', {
+            title: req.user.username,
+            user: req.user
+          });
+        }   
       });
-    }
   });
 
   // Edit User

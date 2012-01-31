@@ -22,6 +22,19 @@ p
     &nbsp #{user.team.name}
   - else
     span#unassigned &nbsp none assigned 
+
+
+table#user-transactions
+  tr
+    th.header(colspan=3)
+      &nbsp transactions  
+  tr
+    th
+      label
+    th
+      amount
+   != partial('../transactions/transaction_list', {collection: user.transactions, as: 'transaction'})
+
 p 
   a(href='/user/'+user._id+'/edit', title="edit") Edit
   &nbsp;

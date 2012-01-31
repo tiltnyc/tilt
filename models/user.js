@@ -1,12 +1,12 @@
 require('./db_connect');
 
 var User = new Schema({
-  username    : {type: String, required: true },
-  email       : {type: String, required: true},
-  team        : {type: Schema.ObjectId, ref: 'Team'},
-  funds       : {type: Number, default: 0},
-  created_at  : {type : Date, default : Date.now},
-  updated_at  : {type : Date, default : Date.now}
+  username      : {type: String, required: true },
+  email         : {type: String, required: true},
+  team          : {type: Schema.ObjectId, ref: 'Team'},
+  funds         : {type: Number, default: 0},
+  created_at    : {type : Date, default : Date.now},
+  updated_at    : {type : Date, default : Date.now}
 });
 
 
