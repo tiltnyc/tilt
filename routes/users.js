@@ -1,4 +1,5 @@
 var User = require('../models/user');
+var Transaction = require('../models/transaction');
 
 module.exports = function(app){
 
@@ -43,26 +44,36 @@ module.exports = function(app){
   // load user from ID parameter
   app.param('id', function(req, res, next, id){
     User
-      .findOne({ _id: req.params.id }, function(err, user) {
-        if (err) return next(err);
+      .findOne({ _id: req.params.id })
+      .populate('team')
+      .run(function(err, user) {
+        if (err) return next(err); 
         if (!user) return next(new Error("Failed loading user " + id));
         req.user = user;
         next(); 
-      }).populate('team');
+      });
   });
 
   // View User
   app.get('/user/:id.:format?', function(req, res){
-    if (req.params.format == 'json') {
-      res.contentType('application/json');
-      res.send(JSON.stringify(req.user));
-    }
-    else {
-      res.render('users/show', {
-        title: req.user.username,
-        user: req.user
+    
+    Transaction
+      .find({user: req.user._id})
+      .run(function(err, transactions) {
+        if (err) return;
+        req.user.transactions = transactions;
+
+        if (req.params.format == 'json') {
+          res.contentType('application/json');
+          res.send(JSON.stringify(req.user));
+        }
+        else {
+          res.render('users/show', {
+            title: req.user.username,
+            user: req.user
+          });
+        }   
       });
-    }
   });
 
   // Edit User
@@ -91,6 +102,7 @@ module.exports = function(app){
     });
   });
 
+  //Delete user
   app.del('/user/:id', function(req, res){
     user = req.user;
     user.remove(function(err){
@@ -99,4 +111,35 @@ module.exports = function(app){
     });
   });
   
+  //Show allocate funds
+  app.get('/users/allocate', function(req, res){
+    res.render('users/allocate', {
+      title: 'Allocate funds'
+    });
+  });
+
+  //Allocate funds
+  app.post('/users/allocate', function(req, res){
+
+    var stream = User.find().stream();
+
+    stream.on('data', function (user) {
+      this.pause();
+      var self = this;
+      new Transaction({amount: req.body.allocate.amount, user: user._id, label: req.body.allocate.label}).save(function(err, doc) {
+        self.resume();
+      });  
+    })
+
+    stream.on('error', function (err) {
+      req.flash('error', 'Error allocating funds.');
+      res.redirect('/users');
+    })
+
+    stream.on('close', function () {
+      req.flash('notice', 'Allocated funds to all users.');
+      res.redirect('/users');
+    })
+    
+  });
 };

@@ -2,10 +2,12 @@ $().ready(function(){
   loadListFor('user', 'team', 'name');
   loadListFor('investment', 'team', 'name');
   loadListFor('investment', 'user', 'username');
+  loadListFor('allocate', 'user', 'username'); 
 });
 
 function loadListFor(model, type, display) {
   var selector = $('select[name="' + model + '[' + type + ']"]');
+  var prompt = (selector.data('prompt') != null) ? selector.data('prompt') : '(none)';
    
   if (selector.length) { 
       
@@ -16,7 +18,7 @@ function loadListFor(model, type, display) {
       dataType: "json",
       success: function(msg) {
         selector.options = [];
-        $(new Option("(none)","",true)).appendTo(selector);
+        $(new Option(prompt,"",true)).appendTo(selector);
         $.each(msg, function(index, item) {
           var selected = item._id == selector.data('team');
           $(new Option(item[display], item._id, false, selected)).appendTo(selector);

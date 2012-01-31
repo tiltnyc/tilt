@@ -8,6 +8,7 @@ div#users
       tr
         th username
         th email
+        th funds
         th team
         th actions 
       != partial('user_list', {collection: users, as: 'user'})
@@ -16,4 +17,6 @@ div#users
       a(href='/users/new') here
 
 hr
-a(href='/users/new') create new
+a(href='/users/new') create new 
+| &nbsp
+a(href='/users/allocate') allocate funds
