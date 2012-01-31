@@ -102,6 +102,7 @@ module.exports = function(app){
     });
   });
 
+  //Delete user
   app.del('/user/:id', function(req, res){
     user = req.user;
     user.remove(function(err){
@@ -110,4 +111,35 @@ module.exports = function(app){
     });
   });
   
+  //Show allocate funds
+  app.get('/users/allocate', function(req, res){
+    res.render('users/allocate', {
+      title: 'Allocate funds'
+    });
+  });
+
+  //Allocate funds
+  app.post('/users/allocate', function(req, res){
+
+    var stream = User.find().stream();
+
+    stream.on('data', function (user) {
+      this.pause();
+      var self = this;
+      new Transaction({amount: req.body.allocate.amount, user: user._id, label: req.body.allocate.label}).save(function(err, doc) {
+        self.resume();
+      });  
+    })
+
+    stream.on('error', function (err) {
+      req.flash('error', 'Error allocating funds.');
+      res.redirect('/users');
+    })
+
+    stream.on('close', function () {
+      req.flash('notice', 'Allocated funds to all users.');
+      res.redirect('/users');
+    })
+    
+  });
 };

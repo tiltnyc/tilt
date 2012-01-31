@@ -1,0 +1,21 @@
+h2= title
+
+p allocate funds
+
+form(method="post", action="/users/allocate")
+  
+  p 
+    label(for='allocate[amount]') Amount 
+    &nbsp;
+    input(type="text", id="allocate[amount]", name="allocate[amount]")
+  
+  p
+    label(for='allocate[label]') Label
+    &nbsp;
+    input(type="text", id="allocate[label]", name="allocate[label]")
+  
+  input(type="submit", value="Submit")
+
+hr
+  
+a(href='/users', title="[back]") [back]
