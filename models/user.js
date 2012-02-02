@@ -34,19 +34,7 @@ UserSchema.plugin(mongooseAuth, {
           , registerLocals: {title: 'Register'}
           , loginSuccessRedirect: '/'
           , registerSuccessRedirect: '/'
-          , respondToLoginFail: function (req, res, errors) {
-            console.log(x); console.log(y);
-              if (errors.length > 0) {
-                if (req.query.json != null) {
-                  return res.redirect('/login.json');
-
-                } else {
-                  //res.redirect('/login');
-                }
-                //res.end();
-                }\
-          }
-          , respondToLoginSucceed: function (res, user, data) {
+           , respondToLoginSucceed: function (res, user) {
               if (user) {
                 if (res.req.query.json != null) {
                   res.redirect('/login.json');
@@ -56,6 +44,21 @@ UserSchema.plugin(mongooseAuth, {
                 res.end();
               }
             }
+            , respondToLoginFail: function (req, res, errors, login) {
+              if (errors && errors.length > 0) {
+                if (req.query.json != null) {
+                  res.writeHead(303, {'Location': '/login.json'});
+                  res.end();  
+                } else {
+                  res.render('login',
+                    { errors: errors
+                      , title: 'Login'
+                      , email: login
+                    }); 
+                }
+              }
+          }
+         
         }
     }
 });
