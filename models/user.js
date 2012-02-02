@@ -34,16 +34,31 @@ UserSchema.plugin(mongooseAuth, {
           , registerLocals: {title: 'Register'}
           , loginSuccessRedirect: '/'
           , registerSuccessRedirect: '/'
-          , respondToLoginSucceed: function (res, user, data) {
+           , respondToLoginSucceed: function (res, user) {
               if (user) {
                 if (res.req.query.json != null) {
-                  res.writeHead(303, {'Location': '/login.json'});
+                  res.redirect('/login.json');
                 } else {
-                  res.writeHead(303, {'Location': '/'});
+                  res.redirect('/');
                 }
                 res.end();
               }
             }
+            , respondToLoginFail: function (req, res, errors, login) {
+              if (errors && errors.length > 0) {
+                if (req.query.json != null) {
+                  res.writeHead(303, {'Location': '/login.json'});
+                  res.end();  
+                } else {
+                  res.render('login',
+                    { errors: errors
+                      , title: 'Login'
+                      , email: login
+                    }); 
+                }
+              }
+          }
+         
         }
     }
 });

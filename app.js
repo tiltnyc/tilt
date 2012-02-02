@@ -25,10 +25,10 @@ require('./routes/users')(app);
 require('./routes/teams')(app);
 require('./routes/investments')(app);
 
+//add route for login check via REST
 app.get('/login.json', function(req, res){
   res.contentType('application/json');
   if (req.user) {  
-    req.user.salt = req.user.hash = null; 
     res.send(JSON.stringify(req.user));
   }
   else
