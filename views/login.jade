@@ -6,9 +6,11 @@
 form(action='/login', method='post')
   #login
     label(for=everyauth.password.loginFormFieldName) Login
+    br
     input(type='text', name=everyauth.password.loginFormFieldName, value=email)
   #password
     label(for=everyauth.password.passwordFormFieldName) Password
+    br
     input(type='password', name=everyauth.password.passwordFormFieldName)
   #submit
     input(type='submit') Login

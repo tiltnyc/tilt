@@ -12,6 +12,18 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
       a(href='/teams',title='teams') teams 
     li
       a(href='/investment/new',title='new investment') new investment 
+    if everyauth.loggedIn 
+      ul#login-bar 
+        li logged in as #{everyauth.user.username}
+        li
+          a(href='/logout', title='logout') logout
+    else
+      ul#login-bar
+        li
+          a(href='/login', title='login') login
+        li 
+          a(href='/register', title='register') register
+    end
         
   #content 
     != body

@@ -5,13 +5,16 @@ h2 Register
       li.error= error
 form(action='/register', method='post')
   #username
-    label(for=everyauth.password.username) Username
-    input(type='text', name=everyauth.password.username)
+    label(for="username") Username 
+    br
+    input(type='text', name="username")
   #login
     label(for=everyauth.password.loginFormFieldName) Email
+    br
     input(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
   #password
     label(for=everyauth.password.passwordFormFieldName) Password
+    br
     input(type='password', name=everyauth.password.passwordFormFieldName)
   #submit
     input(type='submit') Register
