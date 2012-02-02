@@ -25,8 +25,7 @@ require('./routes/users')(app);
 require('./routes/teams')(app);
 require('./routes/investments')(app);
 
-//this is defined after users already loaded
-mongooseAuth.middleware();
+
 //setup express helpers for login and register
 mongooseAuth.helpExpress(app);
 

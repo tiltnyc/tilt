@@ -3,7 +3,8 @@ var fs = require('fs'),
     stylus = require('stylus'),
     express = require('express'),
     gzippo = require('gzippo'),
-    mongooseAuth = require('mongoose-auth');
+    mongooseAuth = require('mongoose-auth'), 
+    userModel = require('./models/user');
 
 //export the boot function
 exports.boot = function(app) {
@@ -26,6 +27,8 @@ function bootApplication(app) {
     
     app.use(express.logger(':method :url :status'));
     app.use(express.favicon());
+
+    app.use(mongooseAuth.middleware());
 
     app.use(app.router);
   });
