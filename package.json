@@ -23,5 +23,6 @@
     , "mongoose"          : ">= 2.5.0"
     , "gzippo"            : ">= 0.0.7"   
     , "express-messages"  : ">= 0.0.2"
+    , "mongoose-auth"     : ">= 0.0.11"
   }
 }
