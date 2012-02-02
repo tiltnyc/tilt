@@ -34,6 +34,16 @@ UserSchema.plugin(mongooseAuth, {
           , registerLocals: {title: 'Register'}
           , loginSuccessRedirect: '/'
           , registerSuccessRedirect: '/'
+          , respondToLoginSucceed: function (res, user, data) {
+              if (user) {
+                if (res.req.query.json != null) {
+                  res.writeHead(303, {'Location': '/login.json'});
+                } else {
+                  res.writeHead(303, {'Location': '/'});
+                }
+                res.end();
+              }
+            }
         }
     }
 });
