@@ -8,7 +8,7 @@ var UserSchema = new Schema({
   funds         : {type: Number, default: 0},
   created_at    : {type : Date, default : Date.now},
   updated_at    : {type : Date, default : Date.now}
-});
+}), User;
 
 UserSchema.plugin(mongooseAuth, {
     everymodule: {
@@ -27,9 +27,11 @@ UserSchema.plugin(mongooseAuth, {
             getLoginPath: '/login'
           , postLoginPath: '/login'
           , loginView: 'login.jade'
+          , loginLocals: {title: 'Login'}
           , getRegisterPath: '/register'
           , postRegisterPath: '/register'
           , registerView: 'register.jade'
+          , registerLocals: {title: 'Register'}
           , loginSuccessRedirect: '/'
           , registerSuccessRedirect: '/'
         }
@@ -68,4 +70,6 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
-var exports = module.exports = mongoose.model('User', UserSchema);
+mongoose.model('User', UserSchema);
+
+var exports = module.exports = User = mongoose.model('User');
