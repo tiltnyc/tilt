@@ -1,18 +1,46 @@
-require('./db_connect');
+var db_connect = require('./db_connect')
+  , mongooseAuth = require('mongoose-auth'); 
 
-var User = new Schema({
+var UserSchema = new Schema({
   username      : {type: String, required: true },
   email         : {type: String, required: true},
   team          : {type: Schema.ObjectId, ref: 'Team'},
   funds         : {type: Number, default: 0},
   created_at    : {type : Date, default : Date.now},
   updated_at    : {type : Date, default : Date.now}
-});
+}), User;
 
+UserSchema.plugin(mongooseAuth, {
+    everymodule: {
+      everyauth: {
+          User: function () {
+            return User;
+          }
+      }
+    }
+  , password: {
+        loginWith: 'email'
+      , extraParams: {
+          username: String
+        }
+      , everyauth: {
+            getLoginPath: '/login'
+          , postLoginPath: '/login'
+          , loginView: 'login.jade'
+          , loginLocals: {title: 'Login'}
+          , getRegisterPath: '/register'
+          , postRegisterPath: '/register'
+          , registerView: 'register.jade'
+          , registerLocals: {title: 'Register'}
+          , loginSuccessRedirect: '/'
+          , registerSuccessRedirect: '/'
+        }
+    }
+});
 
 var Team = require('./team');
 
-User.pre('save', function (next) {
+UserSchema.pre('save', function (next) {
   var user = this; 
     
   //switched teams  
@@ -42,4 +70,6 @@ User.pre('save', function (next) {
   next();
 });
 
-var exports = module.exports = mongoose.model('User', User);
+mongoose.model('User', UserSchema);
+
+var exports = module.exports = User = mongoose.model('User');

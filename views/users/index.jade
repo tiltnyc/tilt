@@ -11,7 +11,7 @@ div#users
         th funds
         th team
         th actions 
-      != partial('user_list', {collection: users, as: 'user'})
+      != partial('user_list', {collection: users, as: 'aUser'})
   - else
     #no-results No users found. Create one
       a(href='/users/new') here

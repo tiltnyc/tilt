@@ -2,8 +2,9 @@
 var fs = require('fs'),
     stylus = require('stylus'),
     express = require('express'),
-    basicAuth = require('express').basicAuth,
-    gzippo = require('gzippo');
+    gzippo = require('gzippo'),
+    mongooseAuth = require('mongoose-auth'), 
+    userModel = require('./models/user');
 
 //export the boot function
 exports.boot = function(app) {
@@ -22,10 +23,12 @@ function bootApplication(app) {
     app.use(express.methodOverride());
 
     app.use(express.cookieParser());
-    app.use(express.session({ secret: 'welcome mat home' }));
+    app.use(express.session({ secret: 'flkjgjoieolk' }));
     
     app.use(express.logger(':method :url :status'));
     app.use(express.favicon());
+
+    app.use(mongooseAuth.middleware());
 
     app.use(app.router);
   });
@@ -42,8 +45,7 @@ function bootApplication(app) {
     },
 
     // flash messages
-    messages: require('express-messages'),
-
+    messages: require('express-messages')
     
   });
 
