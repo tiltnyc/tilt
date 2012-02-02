@@ -7,8 +7,11 @@ form(method="post",action="/investments")
   p 
     label(for='investment[user]') User
     &nbsp;
-    select(id='investment[user]', name='investment[user]')
-
+    - if (user)
+      span #{user.username}
+    -else
+      select(id='investment[user]', name='investment[user]')
+    
   p 
     label(for='investment[team]') Team
     &nbsp;

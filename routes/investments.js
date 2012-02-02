@@ -14,9 +14,13 @@ module.exports = function(app){
     
     investment = new Investment(req.body.investment);
     
-    investment.save(function(err) {
-      //if (err) //throw error
+    if (req.user) investment.user = req.user;
+    
+    if (!investment.user) return handleError(req, res, "Invalid User", "/");
 
+    investment.save(function(err) {
+      if (err) return handleError(req, res, err, '/');
+        
       if (req.params.format == 'json') {
           res.contentType('application/json');
           res.send(JSON.stringify(investment));
@@ -28,7 +32,15 @@ module.exports = function(app){
     });
   });
 
- 
-
+  //TODO: move into something more generic
+  function handleError(req, res, error, redirect) {
+    if (req.params.format == 'json') {
+      res.contentType('application/json');
+      res.send(JSON.stringify({error: error}));
+    } else {
+      req.flash('error', error);
+      res.redirect(redirect);
+    }
+  }
   
 };
