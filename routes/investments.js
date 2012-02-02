@@ -16,10 +16,10 @@ module.exports = function(app){
     
     if (req.user) investment.user = req.user;
     
-    if (!investment.user) return handleError(req, res, "Invalid User", "/");
+    if (!investment.user) return handleError(req, res, "Invalid User", "/investment/new");
 
     investment.save(function(err) {
-      if (err) return handleError(req, res, err, '/');
+      if (err) return handleError(req, res, err, '/investment/new');
         
       if (req.params.format == 'json') {
           res.contentType('application/json');
