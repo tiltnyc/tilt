@@ -47,7 +47,7 @@ UserSchema.plugin(mongooseAuth, {
             , respondToLoginFail: function (req, res, errors, login) {
               if (errors && errors.length > 0) {
                 if (req.query.json != null) {
-                  res.writeHead(303, {'Location': '/login.json'});
+                  res.redirect('/login.json');
                   res.end();  
                 } else {
                   res.render('login',
