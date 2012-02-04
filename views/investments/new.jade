@@ -13,17 +13,7 @@ form(method="post",action="/investments")
       span #{user.username}
     -else
       select(id='investment[user]', name='investment[user]')
-    
-  p 
-    label(for='investment[team]') Team
-    &nbsp;
-    select(id='investment[team]', name='investment[team]')
-  
-  p 
-    label(for='investment[amount]') Amount 
-    &nbsp;
-    input(type="text", id="investment[amount]", name="investment[amount]")
-  
+
   p 
     div#investment-rounds Round
       ul
@@ -35,8 +25,22 @@ form(method="post",action="/investments")
           label(for='investment[round_2]') &nbsp Round 2 
         li
           input(type="radio", id="investment[round_3]", name="investment[round]", value="3")
-          label(for='investment[round_3]') &nbsp Round 3 
-      
+          label(for='investment[round_3]') &nbsp Round 3    
+  
+  ul#team-list
+    each team, i in teams
+      li Team: &nbsp
+        input(type="hidden", name="investment[#{i}][team]", value=team._id)
+        span.team-name=team.name     
+        ul.percentage-slider-container
+          li.percentage-slider(data-index=i)
+          li.percentage-slider-amount
+            span 0%
+            input(type="hidden", id="investment[#{i}][percentage]", name="investment[#{i}][percentage]", value=0)
+  
+  div#invested Total Invested
+    span#total-invested 
+        
   input(type="submit", value="Submit")
   &nbsp;
   a(href="/", title="[back]") [back]

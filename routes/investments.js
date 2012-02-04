@@ -1,12 +1,23 @@
-var Investment = require('../models/investment');
+var Investment = require('../models/investment')
+    , Team = require('../models/team');
 
 module.exports = function(app){
 
   // New investment
   app.get('/investment/new', function(req, res){
-    res.render('investments/new', {
-      title: 'New Investment'
-    });
+
+    Team
+      .find({})
+      .asc('name') 
+      .run(function(err, teams) {
+        res.render('investments/new', {
+          title: 'New Investment',
+          teams: teams
+        });   
+      });
+
+
+   
   });
 
   // Create User
