@@ -126,9 +126,10 @@ module.exports = function(app){
     stream.on('data', function (user) {
       this.pause();
       var self = this;
-      new Transaction({amount: req.body.allocate.amount, user: user._id, label: req.body.allocate.label}).
+      new Transaction({amount: req.body.allocate.amount, round: req.body.allocate.round, user: user._id, label: req.body.allocate.label}).
         save(function(err, doc) {
           if (err) {
+            console.log(err);
             req.flash('error', 'Error allocating funds.');
             return res.redirect('/users');
           }

@@ -3,6 +3,7 @@ require('./db_connect');
 var Transaction = new Schema({
   amount      : {type: Number, required: true},
   user        : {type: Schema.ObjectId, ref: 'User', required: true},
+  round       : {type: Number, required: true},
   label       : {type: String},
   created_at  : {type : Date, default : Date.now},
   updated_at  : {type : Date, default : Date.now}

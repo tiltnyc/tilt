@@ -21,32 +21,48 @@ module.exports = function(app){
     
     var user = req.user || req.body.investment.user;
 
-    if (!user) return handleError(req, res, "Invalid User", "/investment/new");
+    if (!user) return handleError(req, res, "invalid user", "/investment/new");
     
-    var investments = [];
+    //handle different input between JSON and HTML
+    if (!req.body.investment.investments) {
+      req.body.investment.investments = []; 
+      for (var prop in req.body.investment) {
+        if (prop.substring(0,5) == 'team_') 
+          req.body.investment.investments[prop.split('_')[1]] = req.body.investment[prop];
+      }
+    }
 
-    err = saveInvestment(req.body.investment, 0, function(err){
-      if (err) return handleError(req, res, "Error saving investment in team " + req.body.investment[prop].team, "/investment/new");      
+    var investments = [];
+    var round = req.body.investment.round;
+
+    err = saveInvestment(req.body.investment.investments, 0, function(err){
+      if (err) return handleError(req, res, err, "/investment/new");      
       
-      req.flash('notice', 'Invested.');
-      res.redirect('/');
+      if (req.params.format == 'json') {
+        res.contentType('application/json');
+        res.send(JSON.stringify(investments));
+      } else {
+        req.flash('notice', 'invested successfully.');
+        res.redirect('/');
+      }
     });
             
-    function saveInvestment(data, index, callback) {
+    function saveInvestment(array, index, callback) {
       var rowData;
-      if (rowData = data['team_' + index]) { 
+      if (rowData = array[index]) { 
         var investment = new Investment({
-            round: data.round
+            round: round
           , user: user
           , team: rowData.team
           , amount: rowData.percentage 
         });
 
         investment.save(function(err) {
-          console.log('save with: ' + err);
-
           if (err) callback(err); 
-          else return saveInvestment(data, index+1, callback);
+          else { 
+            investments.push(investment);
+            saveInvestment(array, index+1, callback);
+          }
         });
         
       } else callback();

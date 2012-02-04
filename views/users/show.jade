@@ -33,6 +33,8 @@ table#user-transactions
       label
     th
       amount
+    th
+      round
    != partial('../transactions/transaction_list', {collection: user.transactions, as: 'transaction'})
 
 p 

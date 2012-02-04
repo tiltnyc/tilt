@@ -14,6 +14,19 @@ form(method="post", action="/users/allocate")
     &nbsp;
     input(type="text", id="allocate[label]", name="allocate[label]")
   
+  p 
+    div.rounds Round
+      ul
+        li
+          input(type="radio", id="allocate[round_1]", name="allocate[round]", value="1")
+          label(for='allocate[round_1]') &nbsp Round 1 
+        li
+          input(type="radio", id="allocate[round_2]", name="allocate[round]", value="2")
+          label(for='allocate[round_2]') &nbsp Round 2 
+        li
+          input(type="radio", id="allocate[round_3]", name="allocate[round]", value="3")
+          label(for='allocate[round_3]') &nbsp Round 3    
+
   input(type="submit", value="Submit")
 
 hr
