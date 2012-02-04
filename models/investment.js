@@ -3,7 +3,7 @@ require('./db_connect');
 var Investment = new Schema({
   amount      : {type: Number, required: true},
   user        : {type: Schema.ObjectId, ref: 'User'},
-  round       : {type: Number},
+  round       : {type: Number, required: true},
   team        : {type: Schema.ObjectId, ref: 'Team'}, 
   created_at  : {type : Date, default : Date.now},
   updated_at  : {type : Date, default : Date.now}
@@ -15,7 +15,7 @@ var Transaction = require('./transaction');
 Investment.pre('save', function (next) {
   var investment = this; 
 
-  new Transaction({amount: -(this.amount), user: this.user, label: "round " + this.round + " investment"}).save(function(err) {
+  new Transaction({amount: -(this.amount), user: this.user, round: this.round, label: "round " + this.round + " investment"}).save(function(err) {
     if (err) return next(err);
     else return next();
   });
