@@ -30,13 +30,13 @@ form(method="post",action="/investments")
   ul#team-list
     each team, i in teams
       li Team: &nbsp
-        input(type="hidden", name="investment[#{i}][team]", value=team._id)
+        input(type="hidden", name="investment[team_#{i}][team]", value=team._id)
         span.team-name=team.name     
         ul.percentage-slider-container
           li.percentage-slider(data-index=i)
           li(id='percentage-slider-amount-#{i}', class='percentage-slider-amount') 
             span 0%
-            input(type="hidden", id="investment[#{i}][percentage]", name="investment[#{i}][percentage]", value=0)
+            input(type="hidden", id="investment[#{i}][percentage]", name="investment[team_#{i}][percentage]", value=0)
   
   div#invested Total Invested &nbsp
     span#total-invested 

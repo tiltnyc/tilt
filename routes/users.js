@@ -126,14 +126,21 @@ module.exports = function(app){
     stream.on('data', function (user) {
       this.pause();
       var self = this;
-      new Transaction({amount: req.body.allocate.amount, user: user._id, label: req.body.allocate.label}).save(function(err, doc) {
-        self.resume();
+      new Transaction({amount: req.body.allocate.amount, user: user._id, label: req.body.allocate.label}).
+        save(function(err, doc) {
+          if (err) {
+            req.flash('error', 'Error allocating funds.');
+            return res.redirect('/users');
+          }
+          self.resume();
       });  
     })
 
+    var errorMode = false; 
     stream.on('error', function (err) {
       req.flash('error', 'Error allocating funds.');
       res.redirect('/users');
+      this.destroy();
     })
 
     stream.on('close', function () {

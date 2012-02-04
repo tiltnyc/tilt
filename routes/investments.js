@@ -5,7 +5,6 @@ module.exports = function(app){
 
   // New investment
   app.get('/investment/new', function(req, res){
-
     Team
       .find({})
       .asc('name') 
@@ -14,33 +13,44 @@ module.exports = function(app){
           title: 'New Investment',
           teams: teams
         });   
-      });
-
-
-   
+      });   
   });
 
-  // Create User
+  // Perform an investment
   app.post('/investments.:format?', function(req, res){
     
-    investment = new Investment(req.body.investment);
-    
-    if (req.user) investment.user = req.user;
-    
-    if (!investment.user) return handleError(req, res, "Invalid User", "/investment/new");
+    var user = req.user || req.body.investment.user;
 
-    investment.save(function(err) {
-      if (err) return handleError(req, res, err, '/investment/new');
-        
-      if (req.params.format == 'json') {
-          res.contentType('application/json');
-          res.send(JSON.stringify(investment));
-      }
-      else {
-        req.flash('notice', 'Invested.');
-        res.redirect('/');
-      }
+    if (!user) return handleError(req, res, "Invalid User", "/investment/new");
+    
+    var investments = [];
+
+    err = saveInvestment(req.body.investment, 0, function(err){
+      if (err) return handleError(req, res, "Error saving investment in team " + req.body.investment[prop].team, "/investment/new");      
+      
+      req.flash('notice', 'Invested.');
+      res.redirect('/');
     });
+            
+    function saveInvestment(data, index, callback) {
+      var rowData;
+      if (rowData = data['team_' + index]) { 
+        var investment = new Investment({
+            round: data.round
+          , user: user
+          , team: rowData.team
+          , amount: rowData.percentage 
+        });
+
+        investment.save(function(err) {
+          console.log('save with: ' + err);
+
+          if (err) callback(err); 
+          else return saveInvestment(data, index+1, callback);
+        });
+        
+      } else callback();
+    }  
   });
 
   //TODO: move into something more generic
