@@ -34,11 +34,11 @@ form(method="post",action="/investments")
         span.team-name=team.name     
         ul.percentage-slider-container
           li.percentage-slider(data-index=i)
-          li.percentage-slider-amount
+          li(id='percentage-slider-amount-#{i}', class='percentage-slider-amount') 
             span 0%
             input(type="hidden", id="investment[#{i}][percentage]", name="investment[#{i}][percentage]", value=0)
   
-  div#invested Total Invested
+  div#invested Total Invested &nbsp
     span#total-invested 
         
   input(type="submit", value="Submit")

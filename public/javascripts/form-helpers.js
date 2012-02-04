@@ -12,10 +12,9 @@ $().ready(function(){
     , step: 1 
     , slide: function(event, ui) {
         var value = Math.round(ui.value) / 100;
-        $(this).siblings('.percentage-slider-amount').find('span').text(ui.value + "%");
-        $(this).siblings('.percentage-slider-amount').find('input').val(value);
         totalInvested = appendInvestment($(this).data('index'), value); 
-        $('#total-invested').text(Math.round(totalInvested * 100) + '%');
+        resetValues();
+        $('#total-invested').text(Math.round(Math.min(totalInvested, 1) * 100) + '%');
       }  
   });
 
@@ -30,6 +29,15 @@ $().ready(function(){
       total += val;
     }); 
     return total;
+  }
+
+  function resetValues() {
+    investments.forEach(function(val, i) { 
+      var amount = (val / Math.max(totalInvested, 1));
+
+      $('#percentage-slider-amount-' + i + ' span').text(Math.round(amount * 100) + "%");
+      $('#percentage-slider-amount-' + i + ' input').val(amount);
+    });
   }
 });
 
