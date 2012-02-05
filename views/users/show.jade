@@ -31,8 +31,8 @@ table#user-transactions.inner-table
       &nbsp transactions  
   tr
     th round
-    th amount
     th label
+    th amount
    != partial('../transactions/transaction_list', {collection: user.transactions, as: 'transaction'})
 
 table#user-investments.inner-table
