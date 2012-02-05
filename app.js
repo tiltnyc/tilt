@@ -1,5 +1,4 @@
 var express = require('express')
-  , routes = require('./routes')
   , mongooseAuth = require('mongoose-auth');
 
 var app = module.exports = express.createServer();
@@ -20,10 +19,11 @@ app.dynamicHelpers({
 });
 
 // Routes - todo.. include all routes here as made
-app.get('/', routes.index);
+require('./routes/index')(app);
 require('./routes/users')(app);
 require('./routes/teams')(app);
 require('./routes/investments')(app);
+require('./routes/rounds')(app);
 
 //add route for login check via REST
 app.get('/login.json', function(req, res){
