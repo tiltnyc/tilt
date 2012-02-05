@@ -10,12 +10,13 @@ p
   &nbsp; #{user.email}
 p
   strong funds
-  - if (user.funds < 0)
-    span(class="in-the-red") 
-      &nbsp; $#{user.funds}
-  - else 
-    span
-      &nbsp; $#{user.funds}
+  each fundz in user.funds
+    - if (fundz < 0)
+      span(class="in-the-red") 
+        &nbsp; $#{fundz}
+    - else 
+      span
+        &nbsp; $#{fundz}
 p 
   strong team
   - if (user.team)
