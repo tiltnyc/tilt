@@ -5,7 +5,7 @@ var UserSchema = new Schema({
   username      : {type: String, required: true },
   email         : {type: String, required: true},
   team          : {type: Schema.ObjectId, ref: 'Team'},
-  funds         : {type: Number, default: 0},
+  funds         : {type: [Number], default: [0,0,0]},
   created_at    : {type : Date, default : Date.now},
   updated_at    : {type : Date, default : Date.now}
 }), User;
@@ -78,9 +78,9 @@ UserSchema.pre('save', function (next) {
         if (err) return next(err);
       });  
     });
-  //added to team
   } 
 
+  //added to team
   if (this.team) {
     Team
     .findOne({ _id: this.team }, function(err, team) {
