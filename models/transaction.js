@@ -9,7 +9,6 @@ var Transaction = new Schema({
   updated_at  : {type : Date, default : Date.now}
 });
 
-
 var User = require('./user');
 
 //on save: update user's funds
@@ -19,7 +18,11 @@ Transaction.pre('save', function (next) {
     .findOne({ _id: this.user }, function(err, user) {
       if (err) return next(err); 
 
-      user.funds += transaction.amount;
+      //required to dirty the array
+      var funds = user.funds.concat();
+      funds[transaction.round - 1] += transaction.amount;
+      user.funds = funds;
+    
       user.save(function(err) {
         if (err) return next(err);
         else return next();
