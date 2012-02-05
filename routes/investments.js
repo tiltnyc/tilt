@@ -59,7 +59,7 @@ module.exports = function(app){
               round: round
             , user: user
             , team: rowData.team
-            , amount: Math.floor(rowData.percentage * user.funds)
+            , percentage: rowData.percentage
           });
 
           investment.save(function(err) {
