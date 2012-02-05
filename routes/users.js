@@ -1,5 +1,6 @@
-var User = require('../models/user');
-var Transaction = require('../models/transaction');
+var User = require('../models/user')
+  , Transaction = require('../models/transaction')
+  , Investment = require('../models/investment');
 
 module.exports = function(app){
 
@@ -63,16 +64,24 @@ module.exports = function(app){
         if (err) return;
         req.user.transactions = transactions;
 
-        if (req.params.format == 'json') {
-          res.contentType('application/json');
-          res.send(JSON.stringify(req.user));
-        }
-        else {
-          res.render('users/show', {
-            title: req.user.username,
-            user: req.user
+        Investment
+          .find({user: req.user._id})
+          .populate('team')
+          .run(function(err, investments) {
+            if (err) return;
+            req.user.investments = investments;
+            
+            if (req.params.format == 'json') {
+              res.contentType('application/json');
+              res.send(JSON.stringify(req.user));
+            }
+            else {
+              res.render('users/show', {
+                title: req.user.username,
+                user: req.user
+              });
+            }   
           });
-        }   
       });
   });
 

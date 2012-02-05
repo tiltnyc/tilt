@@ -25,18 +25,25 @@ p
     span#unassigned &nbsp none assigned 
 
 
-table#user-transactions
+table#user-transactions.inner-table
   tr
     th.header(colspan=3)
       &nbsp transactions  
   tr
-    th
-      label
-    th
-      amount
-    th
-      round
+    th round
+    th amount
+    th label
    != partial('../transactions/transaction_list', {collection: user.transactions, as: 'transaction'})
+
+table#user-investments.inner-table
+  tr
+    th.header(colspan=3)
+      &nbsp investments
+  tr
+    th round
+    th team
+    th percentage
+   != partial('../investments/investment_list', {collection: user.investments, as: 'investment'})
 
 p 
   a(href='/user/'+user._id+'/edit', title="edit") Edit
