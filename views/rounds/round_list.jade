@@ -1,0 +1,22 @@
+//- var klazz = (round.is_open ? 'open-round' : 'closed-round')
+- var klazz = (round.is_current ? 'current-round' : '')
+li.round(class=klazz) 
+  h5 Round #{round.number}
+  .round-contents
+    span total funds: $#{round.total_funds}
+    br
+    if (!round.processed)
+      if (round.is_current)
+        input(type="text", name="allocate[amount]") 
+        button allocate  
+        if (round.is_open)
+          button close
+        else
+          button open
+        br
+        button process
+        button next round
+      else       
+        input.destroy(type='button', value='remove', href='/round/'+round.number)
+    else
+      p (round processed)
