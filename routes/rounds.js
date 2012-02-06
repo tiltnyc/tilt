@@ -1,4 +1,6 @@
-var Round = require('../models/round');
+var Round = require('../models/round'),
+    User = require('../models/user'),
+    Transaction = require('../models/transaction');
 
 module.exports = function(app){
 
@@ -72,4 +74,55 @@ module.exports = function(app){
         }
       });   
   });
+
+  //Allocate funds to round
+  app.post('/round/:roundNumber/allocate', function(req, res){
+
+    var stream = User.find().stream();
+    var round = req.round;
+    var amount = new Number(req.body.allocate.amount);
+    var number = round.number;
+
+    stream.on('data', function (user) {
+      this.pause();
+      var self = this;
+      new Transaction({amount:amount, round: number, user: user.id, label: 'round ' + number.toString() + ' allocation.'}).
+        save(function(err, doc) {
+          if (err) return handleError(req, res, err, '/rounds');
+          self.resume();
+      });  
+    })
+
+    var errorMode = false; 
+    stream.on('error', function (err) {
+      req.flash('error', 'Error allocating funds.');
+      res.redirect('/rounds');
+      this.destroy();
+    });
+
+    stream.on('close', function () {
+      //now update the round
+      round.total_funds += amount;
+
+      round.save(function(err){
+        if (err) {
+          handleError(req, res, err, '/rounds'); //TODO: should really undo all user updates above via a transaction
+        } 
+        else {
+          req.flash('notice', 'Allocated funds to all users for round ' + req.round.number.toString() + '.');
+          res.redirect('/rounds');
+        }
+      });
+    });
+  });
+
+  function handleError(req, res, error, redirect) {
+    if (req.params.format == 'json') {
+      res.contentType('application/json');
+      res.send(JSON.stringify({error: error}));
+    } else {
+      req.flash('error', error);
+      res.redirect(redirect);
+    }
+  }
 };

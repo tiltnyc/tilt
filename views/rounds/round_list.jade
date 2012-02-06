@@ -7,13 +7,18 @@ li.round(class=klazz)
     br
     if (!round.processed)
       if (round.is_current)
-        input(type="text", name="allocate[amount]") 
-        button allocate  
+        hr
+        form(method="post", action="/round/" + round.number + "/allocate")
+          input(type="text", name="allocate[amount]") 
+          button allocate  
+        hr 
+        span toggle: 
         if (round.is_open)
           button close
         else
           button open
-        br
+        hr
+        span actions:
         button process
         button next round
       else       

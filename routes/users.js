@@ -119,44 +119,5 @@ module.exports = function(app){
       res.redirect('/users');
     });
   });
-  
-  //Show allocate funds
-  app.get('/users/allocate', function(req, res){
-    res.render('users/allocate', {
-      title: 'Allocate funds'
-    });
-  });
-
-  //Allocate funds
-  app.post('/users/allocate', function(req, res){
-
-    var stream = User.find().stream();
-
-    stream.on('data', function (user) {
-      this.pause();
-      var self = this;
-      new Transaction({amount: req.body.allocate.amount, round: req.body.allocate.round, user: user.id, label: req.body.allocate.label}).
-        save(function(err, doc) {
-          if (err) {
-            console.log(err);
-            req.flash('error', 'Error allocating funds.');
-            return res.redirect('/users');
-          }
-          self.resume();
-      });  
-    })
-
-    var errorMode = false; 
-    stream.on('error', function (err) {
-      req.flash('error', 'Error allocating funds.');
-      res.redirect('/users');
-      this.destroy();
-    })
-
-    stream.on('close', function () {
-      req.flash('notice', 'Allocated funds to all users.');
-      res.redirect('/users');
-    })
-    
-  });
+ 
 };
