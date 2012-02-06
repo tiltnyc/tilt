@@ -20,10 +20,18 @@ li.round(class=klazz)
           else
             button(name="round[is_open]", value="true") open
         hr
-        span actions:
-        button process
-        button next round
+        form(method="post", action="/round/" + round.number + "/process")
+          span actions:
+          input(type="hidden", name="_method", value="PUT")
+          button(name="round[process]", value="true") process
+          
       else       
         input.destroy(type='button', value='remove', href='/round/'+round.number)
     else
       p (round processed)
+      if (round.is_current)
+        form(method="post", action="/round/" + round.number)
+          span actions:
+          input(type="hidden", name="_method", value="PUT")
+          button(name="round[next_round]", value="true") next round
+        
