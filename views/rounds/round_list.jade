@@ -12,11 +12,13 @@ li.round(class=klazz)
           input(type="text", name="allocate[amount]") 
           button allocate  
         hr 
-        span toggle: 
-        if (round.is_open)
-          button close
-        else
-          button open
+        form(method="post", action="/round/" + round.number)
+          input(type="hidden", name="_method", value="PUT")
+          span toggle: 
+          if (round.is_open)
+            button(name="round[is_open]", value="false") close
+          else
+            button(name="round[is_open]", value="true") open
         hr
         span actions:
         button process

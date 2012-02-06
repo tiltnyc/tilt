@@ -75,6 +75,38 @@ module.exports = function(app){
       });   
   });
 
+  //Toggle round open/close
+  app.put('/round/:roundNumber', function(req, res){
+    var round = req.round;
+    if (req.body.round.is_open != null) round.is_open = req.body.round.is_open;
+    if (req.body.round.next_round) round.is_current = false;
+    
+    round.save(function(err){
+      if (err) return handleError(req, res, err, '/rounds');
+      
+      if (req.body.round.next_round) {
+        Round.
+          findOne({number: req.round + 1}).
+          run(function(err, round){
+            if (err) return handleError(req, res, err, '/rounds');
+            
+            round.is_current = true;
+            round.save(function(err) {
+              if (err) return handleError(req, res, err, '/rounds');
+
+              req.flash('notice', 'Round progressed.');
+              res.redirect('/rounds');
+            })
+          });
+      }
+      else
+      {
+        req.flash('notice', 'Round toggled.');
+        res.redirect('/rounds');
+      }
+    });
+  });
+
   //Allocate funds to round
   app.post('/round/:roundNumber/allocate', function(req, res){
 
