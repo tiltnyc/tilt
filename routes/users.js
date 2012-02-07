@@ -60,6 +60,7 @@ module.exports = function(app){
     
     Transaction
       .find({user: req.user._id})
+      .asc('round', 'created')
       .run(function(err, transactions) {
         if (err) return;
         req.user.transactions = transactions;
@@ -67,6 +68,7 @@ module.exports = function(app){
         Investment
           .find({user: req.user._id})
           .populate('team')
+          .asc('round', 'team.name')
           .run(function(err, investments) {
             if (err) return;
             req.user.investments = investments;
