@@ -80,8 +80,11 @@ module.exports = function(app){
   app.put('/round/:roundNumber', function(req, res){
     var round = req.round;
     if (req.body.round.is_open) round.is_open = (req.body.round.is_open.toLowerCase() === 'true');
-    if (req.body.round.next_round) round.is_current = false;
-      
+    if (req.body.round.next_round) {
+      round.is_current = false;
+      round.is_open = false;
+    }
+
     round.save(function(err){
       if (err) return handleError(req, res, err, redirect);
       
@@ -114,9 +117,38 @@ module.exports = function(app){
     var round = req.round;
     if (round.processed) return handleError(req, res, "cannot process again.", redirect);
 
-    //todo!!
-    round.standard_deviation = 0.25;
+    var results = {teams: []};
 
+    //todo!!
+    Investment.
+      find({round: round.roundNumber}).
+      desc('created').
+      populate('user').populate('team')
+      .run(function(err, investments){
+      
+        investments.forEach(function(investment){
+        /*
+          var teamEntry;
+          if (results.teams[investment.team._id] === undefined) 
+            teamEntry = results{investment.team._id; 
+          else teamEntry = ( ? ;
+          
+          if (teamEntry.users[investment.user._id]) continue; //already submitted for this team
+          else teamEntry.users.push(investment.user._id);
+
+          console.log(investment);     
+*/
+        });
+        //for each last investment in round (with User, with Team)
+        //teams{team} += investment.percentage
+          
+
+      });
+    
+
+    //round.standard_deviation = 0.25;
+
+    round.is_open = false;
     round.save(function(err){
       if (err) return handleError(req, res, err, redirect);
 
