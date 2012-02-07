@@ -11,31 +11,7 @@ hr
 
 if rounds.length
   ul#rounds
-    each round in rounds
-      //- var klazz = (round.is_open ? 'open-round' : 'closed-round')
-      - var klazz = (round.is_current ? 'current-round' : '')
-      li.round(class=klazz) 
-        h5 Round #{round.number}
-        .round-contents
-          span total funds: $#{round.total_funds}
-          br
-          if (!round.processed)
-            if (round.is_current)
-              input(type="text", name="allocate[amount]") 
-              button allocate  
-              if (round.is_open)
-                button close
-              else
-                button open
-              br
-              button process
-              button next round
-            else       
-              form(method="post", action="/round/" + round.number)
-                input(type="hidden", name="_method", value="delete")
-                input(type="submit", value="remove")      
-          else
-            p (round processed)
+    != partial('round_list', {collection: rounds, as: 'round'})
 else
   div#helper-text no rounds at the moment
 end
