@@ -1,6 +1,7 @@
 var Round = require('../models/round'),
     User = require('../models/user'),
-    Transaction = require('../models/transaction');
+    Transaction = require('../models/transaction'),
+    Investment = require('../models/investment');
 
 module.exports = function(app){
   var redirect = '/rounds';
@@ -117,31 +118,17 @@ module.exports = function(app){
     var round = req.round;
     if (round.processed) return handleError(req, res, "cannot process again.", redirect);
 
-    var results = {teams: []};
-
     //todo!!
     Investment.
-      find({round: round.roundNumber}).
-      desc('created').
-      populate('user').populate('team')
-      .run(function(err, investments){
+      find({round: round.number}).
+      populate('user','team').
+      run(function(err, investments){
       
         investments.forEach(function(investment){
-        /*
-          var teamEntry;
-          if (results.teams[investment.team._id] === undefined) 
-            teamEntry = results{investment.team._id; 
-          else teamEntry = ( ? ;
-          
-          if (teamEntry.users[investment.user._id]) continue; //already submitted for this team
-          else teamEntry.users.push(investment.user._id);
 
-          console.log(investment);     
-*/
-        });
-        //for each last investment in round (with User, with Team)
-        //teams{team} += investment.percentage
-          
+          console.log(investment); 
+
+        });          
 
       });
     
