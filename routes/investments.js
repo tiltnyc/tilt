@@ -55,20 +55,31 @@ module.exports = function(app){
       function saveInvestment(array, index, callback) {
         var rowData;
         if (rowData = array[index]) { 
-          var investment = new Investment({
-              round: round
-            , user: user
-            , team: rowData.team
-            , percentage: rowData.percentage
-          });
+          Investment.
+            findOne({round: round, user: user, team: rowData.team}).
+            run(function(err, investment){
+              if (!investment) {
+                investment = new Investment({
+                    round: round
+                  , user: user
+                  , team: rowData.team
+                });
+              } 
+              
+              investment.percentage = rowData.percentage;
 
-          investment.save(function(err) {
-            if (err) callback(err); 
-            else { 
-              investments.push(investment);
-              saveInvestment(array, index+1, callback);
-            }
-          });
+              investment.save(function(err) {
+                if (err) callback(err); 
+                else { 
+                  investments.push(investment);
+                  saveInvestment(array, index+1, callback);
+                }
+              });
+
+            });
+          
+
+          
           
         } else callback();
       }   
