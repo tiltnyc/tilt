@@ -142,17 +142,29 @@ module.exports = function(app){
           , factor = (round.number == 1) ? 1 : total / req.firstRound.total_funds; //factor: how significant this is compared to first round
 
         console.log(results);
-        console.log('total:'+total);
-        console.log('average:'+average);
-        console.log('averagePercentage:'+averagePercentage);
+        console.log('total Invested: '+total);
+        console.log('average Investment: '+average);
+        console.log('average As Percentage: '+averagePercentage);
+        console.log('number of investors: '+investerList.length)
+        console.log('factor: '+factor);
 
 
         for (var team in results) {
-          var teamPercentage = results[team] / total;          
+          var teamPercentage = results[team] / total
+            , teamPriceMovement = ((teamPercentage - averagePercentage) * factor);
+                      
           cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
   
           console.log('team: ' + team + ' got: ' + teamPercentage);
-          console.log('resulting in: ' + ((teamPercentage - averagePercentage) * factor).toFixed(2));
+          console.log('resulting in: ' + teamPriceMovement.toFixed(2));
+          //todo: set team share price
+            //get team
+            //var before_price = team.last_price;
+            //team.last_price += teamPriceMovement;
+            //team.movement = teamPriceMovement / before_price; 
+            //team.save(...)
+              //new Price({team: team, before_price: before_price, after_price: team.last_price, round: round });
+                //price.save(...)  
         };
 
         round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
@@ -160,8 +172,7 @@ module.exports = function(app){
         round.investor_count = investerList.length;
 
         
-        console.log('factor= ' + factor);
-
+        
         console.log('sd= ' + round.standard_deviation);
 
         round.is_open = false;
