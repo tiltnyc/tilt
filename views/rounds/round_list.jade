@@ -28,7 +28,7 @@ li.round(class=klazz)
       else       
         input.destroy(type='button', value='remove', href='/round/'+round.number)
     else
-      p (round processed)
+      p investors: #{round.investor_count}, avg: #{(100*(round.total_funds/round.investor_count)/round.total_funds).toFixed(2)}%, sd: #{(round.standard_deviation*100).toFixed(2)}%  
       if (round.is_current)
         form(method="post", action="/round/" + round.number)
           span actions:

@@ -151,9 +151,10 @@ module.exports = function(app){
 
           console.log('team: ' + team + ' got: ' + teamPercentage);
         };
-        
+
         round.standard_deviation = distanceFromAverage / investerList.length;
         round.total_funds = total;
+        round.investor_count = investerList.length;
         
         console.log('sd= ' + round.standard_deviation);
 

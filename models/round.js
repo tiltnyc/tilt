@@ -6,6 +6,7 @@ var Round = new Schema({
   is_open             : {type: Boolean, default: false},
   standard_deviation  : {type: Number}, 
   total_funds         : {type: Number, default: 0}, 
+  investor_count      : {type: Number, default: 0},
   created_at          : {type : Date, default : Date.now},
   updated_at          : {type : Date, default : Date.now}
 });
