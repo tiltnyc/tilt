@@ -15,17 +15,7 @@ form(method="post",action="/investments")
       select(id='investment[user]', name='investment[user]')
 
   p 
-    div.rounds Round
-      ul
-        li
-          input(type="radio", id="investment[round_1]", name="investment[round]", value="1")
-          label(for='investment[round_1]') &nbsp Round 1 
-        li
-          input(type="radio", id="investment[round_2]", name="investment[round]", value="2")
-          label(for='investment[round_2]') &nbsp Round 2 
-        li
-          input(type="radio", id="investment[round_3]", name="investment[round]", value="3")
-          label(for='investment[round_3]') &nbsp Round 3    
+    div.rounds Current Round: #{currentRound.number}
   
   ul#team-list
     each team, i in teams

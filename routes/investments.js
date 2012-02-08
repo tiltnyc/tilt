@@ -1,24 +1,26 @@
 var Investment = require('../models/investment')
     , Team = require('../models/team')
-    , User = require('../models/user');
+    , User = require('../models/user')
+    , Round = require('../models/round');
 
 module.exports = function(app){
 
   // New investment
-  app.get('/investment/new', function(req, res){
+  app.get('/investment/new', loadCurrentRound, function(req, res){
     Team
       .find({})
       .asc('name') 
       .run(function(err, teams) {
         res.render('investments/new', {
           title: 'New Investment',
-          teams: teams
+          teams: teams,
+          currentRound: req.currentRound
         });   
       });   
   });
 
   // Perform an investment
-  app.post('/investments.:format?', function(req, res){
+  app.post('/investments.:format?', loadCurrentRound, function(req, res){
     
     var user = req.user || req.body.investment.user;
 
@@ -38,8 +40,13 @@ module.exports = function(app){
       }
 
       var investments = [];
-      var round = req.body.investment.round;
+      var round = req.currentRound;
 
+      if (!round)
+        return handleError(req, res, "no current round.", "/investment/new")
+      else if (!round.is_open)
+        return handleError(req, res, "cannot invest - round no longer open.", "/investment/new")
+      
       err = saveInvestment(req.body.investment.investments, 0, function(err){
         if (err) return handleError(req, res, err, "/investment/new");      
         
@@ -56,11 +63,11 @@ module.exports = function(app){
         var rowData;
         if (rowData = array[index]) { 
           Investment.
-            findOne({round: round, user: user, team: rowData.team}).
+            findOne({round: round.number, user: user, team: rowData.team}).
             run(function(err, investment){
               if (!investment) {
                 investment = new Investment({
-                    round: round
+                    round: round.number
                   , user: user
                   , team: rowData.team
                 });
@@ -76,11 +83,7 @@ module.exports = function(app){
                 }
               });
 
-            });
-          
-
-          
-          
+            }); 
         } else callback();
       }   
 
@@ -97,6 +100,16 @@ module.exports = function(app){
       req.flash('error', error);
       res.redirect(redirect);
     }
+  }
+
+  function loadCurrentRound(req, res, next) {
+    Round
+      .findOne({is_current: true})
+      .run(function(err, round) {
+        if (err) return next(err);
+        req.currentRound = round;
+        next();
+      });
   }
   
 };
