@@ -114,7 +114,7 @@ module.exports = function(app){
   });
 
   //Process a round
-  app.put('/round/:roundNumber/process', function(req, res){
+  app.put('/round/:roundNumber/process', loadFirstRound, function(req, res){
     var round = req.round
       ,results = {}
       , total = 0
@@ -138,24 +138,30 @@ module.exports = function(app){
 
         var average = total / investerList.length
           , averagePercentage = average / total
-          , distanceFromAverage = 0;
+          , cumulativeDistanceFromAverage = 0
+          , factor = (round.number == 1) ? 1 : total / req.firstRound.total_funds; //factor: how significant this is compared to first round
 
         console.log(results);
         console.log('total:'+total);
         console.log('average:'+average);
         console.log('averagePercentage:'+averagePercentage);
 
+
         for (var team in results) {
           var teamPercentage = results[team] / total;          
-          distanceFromAverage += Math.abs(teamPercentage - averagePercentage);
-
+          cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
+  
           console.log('team: ' + team + ' got: ' + teamPercentage);
+          console.log('resulting in: ' + ((teamPercentage - averagePercentage) * factor).toFixed(2));
         };
 
-        round.standard_deviation = distanceFromAverage / investerList.length;
+        round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
         round.total_funds = total;
         round.investor_count = investerList.length;
+
         
+        console.log('factor= ' + factor);
+
         console.log('sd= ' + round.standard_deviation);
 
         round.is_open = false;
@@ -197,7 +203,7 @@ module.exports = function(app){
 
     stream.on('close', function () {
       //now update the round
-      round.total_funds += amount;
+      round.allocated += amount;
 
       round.save(function(err){
         if (err) {
@@ -210,6 +216,14 @@ module.exports = function(app){
       });
     });
   });
+
+  function loadFirstRound(req, res, next) {
+     Round.findOne({number: 1}).run(function(err, round){
+        if (err) return next(err);
+        req.firstRound = round;
+        next();
+     });
+  }
 
   function handleError(req, res, error, redirect) {
     if (req.params.format == 'json') {

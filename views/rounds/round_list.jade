@@ -3,7 +3,7 @@
 li.round(class=klazz) 
   h5 Round #{round.number}
   .round-contents
-    span total funds: $#{round.total_funds}
+    span base allocation: $#{round.allocated}
     br
     if (!round.processed)
       if (round.is_current)
@@ -28,7 +28,14 @@ li.round(class=klazz)
       else       
         input.destroy(type='button', value='remove', href='/round/'+round.number)
     else
-      p investors: #{round.investor_count}, avg: #{(100*(round.total_funds/round.investor_count)/round.total_funds).toFixed(2)}%, sd: #{(round.standard_deviation*100).toFixed(2)}%  
+      p 
+        span total invested: $#{round.total_funds.toFixed(0)} 
+        br 
+        span investors: #{round.investor_count}
+        br
+        span avg: #{(100*(round.total_funds/round.investor_count)/round.total_funds).toFixed(2)}%
+        br
+        span sd: #{(round.standard_deviation*100).toFixed(2)}%  
       if (round.is_current)
         form(method="post", action="/round/" + round.number)
           span actions:
