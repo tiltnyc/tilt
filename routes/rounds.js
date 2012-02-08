@@ -115,33 +115,57 @@ module.exports = function(app){
 
   //Process a round
   app.put('/round/:roundNumber/process', function(req, res){
-    var round = req.round;
+    var round = req.round
+      ,results = {}
+      , total = 0
+      , investerList = [];
+
     if (round.processed) return handleError(req, res, "cannot process again.", redirect);
 
-    //todo!!
     Investment.
       find({round: round.number}).
-      populate('user','team').
+      populate('user').populate('team').
       run(function(err, investments){
       
         investments.forEach(function(investment){
-
-          console.log(investment); 
-
+          var teamEntry = results[investment.team.id] || 0;
+          var userInvested = investment.percentage * investment.user.funds[round.number - 1];
+          //console.log('invested: ' + userInvested.toString());
+          results[investment.team.id] = teamEntry += userInvested;  
+          total += userInvested;
+          if (investerList.indexOf(investment.user.id) < 0) investerList.push(investment.user.id);
         });          
 
+        var average = total / investerList.length
+          , averagePercentage = average / total
+          , distanceFromAverage = 0;
+
+        console.log(results);
+        console.log('total:'+total);
+        console.log('average:'+average);
+        console.log('averagePercentage:'+averagePercentage);
+
+        for (var team in results) {
+          var teamPercentage = results[team] / total;          
+          distanceFromAverage += Math.abs(teamPercentage - averagePercentage);
+
+          console.log('team: ' + team + ' got: ' + teamPercentage);
+        };
+        
+        round.standard_deviation = distanceFromAverage / investerList.length;
+        round.total_funds = total;
+        
+        console.log('sd= ' + round.standard_deviation);
+
+        round.is_open = false;
+        round.save(function(err){
+          if (err) return handleError(req, res, err, redirect);
+
+          req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
+          res.redirect(redirect);        
+        });
+
       });
-    
-
-    //round.standard_deviation = 0.25;
-
-    round.is_open = false;
-    round.save(function(err){
-      if (err) return handleError(req, res, err, redirect);
-
-      req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
-      res.redirect(redirect);        
-    });
 
   });
 
