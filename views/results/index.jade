@@ -2,7 +2,7 @@
 
 h2= title
 
-if (currentRound.number == 1 && !currentRound.processed)
+if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
   p.error-text 
     strong note: 
     span initial round not yet processed

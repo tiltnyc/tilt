@@ -3,16 +3,27 @@ var User = require('../../models/user');
 module.exports = function(){
   this.World = require('../support/world').World;
 
+  this.After(function(callback){
+    this.clean(callback);
+  });
+
   this.Given(/^I am an administrator$/, function(next) {
     //TODO
     next();
   }); 
 
   this.Given(/^there exists users:$/, function(table, next) {
-    table.hashes().forEach(function(item) {
-      new User({username: item.username, email: item.email}).save();   
-    });
-    next();   
+
+    createUser(0, next);
+    
+    function createUser(index, callback) {
+      if (table.hashes().length == index) return callback();
+      var item = table.hashes()[index];
+      new User({username: item.username, email: item.email}).save(function(err){
+        if (err) return callback(err);
+        return createUser(index+1, callback);
+      });
+    };
   });
 
   this.When(/^I go to the list of users$/, function(next) {
@@ -34,11 +45,6 @@ module.exports = function(){
   this.When(/^I click the link "([^"]*)" for user "([^"]*)"$/, function(link, username, callback) {
     this.browser.onconfirm(function(text){ return true; });
     this.browser.clickLink("tr:contains(" + username + ") a:contains(" + link +")", callback);
-  });
-
-  //JM: this should go into an after scenario hook once that is implemented in cucumber-js  
-  this.Then(/^the database should be cleaned$/, function(next) {
-    this.clean(next);
   });
 
 };

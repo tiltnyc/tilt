@@ -20,6 +20,7 @@ Transaction.pre('save', function (next) {
 
       //required to dirty the array
       var funds = user.funds.concat();
+      if (!funds[transaction.round - 1]) funds[transaction.round - 1] = 0;
       funds[transaction.round - 1] += transaction.amount;
       user.funds = funds;
     
