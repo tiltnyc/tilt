@@ -2,6 +2,7 @@ var Round = require('../models/round'),
     User = require('../models/user'),
     Transaction = require('../models/transaction'),
     Investment = require('../models/investment'),
+    Team = require('../models/team'),
     RoundHelpers = require('../helpers/round_helpers');
 
 module.exports = function(app){
@@ -179,7 +180,7 @@ module.exports = function(app){
 
         function updateTeamScore(data, index, callback){
           
-          if (Object.keys(data).length == index + 1) {
+          if (Object.keys(data).length == index) {
             return callback();
           } 
           else {
@@ -285,9 +286,43 @@ module.exports = function(app){
     });
   });
 
+  //Reset of the tilt app back to original state
+  app.post('/rounds/reset', function(req,res){
+    var options = {multi: true};
+    Transaction.find({}).remove(function(err){
+      Investment.find({}).remove(function(err){
+        User.update({}, {$set: {funds: [0,0,0]}}, options, function(err){
+          if (err) return handleError(req,res,err,redirect);
+
+          Team.update({}, {$set: {movement: 0, last_price: 1.00}}, options, function(err){
+            Round.update({}, 
+            {
+              $set: {is_open: false, is_current: false, total_funds: 0, allocated: 0}, 
+              $unset: {investor_count: 1, standard_deviation: 1}
+            }, 
+            options, function(err) {
+              Round.findOne({number: 1}).update({$set: {is_current: true}}, function(err) {        
+                req.flash('notice', 'tilt has been reset.');
+                res.redirect(redirect);
+              });
+            });
+          });
+        })            
+      });
+    });
+  });
+
+  //Reset of the tilt app back to original state
   function handleError(req, res, error, redirect) {
-    if (req.params.format == 'json') {
-      res.contentType('application/json');
+    if (req.params.format == 'json') {//drop all transactions
+      //drop all investments
+      //set all users.funds = [0,0,0];
+      //set round 1 as curent and others not
+      //set all rounds closed
+      //set total funds as 0, remove standard_deviation
+      //set all teams last price = 1 and movement = 0 
+      res.contentType(    
+        'application/json');
       res.send(JSON.stringify({error: error}));
     } else {
       req.flash('error', error);
