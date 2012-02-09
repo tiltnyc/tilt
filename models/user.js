@@ -68,31 +68,40 @@ var Team = require('./team');
 UserSchema.pre('save', function (next) {
   var user = this; 
     
-  //switched teams  
-  if (this.oldTeam && this.team != this.oldTeam) {
-    Team
-    .findOne({ _id: this.oldTeam }, function(err, team) {
-      if (err) return next(err);
-      team.users.splice(team.users.indexOf(user._id), 1);
-      team.save(function(err) {
-        if (err) return next(err);
-      });  
+  //check and perform switched teams  
+  leaveTeam(user.oldTeam, function(err) {
+    joinTeam(user.team, function(err) {
+      next();
     });
-  } 
+  });
+  
+  function leaveTeam(teamId, callback){
+    if (teamId && user.team != teamId) {
+      Team.findOne({_id: teamId}, function(err, team) {
+        if (err) return callback(err);
+        team.users.splice(team.users.indexOf(user._id), 1);
+        team.save(function(err) {
+          if (err) return next(err);
+          return callback();
+        });
+      });
+    } else callback();
+  };
 
-  //added to team
-  if (this.team) {
-    Team
-    .findOne({ _id: this.team }, function(err, team) {
-      if (err) return next(err);
-      team.users.push(user._id);
-      team.save(function(err) {
+  function joinTeam(teamId, callback) {
+    if (teamId) {
+      Team.findOne({ _id: teamId }, function(err, team) {
         if (err) return next(err);
-      });  
-    });
-  }
-   
-  next();
+        if (team.users.indexOf(user.id) < 0) {
+          team.users.push(user._id);
+          team.save(function(err) {
+            if (err) return next(err);
+            return callback();
+          });
+        } else callback();  
+      });
+    } else callback();
+  };
 });
 
 mongoose.model('User', UserSchema);
