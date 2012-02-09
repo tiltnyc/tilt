@@ -128,10 +128,13 @@ module.exports = function(app){
       run(function(err, investments){
       
         investments.forEach(function(investment){
-          var teamEntry = results[investment.team.id] || 0;
+
+          if (!results[investment.team.id]) {
+            results[investment.team.id] = {team: investment.team, result: 0};
+          }
+
           var userInvested = investment.percentage * investment.user.funds[round.number - 1];
-          //console.log('invested: ' + userInvested.toString());
-          results[investment.team.id] = teamEntry += userInvested;  
+          results[investment.team.id].result += userInvested;  
           total += userInvested;
           if (investerList.indexOf(investment.user.id) < 0) investerList.push(investment.user.id);
         });          
@@ -149,40 +152,62 @@ module.exports = function(app){
         console.log('factor: '+factor);
 
 
-        for (var team in results) {
-          var teamPercentage = results[team] / total
-            , teamPriceMovement = ((teamPercentage - averagePercentage) * factor);
-                      
-          cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
-  
-          console.log('team: ' + team + ' got: ' + teamPercentage);
-          console.log('resulting in: ' + teamPriceMovement.toFixed(2));
-          //todo: set team share price
-            //get team
-            //var before_price = team.last_price;
-            //team.last_price += teamPriceMovement;
-            //team.movement = teamPriceMovement / before_price; 
-            //team.save(...)
-              //new Price({team: team, before_price: before_price, after_price: team.last_price, round: round });
-                //price.save(...)  
-        };
-
-        round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
-        round.total_funds = total;
-        round.investor_count = investerList.length;
-
-        
-        
-        console.log('sd= ' + round.standard_deviation);
-
-        round.is_open = false;
-        round.save(function(err){
+        updateTeamScore(results, function(err){
+          //when all teams updated
           if (err) return handleError(req, res, err, redirect);
 
-          req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
-          res.redirect(redirect);        
+          round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
+          round.total_funds = total;
+          round.investor_count = investerList.length;
+
+          console.log('sd= ' + round.standard_deviation);
+
+          round.is_open = false;
+          round.save(function(err){
+            if (err) return handleError(req, res, err, redirect);
+
+            req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
+            res.redirect(redirect);        
+          });
+
         });
 
+        function updateTeamScore(remainingResults, callback){
+          
+          if (Object.keys(remainingResults).length < 1) {
+            return callback();
+          } 
+          else {
+
+            var teamId = Object.keys(remainingResults)[0]
+              , team = remainingResults[teamId].team
+              , teamPercentage = results[teamId].result / total
+              , teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
+              , before_price = team.last_price;
+                        
+            cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
+    
+            console.log('team: ' + team.name + ' got: ' + teamPercentage);
+            console.log('resulting in: ' + teamPriceMovement.toFixed(2));
+
+             
+            //todo: set team share price
+          
+            team.last_price += teamPriceMovement;
+            team.movement = teamPriceMovement / before_price; 
+            team.save(function(err){
+              if (err) return callback(err);
+              
+              delete remainingResults[teamId];  
+              updateTeamScore(remainingResults, callback)  
+            });
+            
+               //team.save(...)
+                //new Price({team: team, before_price: before_price, after_price: team.last_price, round: round });
+                  //price.save(...)  
+           
+          };
+        };
       });
 
   });
