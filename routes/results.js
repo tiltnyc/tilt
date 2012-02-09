@@ -14,7 +14,8 @@ module.exports = function(app){
           res.send(JSON.stringify(teams));
         }
         else {
-          var roundForResults = (req.currentRound.processed) ? req.currentRound.number : Math.max(req.currentRound.number - 1, 1);
+          var roundForResults = 1; 
+          if (req.currentRound) roundForResults = (req.currentRound.processed) ? req.currentRound.number : Math.max(req.currentRound.number - 1, 1);
 
           res.render('results/index', {
             title: 'Round ' + roundForResults + ' results',

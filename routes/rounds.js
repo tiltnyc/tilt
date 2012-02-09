@@ -3,13 +3,14 @@ var Round = require('../models/round'),
     Transaction = require('../models/transaction'),
     Investment = require('../models/investment'),
     Team = require('../models/team'),
-    RoundHelpers = require('../helpers/round_helpers');
+    RoundHelpers = require('../helpers/round_helpers'),
+    TeamHelpers = require('../helpers/team_helpers');
 
 module.exports = function(app){
   var redirect = '/rounds';
 
   // Rounds control
-  app.get(redirect, function(req, res){
+  app.get('/rounds', TeamHelpers.loadTeamCount, function(req, res){
     Round
       .find({})
       .asc('number') 
@@ -17,7 +18,8 @@ module.exports = function(app){
        
         res.render('rounds/index', {
           title: 'Rounds',
-          rounds: rounds
+          rounds: rounds,
+          teamCount: req.teamCount
         });   
       });   
   });
@@ -116,7 +118,7 @@ module.exports = function(app){
   });
 
   //Process a round
-  app.put('/round/:roundNumber/process', RoundHelpers.loadFirstRound, function(req, res){
+  app.put('/round/:roundNumber/process', TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, function(req, res){
     var round = req.round
       ,results = {}
       , total = 0
@@ -141,16 +143,17 @@ module.exports = function(app){
           if (investerList.indexOf(investment.user.id) < 0) investerList.push(investment.user.id);
         });          
 
-        var average = total / Object.keys(results).length
+        var average = total / req.teamCount
           , averagePercentage = average / total
           , cumulativeDistanceFromAverage = 0
           , factor = (round.number == 1) ? 1 : total / req.firstRound.total_funds; //factor: how significant this is compared to first round
 
         console.log(results);
         console.log('total Invested: '+total);
+        console.log('number of total teams: '+req.teamCount)
         console.log('average Investment: '+average);
         console.log('average As Percentage: '+averagePercentage);
-        console.log('number of investors: '+investerList.length)
+        console.log('number of investors: '+investerList.length);
         console.log('factor: '+factor);
 
 
@@ -158,7 +161,7 @@ module.exports = function(app){
           //when all teams updated
           if (err) return handleError(req, res, err, redirect);
 
-          round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
+          round.standard_deviation = cumulativeDistanceFromAverage / req.teamCount;
           round.total_funds = total;
           round.investor_count = investerList.length;
 
@@ -218,7 +221,8 @@ module.exports = function(app){
           if (investment = investments[index]) {
               
               if (investment.percentage > 0) {
-                var investedInTeam = investment.percentage * investment.user.funds[round.number - 1]
+                var fundsInRound
+                  , investedInTeam = investment.percentage * (isNaN(fundsInRound = investment.user.funds[round.number - 1]) ? 0 : fundsInRound)
                   , investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price;
                 
                 new Transaction({
