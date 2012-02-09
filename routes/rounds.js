@@ -140,7 +140,7 @@ module.exports = function(app){
           if (investerList.indexOf(investment.user.id) < 0) investerList.push(investment.user.id);
         });          
 
-        var average = total / investerList.length
+        var average = total / Object.keys(results).length
           , averagePercentage = average / total
           , cumulativeDistanceFromAverage = 0
           , factor = (round.number == 1) ? 1 : total / req.firstRound.total_funds; //factor: how significant this is compared to first round

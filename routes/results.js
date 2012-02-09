@@ -4,7 +4,7 @@ var Team = require('../models/team')
 module.exports = function(app){
 
   // List of Teams  
-  app.get('/results.:format?', RoundHelpers.loadCurrentUser, function(req, res){
+  app.get('/results.:format?', RoundHelpers.loadCurrentRound, function(req, res){
     Team
       .find({})
       .desc('last_price')
@@ -14,9 +14,13 @@ module.exports = function(app){
           res.send(JSON.stringify(teams));
         }
         else {
-          res.render('teams/index', {
-            title: 'Team Results',
-            teams: teams
+          var roundForResults = (req.currentRound.processed) ? req.currentRound.number : Math.max(req.currentRound.number - 1, 1);
+
+          res.render('results/index', {
+            title: 'Round ' + roundForResults + ' results',
+            teams: teams,
+            roundForResults: roundForResults,
+            currentRound: req.currentRound
           });
         }
       });
