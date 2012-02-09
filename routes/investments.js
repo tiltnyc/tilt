@@ -1,12 +1,13 @@
 var Investment = require('../models/investment')
     , Team = require('../models/team')
     , User = require('../models/user')
-    , Round = require('../models/round');
+    , Round = require('../models/round')
+    , RoundHelpers = require('../helpers/round_helpers');
 
 module.exports = function(app){
 
   // New investment
-  app.get('/investment/new', loadCurrentRound, function(req, res){
+  app.get('/investment/new', RoundHelpers.loadCurrentRound, function(req, res){
     Team
       .find({})
       .asc('name') 
@@ -20,7 +21,7 @@ module.exports = function(app){
   });
 
   // Perform an investment
-  app.post('/investments.:format?', loadCurrentRound, function(req, res){
+  app.post('/investments.:format?', RoundHelpers.loadCurrentRound, function(req, res){
     
     var user = req.user || req.body.investment.user;
 
@@ -100,16 +101,6 @@ module.exports = function(app){
       req.flash('error', error);
       res.redirect(redirect);
     }
-  }
-
-  function loadCurrentRound(req, res, next) {
-    Round
-      .findOne({is_current: true})
-      .run(function(err, round) {
-        if (err) return next(err);
-        req.currentRound = round;
-        next();
-      });
   }
   
 };

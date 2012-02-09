@@ -1,7 +1,8 @@
 var Round = require('../models/round'),
     User = require('../models/user'),
     Transaction = require('../models/transaction'),
-    Investment = require('../models/investment');
+    Investment = require('../models/investment'),
+    RoundHelpers = require('../helpers/round_helpers');
 
 module.exports = function(app){
   var redirect = '/rounds';
@@ -114,7 +115,7 @@ module.exports = function(app){
   });
 
   //Process a round
-  app.put('/round/:roundNumber/process', loadFirstRound, function(req, res){
+  app.put('/round/:roundNumber/process', RoundHelpers.loadFirstRound, function(req, res){
     var round = req.round
       ,results = {}
       , total = 0
@@ -252,14 +253,6 @@ module.exports = function(app){
       });
     });
   });
-
-  function loadFirstRound(req, res, next) {
-     Round.findOne({number: 1}).run(function(err, round){
-        if (err) return next(err);
-        req.firstRound = round;
-        next();
-     });
-  }
 
   function handleError(req, res, error, redirect) {
     if (req.params.format == 'json') {

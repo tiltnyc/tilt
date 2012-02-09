@@ -24,6 +24,7 @@ require('./routes/users')(app);
 require('./routes/teams')(app);
 require('./routes/investments')(app);
 require('./routes/rounds')(app);
+require('./routes/results')(app);
 
 //add route for login check via REST
 app.get('/login.json', function(req, res){
