@@ -153,7 +153,7 @@ module.exports = function(app){
         console.log('factor: '+factor);
 
 
-        updateTeamScore(results, function(err){
+        updateTeamScore(results, 0, function(err){
           //when all teams updated
           if (err) return handleError(req, res, err, redirect);
 
@@ -165,24 +165,28 @@ module.exports = function(app){
 
           round.is_open = false;
           round.save(function(err){
-            if (err) return handleError(req, res, err, redirect);
-
-            req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
-            res.redirect(redirect);        
+            
+            rewardUsersForInvestments(investments, 0, function(err){
+              if (err) return handleError(req, res, err, redirect);
+                
+              req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
+              res.redirect(redirect);  
+            });
+     
           });
 
         });
 
-        function updateTeamScore(remainingResults, callback){
+        function updateTeamScore(data, index, callback){
           
-          if (Object.keys(remainingResults).length < 1) {
+          if (Object.keys(data).length == index + 1) {
             return callback();
           } 
           else {
 
-            var teamId = Object.keys(remainingResults)[0]
-              , team = remainingResults[teamId].team
-              , teamPercentage = results[teamId].result / total
+            var teamId = Object.keys(data)[index]
+              , team = data[teamId].team
+              , teamPercentage = data[teamId].result / total
               , teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
               , before_price = team.last_price;
                         
@@ -191,16 +195,14 @@ module.exports = function(app){
             console.log('team: ' + team.name + ' got: ' + teamPercentage);
             console.log('resulting in: ' + teamPriceMovement.toFixed(2));
 
-             
-            //todo: set team share price
-          
             team.last_price += teamPriceMovement;
-            team.movement = teamPriceMovement / before_price; 
-            team.save(function(err){
+            team.movement = teamPriceMovement / before_price;
+            //data[teamId].team = team; //update local copy  
+
+            team.save(function(err, team){
               if (err) return callback(err);
               
-              delete remainingResults[teamId];  
-              updateTeamScore(remainingResults, callback)  
+              updateTeamScore(data, index+1, callback)  
             });
             
                //team.save(...)
@@ -209,6 +211,35 @@ module.exports = function(app){
            
           };
         };
+
+        function rewardUsersForInvestments(investments, index, callback) {
+          var investment;
+          if (investment = investments[index]) {
+              
+              if (investment.percentage > 0) {
+                var investedInTeam = investment.percentage * investment.user.funds[round.number - 1]
+                  , investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price;
+                
+                new Transaction({
+                    user: investment.user.id
+                    , round: round.number+1
+                    , label: 'return for round ' + round.number + ' investment in team: ' + investment.team.name
+                    , amount: investmentReturnForTeam
+                  }).save(function(err) {
+                    if (err) return callback(err);
+
+                    rewardUsersForInvestments(investments, index+1, callback);
+                  });
+              }
+              else {
+                rewardUsersForInvestments(investments, index+1, callback);
+              }
+          } 
+          else {
+            callback();
+          }
+        }
+
       });
 
   });

@@ -4,6 +4,6 @@ tr(class="investment")
   td.text-column
     #{investment.team.name}    
   td.value-column
-    #{investment.percentage.toFixed(4) * 100}%
+    #{(investment.percentage * 100).toFixed(2)}%
 
   
