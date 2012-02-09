@@ -3,7 +3,7 @@ var db_connect = require('./db_connect')
 
 var UserSchema = new Schema({
   username      : {type: String, required: true },
-  email         : {type: String, required: true},
+  email         : {type: String, required: true}, 
   team          : {type: Schema.ObjectId, ref: 'Team'},
   funds         : {type: [Number], default: [0,0,0]},
   created_at    : {type : Date, default : Date.now},

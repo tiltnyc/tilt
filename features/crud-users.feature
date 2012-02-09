@@ -11,7 +11,6 @@ Feature: Admins CRUD of Users
       | paul        | pppp                |
     When I go to the list of users
     Then I should see "justin"
-    And the database should be cleaned
 
   Scenario: Create a new user
     Given I am an administrator
@@ -21,7 +20,6 @@ Feature: Admins CRUD of Users
     And I click "Submit"
     Then I should see "peter"
     And I should see "peter@example.com"
-    And the database should be cleaned
   
   Scenario: Delete a user
     Given I am an administrator
