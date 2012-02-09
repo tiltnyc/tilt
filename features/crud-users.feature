@@ -3,15 +3,17 @@ Feature: Admins CRUD of Users
   As an administrator of tilt
   I want to be able to create, read, update and delete users in the system
 
-  Scenario: See the list of users
+  Background:
     Given I am an administrator
     And there exists users:
       | username    | email               |
       | justin      | justin@example.com  | 
-      | paul        | pppp                |
+      | paul        | paul@example.com    |
+    
+  Scenario: See the list of users
     When I go to the list of users
     Then I should see "justin"
-
+  
   Scenario: Create a new user
     Given I am an administrator
     When I go to create a new user
@@ -22,11 +24,6 @@ Feature: Admins CRUD of Users
     And I should see "peter@example.com"
   
   Scenario: Delete a user
-    Given I am an administrator
-    And there exists users:
-      | username    | email               |
-      | justin      | justin@example.com  | 
-      | paul        | pppp                |
     When I go to the list of users
     And I click the link "Del" for user "paul"
     Then I should see "justin"
