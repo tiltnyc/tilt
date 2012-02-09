@@ -1,0 +1,14 @@
+tr(class="result") 
+  td
+    #{team.name}
+
+  td
+    $#{team.last_price.toFixed(2)}
+
+  - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+  td(class=klazz)
+    if (team.movement > 0.00) 
+      + 
+    else if (team.movement < 0.00)
+      -
+    #{Math.abs(team.movement.toFixed(2))}

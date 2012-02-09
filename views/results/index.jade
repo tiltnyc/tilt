@@ -1,0 +1,19 @@
+!= messages()
+
+h2= title
+
+if (currentRound.number == 1 && !currentRound.processed)
+  p.error-text 
+    strong note: 
+    span initial round not yet processed
+
+div#results
+  - if(teams.length)
+    table
+      tr
+        th team
+        th price
+        th movement
+      != partial('result_list', {collection: teams, as: 'team'})
+  - else
+    #no-results No teams found. 

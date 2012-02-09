@@ -1,6 +1,8 @@
 var Round = require('../models/round'),
     User = require('../models/user'),
-    Transaction = require('../models/transaction');
+    Transaction = require('../models/transaction'),
+    Investment = require('../models/investment'),
+    RoundHelpers = require('../helpers/round_helpers');
 
 module.exports = function(app){
   var redirect = '/rounds';
@@ -80,8 +82,11 @@ module.exports = function(app){
   app.put('/round/:roundNumber', function(req, res){
     var round = req.round;
     if (req.body.round.is_open) round.is_open = (req.body.round.is_open.toLowerCase() === 'true');
-    if (req.body.round.next_round) round.is_current = false;
-      
+    if (req.body.round.next_round) {
+      round.is_current = false;
+      round.is_open = false;
+    }
+
     round.save(function(err){
       if (err) return handleError(req, res, err, redirect);
       
@@ -110,19 +115,132 @@ module.exports = function(app){
   });
 
   //Process a round
-  app.put('/round/:roundNumber/process', function(req, res){
-    var round = req.round;
+  app.put('/round/:roundNumber/process', RoundHelpers.loadFirstRound, function(req, res){
+    var round = req.round
+      ,results = {}
+      , total = 0
+      , investerList = [];
+
     if (round.processed) return handleError(req, res, "cannot process again.", redirect);
 
-    //todo!!
-    round.standard_deviation = 0.25;
+    Investment.
+      find({round: round.number}).
+      populate('user').populate('team').
+      run(function(err, investments){
+      
+        investments.forEach(function(investment){
 
-    round.save(function(err){
-      if (err) return handleError(req, res, err, redirect);
+          if (!results[investment.team.id]) {
+            results[investment.team.id] = {team: investment.team, result: 0};
+          }
 
-      req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
-      res.redirect(redirect);        
-    });
+          var userInvested = investment.percentage * investment.user.funds[round.number - 1];
+          results[investment.team.id].result += userInvested;  
+          total += userInvested;
+          if (investerList.indexOf(investment.user.id) < 0) investerList.push(investment.user.id);
+        });          
+
+        var average = total / Object.keys(results).length
+          , averagePercentage = average / total
+          , cumulativeDistanceFromAverage = 0
+          , factor = (round.number == 1) ? 1 : total / req.firstRound.total_funds; //factor: how significant this is compared to first round
+
+        console.log(results);
+        console.log('total Invested: '+total);
+        console.log('average Investment: '+average);
+        console.log('average As Percentage: '+averagePercentage);
+        console.log('number of investors: '+investerList.length)
+        console.log('factor: '+factor);
+
+
+        updateTeamScore(results, 0, function(err){
+          //when all teams updated
+          if (err) return handleError(req, res, err, redirect);
+
+          round.standard_deviation = cumulativeDistanceFromAverage / investerList.length;
+          round.total_funds = total;
+          round.investor_count = investerList.length;
+
+          console.log('sd= ' + round.standard_deviation);
+
+          round.is_open = false;
+          round.save(function(err){
+            
+            rewardUsersForInvestments(investments, 0, function(err){
+              if (err) return handleError(req, res, err, redirect);
+                
+              req.flash('notice', 'Round ' + round.number.toString() + ' processed.');
+              res.redirect(redirect);  
+            });
+     
+          });
+
+        });
+
+        function updateTeamScore(data, index, callback){
+          
+          if (Object.keys(data).length == index + 1) {
+            return callback();
+          } 
+          else {
+
+            var teamId = Object.keys(data)[index]
+              , team = data[teamId].team
+              , teamPercentage = data[teamId].result / total
+              , teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
+              , before_price = team.last_price;
+                        
+            cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
+    
+            console.log('team: ' + team.name + ' got: ' + teamPercentage);
+            console.log('resulting in: ' + teamPriceMovement.toFixed(2));
+
+            team.last_price += teamPriceMovement;
+            team.movement = teamPriceMovement / before_price;
+            //data[teamId].team = team; //update local copy  
+
+            team.save(function(err, team){
+              if (err) return callback(err);
+              
+              updateTeamScore(data, index+1, callback)  
+            });
+            
+               //team.save(...)
+                //new Price({team: team, before_price: before_price, after_price: team.last_price, round: round });
+                  //price.save(...)  
+           
+          };
+        };
+
+        function rewardUsersForInvestments(investments, index, callback) {
+          var investment;
+          if (investment = investments[index]) {
+              
+              if (investment.percentage > 0) {
+                var investedInTeam = investment.percentage * investment.user.funds[round.number - 1]
+                  , investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price;
+                
+                new Transaction({
+                    user: investment.user.id
+                    , round: round.number+1
+                    , label: 'return for round ' + round.number + ' investment in team: ' + investment.team.name
+                    , amount: investmentReturnForTeam
+                  }).save(function(err) {
+                    if (err) return callback(err);
+
+                    rewardUsersForInvestments(investments, index+1, callback);
+                  });
+              }
+              else {
+                rewardUsersForInvestments(investments, index+1, callback);
+              }
+          } 
+          else {
+            callback();
+          }
+        }
+
+      });
 
   });
 
@@ -153,7 +271,7 @@ module.exports = function(app){
 
     stream.on('close', function () {
       //now update the round
-      round.total_funds += amount;
+      round.allocated += amount;
 
       round.save(function(err){
         if (err) {

@@ -8,7 +8,8 @@ tr(class="user")
       =aUser.funds
   - else 
     td.user_funds
-      =aUser.funds
+      each fund in aUser.funds
+        $#{Math.round(fund)}
   td.user_team
     - if (aUser.team)
       a(href='/team/'+aUser.team._id, title=aUser.team.name) #{aUser.team.name}

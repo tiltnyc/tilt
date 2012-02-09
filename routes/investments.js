@@ -1,24 +1,27 @@
 var Investment = require('../models/investment')
     , Team = require('../models/team')
-    , User = require('../models/user');
+    , User = require('../models/user')
+    , Round = require('../models/round')
+    , RoundHelpers = require('../helpers/round_helpers');
 
 module.exports = function(app){
 
   // New investment
-  app.get('/investment/new', function(req, res){
+  app.get('/investment/new', RoundHelpers.loadCurrentRound, function(req, res){
     Team
       .find({})
       .asc('name') 
       .run(function(err, teams) {
         res.render('investments/new', {
           title: 'New Investment',
-          teams: teams
+          teams: teams,
+          currentRound: req.currentRound
         });   
       });   
   });
 
   // Perform an investment
-  app.post('/investments.:format?', function(req, res){
+  app.post('/investments.:format?', RoundHelpers.loadCurrentRound, function(req, res){
     
     var user = req.user || req.body.investment.user;
 
@@ -38,8 +41,13 @@ module.exports = function(app){
       }
 
       var investments = [];
-      var round = req.body.investment.round;
+      var round = req.currentRound;
 
+      if (!round)
+        return handleError(req, res, "no current round.", "/investment/new")
+      else if (!round.is_open)
+        return handleError(req, res, "cannot invest - round no longer open.", "/investment/new")
+      
       err = saveInvestment(req.body.investment.investments, 0, function(err){
         if (err) return handleError(req, res, err, "/investment/new");      
         
@@ -55,21 +63,28 @@ module.exports = function(app){
       function saveInvestment(array, index, callback) {
         var rowData;
         if (rowData = array[index]) { 
-          var investment = new Investment({
-              round: round
-            , user: user
-            , team: rowData.team
-            , percentage: rowData.percentage
-          });
+          Investment.
+            findOne({round: round.number, user: user, team: rowData.team}).
+            run(function(err, investment){
+              if (!investment) {
+                investment = new Investment({
+                    round: round.number
+                  , user: user
+                  , team: rowData.team
+                });
+              } 
+              
+              investment.percentage = rowData.percentage;
 
-          investment.save(function(err) {
-            if (err) callback(err); 
-            else { 
-              investments.push(investment);
-              saveInvestment(array, index+1, callback);
-            }
-          });
-          
+              investment.save(function(err) {
+                if (err) callback(err); 
+                else { 
+                  investments.push(investment);
+                  saveInvestment(array, index+1, callback);
+                }
+              });
+
+            }); 
         } else callback();
       }   
 
