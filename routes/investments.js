@@ -22,7 +22,10 @@ module.exports = function(app){
 
   // Perform an investment
   app.post('/investments.:format?', RoundHelpers.loadCurrentRound, function(req, res){
-    
+
+//temp -for adam    
+console.log(req.body);
+
     var user = req.user || req.body.investment.user;
 
     if (!user) return handleError(req, res, "invalid user", "/investment/new");
