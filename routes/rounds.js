@@ -295,7 +295,7 @@ module.exports = function(app){
     var options = {multi: true};
     Transaction.find({}).remove(function(err){
       Investment.find({}).remove(function(err){
-        User.update({}, {$set: {funds: [0,0,0]}}, options, function(err){
+        User.update({}, {$set: {funds: []}}, options, function(err){
           if (err) return handleError(req,res,err,redirect);
 
           Team.update({}, {$set: {movement: 0, last_price: 1.00}}, options, function(err){
