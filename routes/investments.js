@@ -27,9 +27,10 @@ module.exports = function(app){
     //temp -for adam    
     console.log(req.body);
 
-    var user = req.user || req.body.investment.user;
+    //only admins can submit user in request
+    if (req.body.investment.user && !req.user.is_admin) return handleError(req, res, 'Not authorized.', '/');
 
-    if (!user) return handleError(req, res, "invalid user", "/investment/new");
+    var user = req.body.investment.user || req.user;
 
     user = User.findOne({ _id: user._id || user }).run(function(err, user){
       
