@@ -1,15 +1,34 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
 tr(class="team") 
   td
-    a(href='/team/'+team._id, title=team.name) #{team.name}
-
+    if (is_admin)
+      a(href='/team/'+team._id, title=team.name) #{team.name}
+    else
+       #{team.name}
+ 
   td
+    if (!team.users.length)
+      span -
     each aUser in team.users
-      a(href='/user/' + aUser.id, title='view user') #{aUser.username}
+      if (is_admin)
+        a(href='/user/' + aUser.id, title='view user') #{aUser.username} &nbsp
+      else
+        #{aUser.username} &nbsp      
   
   td
-    #{team.users.length}
-       
-  td 
-    a(href='/team/'+team._id+'/edit', title="edit") Edit
-    &nbsp;
-    a(class='destroy', href="/team/"+team._id, title="delete") Del
+    $#{team.last_price.toFixed(2)}
+
+  - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+  td(class=klazz)
+    if (team.movement > 0.00) 
+      + 
+    else if (team.movement < 0.00)
+      -
+    #{Math.abs(team.movement.toFixed(2))}
+  
+  if (is_admin)     
+    td 
+      a(href='/team/'+team._id+'/edit', title="edit") Edit
+      &nbsp;
+      a(class='destroy', href="/team/"+team._id, title="delete") Del

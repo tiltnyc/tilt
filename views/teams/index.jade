@@ -2,18 +2,22 @@
 
 h2= title
 
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 div#teams
   - if(teams.length)
     table
       tr
         th name
         th users
-        th ?
-        th actions
+        th price
+        th movement
+        if (is_admin)
+          th actions
       != partial('team_list', {collection: teams, as: 'team'})
   - else
     #no-results No teams found. Create one
       a(href='/teams/new') here
 
 hr
-a(href='/teams/new') create new
+if (is_admin)
+  a(href='/teams/new') create new
