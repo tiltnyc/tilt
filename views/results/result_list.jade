@@ -20,7 +20,7 @@ li
             + 
           else if (teamResult.movement < 0.00)
             -
-          #{Math.abs(teamResult.movement.toFixed(2))}
+          #{Math.abs(teamResult.movement.toFixed(2))} (#{teamResult.movement_percentage.toFixed(2)}%)
         td $#{teamResult.after_price.toFixed(2)}
     tr.footer
       th(colspan="5")
