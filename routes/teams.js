@@ -1,26 +1,35 @@
 var Team = require('../models/team')
-  , AuthHelpers = require('../helpers/auth_helpers');
+  , AuthHelpers = require('../helpers/auth_helpers')
+  , TeamHelpers = require('../helpers/team_helpers')
+  , SystemHelpers = require('../helpers/system_helpers');
 
 module.exports = function(app){
 
   // List of Teams  
   app.get('/teams.:format?', function(req, res){
-    Team
-      .find({})
-      .asc('name')
-      .populate('users') 
-      .run(function(err, teams) {
-        if (req.params.format == 'json') {
-          res.contentType('application/json');
-          res.send(JSON.stringify(teams));
-        }
-        else {
+    
+    if (req.params.format == 'json') {
+      TeamHelpers.getUserInvestable(req.user, function(err, teams) {
+        if (err) return SystemHelpers.error(req, res, err);
+
+        res.contentType('application/json');
+        res.send(JSON.stringify(teams));
+      });
+    }
+    else {
+      Team
+        .find({})
+        .asc('name')
+        .populate('users') 
+        .run(function(err, teams) {
+          if (err) return SystemHelpers.error(req, res, err, '/');
+
           res.render('teams/index', {
             title: 'List of Teams',
-            teams: teams
+            teams: (teams) ? teams : []
           });
-        }
-      });
+        });
+    }
   }); 
 
 

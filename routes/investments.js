@@ -3,22 +3,24 @@ var Investment = require('../models/investment')
     , User = require('../models/user')
     , Round = require('../models/round')
     , RoundHelpers = require('../helpers/round_helpers')
-    , AuthHelpers = require('../helpers/auth_helpers');
+    , AuthHelpers = require('../helpers/auth_helpers')
+    , TeamHelpers = require('../helpers/team_helpers')
+    , SystemHelpers = require('../helpers/system_helpers');
+         
 
 module.exports = function(app){
 
   // New investment
   app.get('/investment/new', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res){
-    Team
-      .find({})
-      .asc('name') 
-      .run(function(err, teams) {
-        res.render('investments/new', {
+    TeamHelpers.getUserInvestable(req.user, function(err, teams) {
+        if (err) return SystemHelpers.error(req, res, err);
+
+         res.render('investments/new', {
           title: 'New Investment',
           teams: teams,
           currentRound: req.currentRound
         });   
-      });   
+      }); 
   });
 
   // Perform an investment
