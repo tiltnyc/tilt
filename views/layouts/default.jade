@@ -7,6 +7,12 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
     li 
       a(href='/',title='home') home
     
+    if (everyauth.loggedIn)
+      li
+        a(href='/user/dash', title='dashboard') dashboard
+      li
+        a(href='/investment/new',title='new investment') new investment 
+        
     if (everyauth.loggedIn && everyauth.user.is_admin)
       li 
         a(href='/users',title='users') users 
@@ -17,11 +23,6 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
     li
       a(href='/results', title='results') results
     
-    if (everyauth.loggedIn)
-      li
-        a(href='/user/dash', title='dashboard') dashboard
-      li
-        a(href='/investment/new',title='new investment') new investment 
 
     if (everyauth.loggedIn) 
       ul#login-bar 
