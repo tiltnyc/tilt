@@ -4,7 +4,7 @@ var Team = require('../models/team')
 module.exports = function(app){
 
   // List of Teams  
-  app.get('/teams.:format?', AuthHelpers.restricted, function(req, res){
+  app.get('/teams.:format?', function(req, res){
     Team
       .find({})
       .asc('name')
