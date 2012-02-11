@@ -1,9 +1,10 @@
-var Team = require('../models/team');
+var Team = require('../models/team')
+  , AuthHelpers = require('../helpers/auth_helpers');
 
 module.exports = function(app){
 
   // List of Teams  
-  app.get('/teams.:format?', function(req, res){
+  app.get('/teams.:format?', AuthHelpers.restricted, function(req, res){
     Team
       .find({})
       .asc('name')
@@ -24,14 +25,14 @@ module.exports = function(app){
 
 
   // New Team
-  app.get('/teams/new', function(req, res){
+  app.get('/teams/new', AuthHelpers.restricted, function(req, res){
     res.render('teams/new', {
       title: 'New Team'
     });
   });
 
   // Create Team
-  app.post('/teams', function(req, res){
+  app.post('/teams', AuthHelpers.restricted, function(req, res){
     team = new Team(req.body.team);
     team.save(function(err) {
       req.flash('notice', 'Created.');
@@ -40,7 +41,7 @@ module.exports = function(app){
   });
 
   // load user from ID parameter
-  app.param('teamId', function(req, res, next, id){
+  app.param('teamId', AuthHelpers.restricted, function(req, res, next, id){
     Team
       .findOne({ _id: id }, function(err, team) {
         if (err) return next(err);
@@ -51,7 +52,7 @@ module.exports = function(app){
   });
 
   // View Team
-  app.get('/team/:teamId.:format?', function(req, res){
+  app.get('/team/:teamId.:format?', AuthHelpers.restricted, function(req, res){
     if (req.params.format == 'json') {
       res.contentType('application/json');
       res.send(JSON.stringify(req.team));
@@ -65,7 +66,7 @@ module.exports = function(app){
   });
 
    // Edit team
-  app.get('/team/:teamId/edit', function(req, res){
+  app.get('/team/:teamId/edit', AuthHelpers.restricted, function(req, res){
     res.render('teams/edit', {
       title: 'Edit '+req.team.name,
       team: req.team
@@ -73,7 +74,7 @@ module.exports = function(app){
   });
 
   // Update team
-  app.put('/teams/:teamId', function(req, res){
+  app.put('/teams/:teamId', AuthHelpers.restricted, function(req, res){
     team = req.team;
 
     if (req.body.team.name) team.name = req.body.team.name;
@@ -86,7 +87,7 @@ module.exports = function(app){
   });
 
   //Delete team
-  app.del('/team/:teamId', function(req, res){
+  app.del('/team/:teamId', AuthHelpers.restricted, function(req, res){
     team = req.team;
     team.remove(function(err){
       req.flash('notice', 'Deleted');

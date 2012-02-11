@@ -6,6 +6,7 @@ var UserSchema = new Schema({
   email         : {type: String, required: true}, 
   team          : {type: Schema.ObjectId, ref: 'Team'},
   funds         : {type: [Number], default: []},
+  is_admin      : {type: Boolean, default: false},
   created_at    : {type : Date, default : Date.now},
   updated_at    : {type : Date, default : Date.now}
 }), User;
@@ -32,14 +33,14 @@ UserSchema.plugin(mongooseAuth, {
           , postRegisterPath: '/register'
           , registerView: 'register.jade'
           , registerLocals: {title: 'Register'}
-          , loginSuccessRedirect: '/'
+          , loginSuccessRedirect: '/user/dash'
           , registerSuccessRedirect: '/'
            , respondToLoginSucceed: function (res, user) {
               if (user) {
                 if (res.req.query.json != null) {
                   res.redirect('/login.json');
                 } else {
-                  res.redirect('/');
+                  res.redirect('/user/dash');
                 }
                 res.end();
               }

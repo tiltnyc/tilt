@@ -9,14 +9,19 @@ form(method="post",action="/investments")
   p 
     label(for='investment[user]') User
     &nbsp;
-    - if (user)
-      span #{user.username}
-    -else
+    - if (everyauth.loggedIn && everyauth.user.is_admin)
       select(id='investment[user]', name='investment[user]')
-
+    -else
+      span #{everyauth.user.username}      
   p 
-    div.rounds Current Round: #{currentRound.number}
-  
+    div.rounds Current Round: #{currentRound.number} &nbsp
+      if (currentRound.is_open) 
+        span.open-round (open)
+      else 
+        span.closed-round (closed)
+    
+
+
   ul#team-list
     each team, i in teams
       li Team: &nbsp

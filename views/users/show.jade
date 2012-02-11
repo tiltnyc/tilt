@@ -4,13 +4,13 @@ h2 User details
 
 p 
   strong username 
-  &nbsp; #{user.username}
+  &nbsp; #{theUser.username}
 p
   strong email
-  &nbsp; #{user.email}
+  &nbsp; #{theUser.email}
 p
   strong funds
-  each fundz in user.funds
+  each fundz in theUser.funds
     - if (fundz < 0)
       span(class="in-the-red") 
         &nbsp; $#{fundz}
@@ -19,8 +19,8 @@ p
         &nbsp; $#{fundz}
 p 
   strong team
-  - if (user.team)
-    &nbsp #{user.team.name}
+  - if (theUser.team)
+    &nbsp #{theUser.team.name}
   - else
     span#unassigned &nbsp none assigned 
 
@@ -33,7 +33,7 @@ table#user-transactions.inner-table
     th round
     th label
     th amount
-   != partial('../transactions/transaction_list', {collection: user.transactions, as: 'transaction'})
+   != partial('../transactions/transaction_list', {collection: theUser.transactions, as: 'transaction'})
 
 table#user-investments.inner-table
   tr
@@ -43,11 +43,11 @@ table#user-investments.inner-table
     th round
     th team
     th percentage
-   != partial('../investments/investment_list', {collection: user.investments, as: 'investment'})
+   != partial('../investments/investment_list', {collection: theUser.investments, as: 'investment'})
 
 p 
-  a(href='/user/'+user._id+'/edit', title="edit") Edit
+  a(href='/user/'+theUser._id+'/edit', title="edit") Edit
   &nbsp;
-  a(class='destroy', href='/user/'+user._id, title="delete") Delete
+  a(class='destroy', href='/user/'+theUser._id, title="delete") Delete
   &nbsp;
   a(href='/users', title="back") Back

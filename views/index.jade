@@ -3,4 +3,7 @@
 h1= title
 p Welcome to #{title}
 
-a(href="/users") Go to users
+if (everyauth.loggedIn)
+  a(href='/investment/new', title='new investment') invest in a team
+else
+  a(href='/login', title='login') login to start

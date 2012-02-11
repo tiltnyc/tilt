@@ -1,11 +1,40 @@
 var User = require('../models/user')
   , Transaction = require('../models/transaction')
-  , Investment = require('../models/investment');
+  , Investment = require('../models/investment')
+  , AuthHelpers = require('../helpers/auth_helpers')
+  , RoundHelpers = require('../helpers/round_helpers')
+  , SystemHelpers = require('../helpers/system_helpers')
+  , UserHelpers = require('../helpers/user_helpers');
 
 module.exports = function(app){
 
+  //User dashboard
+  app.get('/user/dash', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res) {
+    User.findOne({_id: req.user.id})
+      .populate('team')
+      .run(function(err, user){
+        if (err) return SystemHandlers.error(req, res, err, '/'); 
+
+        UserHelpers.loadInvestments(user, function(err, investments){
+          if (err) return SystemHandlers.error(req, res, err, '/'); 
+          user.investments = investments;
+           
+          UserHelpers.loadTransactions(user, function(err, transactions){
+            if (err) return SystemHandlers.error(req, res, err, '/'); 
+            user.transactions = transactions;
+
+            res.render('users/dash', {
+              title: 'Dashboard',
+              theUser: user,
+              currentRound: req.currentRound
+            }); 
+          }); 
+        });
+      });
+  });
+
   // List of Users  
-  app.get('/users.:format?', function(req, res){
+  app.get('/users.:format?', AuthHelpers.restricted, function(req, res){
     User
     .find({})
       .populate('team')
@@ -25,14 +54,17 @@ module.exports = function(app){
   });
 
   // New User
-  app.get('/users/new', function(req, res){
+  app.get('/users/new', AuthHelpers.restricted, function(req, res){
     res.render('users/new', {
       title: 'New User'
     });
   });
 
   // Create User
-  app.post('/users', function(req, res){
+  app.post('/users', AuthHelpers.restricted, function(req, res) {
+   
+    //JM: Note - this is useless as the user is created without a password hash
+
     if (req.body.user.team == "") req.body.user.team = null;
     user = new User(req.body.user);
     
@@ -50,37 +82,39 @@ module.exports = function(app){
       .run(function(err, user) {
         if (err) return next(err); 
         if (!user) return next(new Error("Failed loading user " + id));
-        req.user = user;
+        req.theUser = user;
         next(); 
       });
   });
 
   // View User
-  app.get('/user/:id.:format?', function(req, res){
+  app.get('/user/:id.:format?', AuthHelpers.restricted,function(req, res){
     
     Transaction
-      .find({user: req.user._id})
+      .find({user: req.theUser._id})
       .asc('round', 'created')
       .run(function(err, transactions) {
         if (err) return;
-        req.user.transactions = transactions;
+        console.log(transactions);
+        console.log(req.theUser);
+        req.theUser.transactions = transactions;
 
         Investment
-          .find({user: req.user._id})
+          .find({user: req.theUser._id})
           .populate('team')
           .asc('round', 'team.name')
           .run(function(err, investments) {
             if (err) return;
-            req.user.investments = investments;
+            req.theUser.investments = investments;
             
             if (req.params.format == 'json') {
               res.contentType('application/json');
-              res.send(JSON.stringify(req.user));
+              res.send(JSON.stringify(req.theUser));
             }
             else {
               res.render('users/show', {
-                title: req.user.username,
-                user: req.user
+                title: req.theUser.username,
+                theUser: req.theUser
               });
             }   
           });
@@ -88,16 +122,16 @@ module.exports = function(app){
   });
 
   // Edit User
-  app.get('/user/:id/edit', function(req, res){
+  app.get('/user/:id/edit', AuthHelpers.restricted, function(req, res){
     res.render('users/edit', {
-      title: 'Edit '+req.user.username,
-      user: req.user
+      title: 'Edit '+req.theUser.username,
+      theUser: req.theUser
     });
   });
 
   // Update User
-  app.put('/users/:id', function(req, res){
-    user = req.user;
+  app.put('/users/:id', AuthHelpers.restricted, function(req, res){
+    user = req.theUser;
 
     if (req.body.user.username) user.username = req.body.user.username;
     if (req.body.user.email) user.email = req.body.user.email;
@@ -109,13 +143,12 @@ module.exports = function(app){
       if (err) throw err;
       req.flash('notice', 'Updated successfully');
       res.redirect('/user/' + user._id);
-
     });
   });
 
   //Delete user
-  app.del('/user/:id', function(req, res){
-    user = req.user;
+  app.del('/user/:id', AuthHelpers.restricted, function(req, res){
+    user = req.theUser;
     user.remove(function(err){
       req.flash('notice', 'Deleted');
       res.redirect('/users');

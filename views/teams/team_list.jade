@@ -3,8 +3,8 @@ tr(class="team")
     a(href='/team/'+team._id, title=team.name) #{team.name}
 
   td
-    each user in team.users
-      #{user.username},
+    each aUser in team.users
+      a(href='/user/' + aUser.id, title='view user') #{aUser.username}
   
   td
     #{team.users.length}

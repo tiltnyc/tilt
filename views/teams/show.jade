@@ -10,8 +10,9 @@ p
   strong users
   - if (team.users.length > 0)
     ul
-      each user in team.users
-        li #{user.username} &lt#{user.email}&gt
+      each aUser in team.users
+        li 
+          a(href='/user/' + aUser.id, title='view user') #{aUser.username}
   - else
     span#unassigned &nbsp none assigned
 

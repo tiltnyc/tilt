@@ -2,12 +2,13 @@ var Investment = require('../models/investment')
     , Team = require('../models/team')
     , User = require('../models/user')
     , Round = require('../models/round')
-    , RoundHelpers = require('../helpers/round_helpers');
+    , RoundHelpers = require('../helpers/round_helpers')
+    , AuthHelpers = require('../helpers/auth_helpers');
 
 module.exports = function(app){
 
   // New investment
-  app.get('/investment/new', RoundHelpers.loadCurrentRound, function(req, res){
+  app.get('/investment/new', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res){
     Team
       .find({})
       .asc('name') 
@@ -21,14 +22,15 @@ module.exports = function(app){
   });
 
   // Perform an investment
-  app.post('/investments.:format?', RoundHelpers.loadCurrentRound, function(req, res){
+  app.post('/investments.:format?', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res){
 
-//temp -for adam    
-console.log(req.body);
+    //temp -for adam    
+    console.log(req.body);
 
-    var user = req.user || req.body.investment.user;
+    //only admins can submit user in request
+    if (req.body.investment.user && !req.user.is_admin) return handleError(req, res, 'Not authorized.', '/');
 
-    if (!user) return handleError(req, res, "invalid user", "/investment/new");
+    var user = req.body.investment.user || req.user;
 
     user = User.findOne({ _id: user._id || user }).run(function(err, user){
       
@@ -59,7 +61,9 @@ console.log(req.body);
           res.send(JSON.stringify(investments));
         } else {
           req.flash('notice', 'invested successfully.');
-          res.redirect('/');
+
+          if (req.user.is_admin) res.redirect('/investment/new');
+          else res.redirect('/user/dash');
         }
       });
               
