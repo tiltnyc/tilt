@@ -82,7 +82,7 @@ UserSchema.pre('save', function (next) {
         if (err) return callback(err);
         team.users.splice(team.users.indexOf(user._id), 1);
         team.save(function(err) {
-          if (err) return next(err);
+          if (err) return callback(err);
           return callback();
         });
       });
@@ -92,11 +92,12 @@ UserSchema.pre('save', function (next) {
   function joinTeam(teamId, callback) {
     if (teamId) {
       Team.findOne({ _id: teamId }, function(err, team) {
-        if (err) return next(err);
+        if (err) return callback(err);
+        if (!team) return callback(); 
         if (team.users.indexOf(user.id) < 0) {
           team.users.push(user._id);
           team.save(function(err) {
-            if (err) return next(err);
+            if (err) return callback(err);
             return callback();
           });
         } else callback();  

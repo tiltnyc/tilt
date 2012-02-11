@@ -1,14 +1,41 @@
-tr(class="result") 
-  td
-    #{team.name}
-
-  td
-    $#{team.last_price.toFixed(2)}
-
-  - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
-  td(class=klazz)
-    if (team.movement > 0.00) 
-      + 
-    else if (team.movement < 0.00)
-      -
-    #{Math.abs(team.movement.toFixed(2))}
+li  
+  table
+    tr.heading
+      th(colspan="5") round #{roundResults[0].round.number}
+    tr
+      th team
+      th before
+      th percentage
+      th movement
+      th after
+    each teamResult in roundResults
+      tr
+        td= teamResult.team.name
+        td $#{teamResult.before_price.toFixed(2)}
+        - klazz = (teamResult.movement > 0) ? "positive" : "negative"
+        td= (teamResult.percentage_score*100).toFixed(2) 
+          span % 
+        td(class=klazz)
+          if (teamResult.movement > 0.00) 
+            + 
+          else if (teamResult.movement < 0.00)
+            -
+          #{Math.abs(teamResult.movement.toFixed(2))}
+        td $#{teamResult.after_price.toFixed(2)}
+    tr.footer
+      th(colspan="5")
+        ul
+          li
+            strong total funds: 
+            span $#{roundResults[0].round.total_funds.toFixed(0)}
+          li
+            strong investors: 
+            span #{roundResults[0].round.investor_count}
+          li
+            strong average:
+            span #{(roundResults[0].round.average*100).toFixed(2)}
+          li
+            strong sd: 
+            span #{(roundResults[0].round.standard_deviation*100).toFixed(2)}%
+        
+                  

@@ -3,6 +3,7 @@ var Round = require('../models/round'),
     Transaction = require('../models/transaction'),
     Investment = require('../models/investment'),
     Team = require('../models/team'),
+    Result = require('../models/result'),
     RoundHelpers = require('../helpers/round_helpers'),
     TeamHelpers = require('../helpers/team_helpers'),
     AuthHelpers = require('../helpers/auth_helpers');
@@ -158,13 +159,15 @@ module.exports = function(app){
         console.log('factor: '+factor);
 
 
-        updateTeamScore(results, 0, function(err){
+        saveResults(results, 0, function(err){
           //when all teams updated
           if (err) return handleError(req, res, err, redirect);
 
           round.standard_deviation = cumulativeDistanceFromAverage / req.teamCount;
           round.total_funds = total;
           round.investor_count = investerList.length;
+          round.average = averagePercentage;
+          round.factor = factor;
 
           console.log('sd= ' + round.standard_deviation);
 
@@ -182,7 +185,7 @@ module.exports = function(app){
 
         });
 
-        function updateTeamScore(data, index, callback){
+        function saveResults(data, index, callback){
           
           if (Object.keys(data).length == index) {
             return callback();
@@ -202,18 +205,17 @@ module.exports = function(app){
 
             team.last_price += teamPriceMovement;
             team.movement = teamPriceMovement / before_price;
-            //data[teamId].team = team; //update local copy  
 
             team.save(function(err, team){
               if (err) return callback(err);
               
-              updateTeamScore(data, index+1, callback)  
+              new Result({team: team.id, round: round.id, before_price: before_price, after_price: team.last_price, movement: team.movement, percentage_score: teamPercentage}).
+              save(function(err, result){
+                if (err) return callback(err);               
+                return saveResults(data, index+1, callback);
+              });
             });
             
-               //team.save(...)
-                //new Price({team: team, before_price: before_price, after_price: team.last_price, round: round });
-                  //price.save(...)  
-           
           };
         };
 
@@ -296,23 +298,25 @@ module.exports = function(app){
     var options = {multi: true};
     Transaction.find({}).remove(function(err){
       Investment.find({}).remove(function(err){
-        User.update({}, {$set: {funds: []}}, options, function(err){
-          if (err) return handleError(req,res,err,redirect);
+        Result.find({}).remove(function(err){
+          User.update({}, {$set: {funds: []}}, options, function(err){
+            if (err) return handleError(req,res,err,redirect);
 
-          Team.update({}, {$set: {movement: 0, last_price: 1.00}}, options, function(err){
-            Round.update({}, 
-            {
-              $set: {is_open: false, is_current: false, total_funds: 0, allocated: 0}, 
-              $unset: {investor_count: 1, standard_deviation: 1}
-            }, 
-            options, function(err) {
-              Round.findOne({number: 1}).update({$set: {is_current: true}}, function(err) {        
-                req.flash('notice', 'tilt has been reset.');
-                res.redirect(redirect);
+            Team.update({}, {$set: {movement: 0, last_price: 1.00}}, options, function(err){
+              Round.update({}, 
+              {
+                $set: {is_open: false, is_current: false, total_funds: 0, allocated: 0, factor: 1, investor_count: 0, average: 0}, 
+                $unset: {standard_deviation: 1}
+              }, 
+              options, function(err) {
+                Round.findOne({number: 1}).update({$set: {is_current: true}}, function(err) {        
+                  req.flash('notice', 'tilt has been reset.');
+                  res.redirect(redirect);
+                });
               });
             });
           });
-        })            
+        });            
       });
     });
   });
