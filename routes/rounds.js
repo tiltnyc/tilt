@@ -204,12 +204,20 @@ module.exports = function(app){
             console.log('resulting in: ' + teamPriceMovement.toFixed(2));
 
             team.last_price += teamPriceMovement;
-            team.movement = teamPriceMovement / before_price;
+            team.movement = teamPriceMovement;
+            team.movement_percentage = teamPriceMovement / before_price;
 
             team.save(function(err, team){
               if (err) return callback(err);
               
-              new Result({team: team.id, round: round.id, before_price: before_price, after_price: team.last_price, movement: team.movement, percentage_score: teamPercentage}).
+              new Result({
+                  team: team.id
+                  , round: round.id
+                  , before_price: before_price
+                  , after_price: team.last_price
+                  , movement: team.movement
+                  , movement_percentage: team.movement_percentage
+                  , percentage_score: teamPercentage}).
               save(function(err, result){
                 if (err) return callback(err);               
                 return saveResults(data, index+1, callback);
@@ -302,7 +310,7 @@ module.exports = function(app){
           User.update({}, {$set: {funds: []}}, options, function(err){
             if (err) return handleError(req,res,err,redirect);
 
-            Team.update({}, {$set: {movement: 0, last_price: 1.00}}, options, function(err){
+            Team.update({}, {$set: {movement: 0, last_price: 1.00, movement_percentage: 0}}, options, function(err){
               Round.update({}, 
               {
                 $set: {is_open: false, is_current: false, total_funds: 0, allocated: 0, factor: 1, investor_count: 0, average: 0}, 
