@@ -15,8 +15,11 @@ p
 
 p 
   strong funds this round
-  span &nbsp $#{theUser.funds[currentRound.number - 1].toFixed(2)}
-
+  if (theUser.funds[currentRound.number - 1])
+    span &nbsp $#{theUser.funds[currentRound.number - 1].toFixed(2)}
+  else
+    span &nbsp $0
+    
 table#user-transactions.inner-table
   tr
     th.header(colspan=3)
