@@ -2,18 +2,19 @@
 
 h2= title
 
+div 
+  != partial('../rounds/current_round')
+
 if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
   p.error-text 
     strong note: 
     span initial round not yet processed
+else if (results[currentRound.number - 1])
+  ul.results
+    != partial('result_list', {roundResults: results[currentRound.number - 1]})
 
-div#results
-  - if(teams.length)
-    table
-      tr
-        th team
-        th price
-        th movement
-      != partial('result_list', {collection: teams, as: 'team'})
-  - else
-    #no-results No teams found. 
+h2 past rounds
+- if(results.length)
+    ul.results
+      != partial('result_list', {collection: results.slice(0, currentRound.number - 1), as: 'roundResults'})
+

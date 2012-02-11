@@ -14,11 +14,7 @@ form(method="post",action="/investments")
     -else
       span #{everyauth.user.username}      
   p 
-    div.rounds Current Round: #{currentRound.number} &nbsp
-      if (currentRound.is_open) 
-        span.open-round (open)
-      else 
-        span.closed-round (closed)
+    != partial('../rounds/current_round')
     
 
 

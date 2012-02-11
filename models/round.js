@@ -8,6 +8,8 @@ var Round = new Schema({
   standard_deviation  : {type: Number}, 
   total_funds         : {type: Number, default: 0}, 
   investor_count      : {type: Number, default: 0},
+  factor              : {type: Number, default: 1},
+  average             : {type: Number, default: 0},
   created_at          : {type : Date, default : Date.now},
   updated_at          : {type : Date, default : Date.now}
 });
