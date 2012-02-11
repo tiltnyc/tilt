@@ -6,6 +6,7 @@ var UserSchema = new Schema({
   email         : {type: String, required: true}, 
   team          : {type: Schema.ObjectId, ref: 'Team'},
   funds         : {type: [Number], default: []},
+  is_admin      : {type: Boolean, default: false},
   created_at    : {type : Date, default : Date.now},
   updated_at    : {type : Date, default : Date.now}
 }), User;

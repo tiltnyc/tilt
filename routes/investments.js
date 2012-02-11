@@ -2,12 +2,13 @@ var Investment = require('../models/investment')
     , Team = require('../models/team')
     , User = require('../models/user')
     , Round = require('../models/round')
-    , RoundHelpers = require('../helpers/round_helpers');
+    , RoundHelpers = require('../helpers/round_helpers')
+    , AuthHelpers = require('../helpers/auth_helpers');
 
 module.exports = function(app){
 
   // New investment
-  app.get('/investment/new', RoundHelpers.loadCurrentRound, function(req, res){
+  app.get('/investment/new', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res){
     Team
       .find({})
       .asc('name') 
@@ -21,10 +22,10 @@ module.exports = function(app){
   });
 
   // Perform an investment
-  app.post('/investments.:format?', RoundHelpers.loadCurrentRound, function(req, res){
+  app.post('/investments.:format?', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res){
 
-//temp -for adam    
-console.log(req.body);
+    //temp -for adam    
+    console.log(req.body);
 
     var user = req.user || req.body.investment.user;
 

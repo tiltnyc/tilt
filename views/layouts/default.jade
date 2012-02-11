@@ -6,27 +6,34 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
   ul#top-nav
     li 
       a(href='/',title='home') home
-    li 
-      a(href='/users',title='users') users 
-    li 
-      a(href='/teams',title='teams') teams 
-    li
-      a(href='/rounds', title='rounds') rounds
+    
+    if (everyauth.loggedIn && everyauth.user.is_admin)
+      li 
+        a(href='/users',title='users') users 
+      li 
+        a(href='/teams',title='teams') teams 
+      li
+        a(href='/rounds', title='rounds') rounds
     li
       a(href='/results', title='results') results
-    li
-      a(href='/investment/new',title='new investment') new investment 
-    if everyauth.loggedIn 
+    
+    if (everyauth.loggedIn)
+      li
+        a(href='/investment/new',title='new investment') new investment 
+
+    if (everyauth.loggedIn) 
       ul#login-bar 
         li logged in as #{everyauth.user.username}
         li
           a(href='/logout', title='logout') logout
+        if (everyauth.user.is_admin) 
+          li 
+            a(href='/register', title='register') register new user
     else
       ul#login-bar
         li
           a(href='/login', title='login') login
-        li 
-          a(href='/register', title='register') register
+
     end
         
   #content 

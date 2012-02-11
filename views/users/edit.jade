@@ -1,31 +1,31 @@
 h2= title
 
-form(method="post", action="/users/"+user._id)
+form(method="post", action="/users/"+theUser._id)
   input(name="_method", value='PUT', type='hidden')
   p
     label(for='user[username]') Username
     &nbsp;
-    input(type='text', id='user[username]', name='user[username]', value=user.username)
+    input(type='text', id='user[username]', name='user[username]', value=theUser.username)
 
   p
     label(for='user[email]') Email
     &nbsp;
-    input(type='text', id='user[email]', name='user[email]', value=user.email)
+    input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
   p 
     label(for='user[team]') Team
     &nbsp;
-    - if (user.team)
-      select(id='user[team]', name='user[team]', data-team='#{user.team.id}')
+    - if (theUser.team)
+      select(id='user[team]', name='user[team]', data-team='#{theUser.team.id}')
     - else 
       select(id='user[team]', name='user[team]')  
 
-  input(type="hidden", name="user[_id]", value=user._id)
+  input(type="hidden", name="user[_id]", value=theUser._id)
 
   input(type="submit", value="Submit")
 
   hr
-  a(class='destroy', href='/user/'+user._id, title="delete") Del
+  a(class='destroy', href='/user/'+theUser._id, title="delete") Del
   &nbsp;
   a(href='/users', title="[back]") [back]
     

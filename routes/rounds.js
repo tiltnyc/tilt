@@ -4,13 +4,14 @@ var Round = require('../models/round'),
     Investment = require('../models/investment'),
     Team = require('../models/team'),
     RoundHelpers = require('../helpers/round_helpers'),
-    TeamHelpers = require('../helpers/team_helpers');
+    TeamHelpers = require('../helpers/team_helpers'),
+    AuthHelpers = require('../helpers/auth_helpers');
 
 module.exports = function(app){
   var redirect = '/rounds';
 
   // Rounds control
-  app.get('/rounds', TeamHelpers.loadTeamCount, function(req, res){
+  app.get('/rounds', AuthHelpers.restricted, TeamHelpers.loadTeamCount, function(req, res){
     Round
       .find({})
       .asc('number') 
@@ -25,7 +26,7 @@ module.exports = function(app){
   });
 
   //Append new round
-  app.post(redirect, function(req, res) {
+  app.post(redirect, AuthHelpers.restricted, function(req, res) {
     Round.count({}, function(err, numRounds) {
       if (err) return err;
 
@@ -42,7 +43,7 @@ module.exports = function(app){
   });
 
   // load round from number
-  app.param('roundNumber', function(req, res, next, number){
+  app.param('roundNumber', AuthHelpers.restricted, function(req, res, next, number){
     Round
       .findOne({ number: number })
       .run(function(err, round) {
@@ -54,7 +55,7 @@ module.exports = function(app){
   });
 
   //Delete round
-  app.del('/round/:roundNumber', function(req, res){
+  app.del('/round/:roundNumber', AuthHelpers.restricted, function(req, res){
     round = req.round;
     round.remove(function(err){
       req.flash('notice', 'Removed round');
@@ -63,7 +64,7 @@ module.exports = function(app){
   });
 
   //Get current round
-  app.get('/rounds/current.:format?', function(req, res){
+  app.get('/rounds/current.:format?', AuthHelpers.restricted, function(req, res){
     Round
       .findOne({is_current: true})
       .run(function(err, round) {
@@ -82,7 +83,7 @@ module.exports = function(app){
   });
 
   //Toggle round open/close, or current round
-  app.put('/round/:roundNumber', function(req, res){
+  app.put('/round/:roundNumber', AuthHelpers.restricted, function(req, res){
     var round = req.round;
     if (req.body.round.is_open) round.is_open = (req.body.round.is_open.toLowerCase() === 'true');
     if (req.body.round.next_round) {
@@ -118,7 +119,7 @@ module.exports = function(app){
   });
 
   //Process a round
-  app.put('/round/:roundNumber/process', TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, function(req, res){
+  app.put('/round/:roundNumber/process', AuthHelpers.restricted, TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, function(req, res){
     var round = req.round
       ,results = {}
       , total = 0
@@ -250,7 +251,7 @@ module.exports = function(app){
   });
 
   //Allocate funds to round
-  app.post('/round/:roundNumber/allocate', function(req, res){
+  app.post('/round/:roundNumber/allocate', AuthHelpers.restricted, function(req, res){
 
     var stream = User.find().stream();
     var round = req.round;
@@ -291,7 +292,7 @@ module.exports = function(app){
   });
 
   //Reset of the tilt app back to original state
-  app.post('/rounds/reset', function(req,res){
+  app.post('/rounds/reset', AuthHelpers.restricted, function(req,res){
     var options = {multi: true};
     Transaction.find({}).remove(function(err){
       Investment.find({}).remove(function(err){
@@ -316,17 +317,9 @@ module.exports = function(app){
     });
   });
 
-  //Reset of the tilt app back to original state
   function handleError(req, res, error, redirect) {
-    if (req.params.format == 'json') {//drop all transactions
-      //drop all investments
-      //set all users.funds = [0,0,0];
-      //set round 1 as curent and others not
-      //set all rounds closed
-      //set total funds as 0, remove standard_deviation
-      //set all teams last price = 1 and movement = 0 
-      res.contentType(    
-        'application/json');
+    if (req.params.format == 'json') {
+      res.contentType('application/json');
       res.send(JSON.stringify({error: error}));
     } else {
       req.flash('error', error);
