@@ -1,0 +1,25 @@
+!= messages()
+
+h2= title
+
+p
+  strong current round: 
+  span #{currentRound.number}
+
+p
+  strong status: &nbsp
+  if (currentRound.is_open) 
+    span.open-round  open
+  else 
+    span.closed-round closed
+
+table#user-investments.inner-table
+  tr
+    th.header(colspan=3)
+      &nbsp investments
+  tr
+    th round
+    th team
+    th percentage
+
+   != partial('../investments/investment_list', {collection: theUser.investments, as: 'investment'})

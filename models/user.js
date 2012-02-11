@@ -33,14 +33,14 @@ UserSchema.plugin(mongooseAuth, {
           , postRegisterPath: '/register'
           , registerView: 'register.jade'
           , registerLocals: {title: 'Register'}
-          , loginSuccessRedirect: '/'
+          , loginSuccessRedirect: '/user/dash'
           , registerSuccessRedirect: '/'
            , respondToLoginSucceed: function (res, user) {
               if (user) {
                 if (res.req.query.json != null) {
                   res.redirect('/login.json');
                 } else {
-                  res.redirect('/');
+                  res.redirect('/user/dash');
                 }
                 res.end();
               }

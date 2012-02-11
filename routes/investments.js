@@ -61,7 +61,9 @@ module.exports = function(app){
           res.send(JSON.stringify(investments));
         } else {
           req.flash('notice', 'invested successfully.');
-          res.redirect('/');
+
+          if (req.user.is_admin) res.redirect('/investment/new');
+          else res.redirect('/user/dash');
         }
       });
               

@@ -1,9 +1,32 @@
 var User = require('../models/user')
   , Transaction = require('../models/transaction')
   , Investment = require('../models/investment')
-  , AuthHelpers = require('../helpers/auth_helpers');
+  , AuthHelpers = require('../helpers/auth_helpers')
+  , RoundHelpers = require('../helpers/round_helpers')
+  , SystemHelpers = require('../helpers/system_helpers')
+  , UserHelpers = require('../helpers/user_helpers');
 
 module.exports = function(app){
+
+  //User dashboard
+  app.get('/user/dash', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, function(req, res) {
+    User.findOne({_id: req.user.id})
+      .populate('team')
+      .run(function(err, user){
+        if (err) return SystemHandlers.error(req, res, err, '/'); 
+
+        UserHelpers.loadInvestments(user, function(err, investments){
+          if (err) return SystemHandlers.error(req, res, err, '/'); 
+          
+          user.investments = investments;
+          res.render('users/dash', {
+            title: 'Dashboard',
+            theUser: user,
+            currentRound: req.currentRound
+          });  
+        });
+      });
+  });
 
   // List of Users  
   app.get('/users.:format?', AuthHelpers.restricted, function(req, res){
