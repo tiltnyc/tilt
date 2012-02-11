@@ -17,13 +17,18 @@ module.exports = function(app){
 
         UserHelpers.loadInvestments(user, function(err, investments){
           if (err) return SystemHandlers.error(req, res, err, '/'); 
-          
           user.investments = investments;
-          res.render('users/dash', {
-            title: 'Dashboard',
-            theUser: user,
-            currentRound: req.currentRound
-          });  
+           
+          UserHelpers.loadTransactions(user, function(err, transactions){
+            if (err) return SystemHandlers.error(req, res, err, '/'); 
+            user.transactions = transactions;
+
+            res.render('users/dash', {
+              title: 'Dashboard',
+              theUser: user,
+              currentRound: req.currentRound
+            }); 
+          }); 
         });
       });
   });

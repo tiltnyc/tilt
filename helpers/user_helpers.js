@@ -1,5 +1,6 @@
 var User = require('../models/user')
-  , Investment = require('../models/investment');
+  , Investment = require('../models/investment')
+  , Transaction = require('../models/transaction');
 
 exports.loadInvestments = function(user, next) {
   Investment
@@ -11,3 +12,13 @@ exports.loadInvestments = function(user, next) {
       next(null, investments);
     });
 };
+
+exports.loadTransactions = function(user, next) {
+  Transaction
+    .find({user: user._id})
+    .asc('round', 'created')
+    .run(function(err, transactions) {
+      if (err) return next(err);
+      next(null, transactions);
+    });
+}
