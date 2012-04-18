@@ -5,7 +5,7 @@
   , "private":      true
   , "author":       "Justin J. Moses (http://about.me/justinj)"
   , "engines": {
-      "node":     ">= 0.4.7"
+      "node":     ">= 0.6.8"
     }
   , "devDependencies": {
       "cucumber"    : "latest"
@@ -17,9 +17,9 @@
     , "database-cleaner" : "*"
   }
   , "dependencies": {
-      "express"           : ">= 2.5.4"
+      "express"           : "= 2.5.9"
     , "stylus"            : ">= 0.13.7"
-    , "jade"              : ">= 0.12.4"
+    , "jade"              : "= 0.20.0"
     , "mongoose"          : ">= 2.5.0"
     , "gzippo"            : ">= 0.0.7"   
     , "express-messages"  : ">= 0.0.2"
