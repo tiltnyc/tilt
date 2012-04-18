@@ -49,6 +49,8 @@ function bootApplication(app) {
     
   });
 
+  app.use(require('connect-assets')());
+
   function compile(str, path) {
     return stylus(str)
       .set('filename', path)
