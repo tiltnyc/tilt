@@ -9,12 +9,13 @@ if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
   p.error-text 
     strong note: 
     span initial round not yet processed
-else if (results[currentRound.number - 1])
+else if (results[0])
   ul.results
-    != partial('result_list', {roundResults: results[currentRound.number - 1]})
+    != partial('result_list', {roundResults: results[0]})
 
 h2 past rounds
 - if(results.length)
     ul.results
-      != partial('result_list', {collection: results.slice(0, currentRound.number - 1), as: 'roundResults'})
+      - results.shift()
+      != partial('result_list', {collection: results, as: 'roundResults'})
 

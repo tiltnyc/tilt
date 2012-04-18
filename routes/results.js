@@ -9,8 +9,8 @@ module.exports = function(app){
 
     Result
       .find({})
-      .populate('team').populate('round')
-      .desc('after_price')
+      .populate('round', null, {}, {sort: 'number'})
+      .populate('team', null, {}, {sort: 'name'})
       .run(function(err, results){
 
         //do group by round
@@ -19,8 +19,8 @@ module.exports = function(app){
           var singleRoundResults = [];
           if (!roundResults[result.round.number - 1]) roundResults[result.round.number - 1] = singleRoundResults;
           else singleRoundResults = roundResults[result.round.number - 1];
-
           singleRoundResults.push(result);
+          singleRoundResults.sort(function(a,b){return a.team.name > b.team.name;}); //doing this because sorting teams not working in mongoose
         });
 
         if (req.params.format == 'json') {
@@ -31,6 +31,7 @@ module.exports = function(app){
           var lastResultRound = 1; 
           if (req.currentRound) lastResultRound = (req.currentRound.processed) ? req.currentRound.number : Math.max(req.currentRound.number - 1, 1);
 
+          roundResults.reverse();
           res.render('results/index', {
             title: 'Current Results',
             results: roundResults,
