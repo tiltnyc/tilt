@@ -1,7 +1,10 @@
+- round = roundResults[0].round.number
+- teams = [], results = [], prices = [], old_prices = []
+- average = (roundResults[0].round.average*100).toFixed(2)
 li  
   table
     tr.heading
-      th(colspan="5") round #{roundResults[0].round.number}
+      th(colspan="5") round #{round}
     tr
       th team
       th before
@@ -9,11 +12,16 @@ li
       th movement
       th after
     each teamResult in roundResults
+      - teams.push(teamResult.team.name)
+      - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
+      - results.push(teamResultPercentage)
+      - prices.push(teamResult.after_price.toFixed(2))
+      - old_prices.push(teamResult.before_price.toFixed(2))
       tr
         td= teamResult.team.name
         td $#{teamResult.before_price.toFixed(2)}
         - klazz = (teamResult.movement > 0) ? "positive" : "negative"
-        td= (teamResult.percentage_score*100).toFixed(2) 
+        td= teamResultPercentage
           span % 
         td(class=klazz)
           if (teamResult.movement > 0.00) 
@@ -40,4 +48,7 @@ li
           li
             strong factor:
             span #{roundResults[0].round.factor.toFixed(2)}
-                  
+  div.round-chart.dist-chart(id="r" + round + "chart",data-round=round,data-teams=teams,data-results=results,data-average=average)
+  div.round-chart.price-chart(id="rp" + round + "chart",data-round=round,data-teams=teams,data-prices=prices, data-old_prices=old_prices)
+                    
+    

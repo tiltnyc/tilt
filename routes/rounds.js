@@ -197,6 +197,10 @@ module.exports = function(app){
               , teamPercentage = data[teamId].result / total
               , teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
               , before_price = team.last_price;
+
+            //prevent negative movement being affected by the factor  
+            if (teamPriceMovement < 0) teamPriceMovement = (teamPercentage - averagePercentage);
+
                         
             cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage);
     
