@@ -1,5 +1,6 @@
 $(function(){
 
+  
   $('.dist-chart').each(function(i,container) {
     chart = new Highcharts.Chart({
       chart: { renderTo: $(container).attr('id') },
@@ -36,7 +37,8 @@ $(function(){
           pointPadding: 0.2,
           borderWidth: 0, 
           colorByPoint: true
-        }
+        },
+        series: { animation: {enabled: true, duration: 3000} }
       },
 
       series: [{
@@ -84,7 +86,8 @@ $(function(){
         column: {
           pointPadding: 0.2,
           borderWidth: 0    
-        }
+        },
+        series: { animation: {enabled: true, duration: 3000} }
       },
 
       series: [{

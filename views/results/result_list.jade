@@ -1,23 +1,27 @@
 - round = roundResults[0].round.number
 - teams = [], results = [], prices = [], old_prices = []
 - average = (roundResults[0].round.average*100).toFixed(2)
+- each teamResult in roundResults
+  - teams.push(teamResult.team.name)
+  - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
+  - results.push(teamResultPercentage)
+  - prices.push(teamResult.after_price.toFixed(2))
+  - old_prices.push(teamResult.before_price.toFixed(2))
+- roundResults.sort(function(a,b){ return b.after_price > a.after_price; })
 li  
-  table
+  table.round-results
     tr.heading
-      th(colspan="5") round #{round}
+      th(colspan="6") round #{round}
     tr
+      th
       th team
       th before
       th percentage
       th movement
       th after
-    each teamResult in roundResults
-      - teams.push(teamResult.team.name)
-      - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
-      - results.push(teamResultPercentage)
-      - prices.push(teamResult.after_price.toFixed(2))
-      - old_prices.push(teamResult.before_price.toFixed(2))
-      tr
+    each teamResult, i in roundResults
+      tr.results-row
+        td= i+1
         td= teamResult.team.name
         td $#{teamResult.before_price.toFixed(2)}
         - klazz = (teamResult.movement > 0) ? "positive" : "negative"
@@ -31,8 +35,8 @@ li
           #{Math.abs(teamResult.movement.toFixed(2))} (#{teamResult.movement_percentage.toFixed(2)}%)
         td $#{teamResult.after_price.toFixed(2)}
     tr.footer
-      th(colspan="5")
-        ul
+      th(colspan="6")
+        u
           li
             strong total funds: 
             span $#{roundResults[0].round.total_funds.toFixed(0)}
