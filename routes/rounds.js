@@ -238,8 +238,13 @@ module.exports = function(app){
               if (investment.percentage > 0) {
                 var fundsInRound
                   , investedInTeam = investment.percentage * (isNaN(fundsInRound = investment.user.funds[round.number - 1]) ? 0 : fundsInRound)
-                  , investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price;
-                
+                //  , investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price;
+                  , old_price = results[investment.team.id].team.last_price - results[investment.team.id].team.movement
+                  , nbr_shares = Math.floor(investedInTeam / old_price)
+                  , investmentReturnForTeam = nbr_shares * results[investment.team.id].team.last_price;
+
+                console.log('user: ' + investment.user.username + ' had ' + nbr_shares + ' shares ($' + investedInTeam + ' invested at $' + old_price + '), yielding: $' + investmentReturnForTeam + ' via new price $' + results[investment.team.id].team.last_price);
+                    
                 new Transaction({
                     user: investment.user.id
                     , round: round.number+1
