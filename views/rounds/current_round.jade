@@ -1,5 +1,6 @@
 - currentRound = (currentRound)?currentRound:{number:'-',is_open:false}
-div.rounds Current Round: #{currentRound.number} &nbsp
+- round = currentRound.number - 1
+div.rounds Current Round: #{round} &nbsp
   if (currentRound.is_open) 
     span.open-round (open)
   else 

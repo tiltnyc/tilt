@@ -1,4 +1,4 @@
-- round = roundResults[0].round.number
+- round = roundResults[0].round.number - 1
 - teams = [], results = [], prices = [], old_prices = []
 - average = (roundResults[0].round.average*100).toFixed(2)
 - each teamResult in roundResults
@@ -33,7 +33,8 @@ li
           else if (teamResult.movement < 0.00)
             -
           #{Math.abs(teamResult.movement.toFixed(2))} (#{teamResult.movement_percentage.toFixed(2)}%)
-        td $#{teamResult.after_price.toFixed(2)}
+        td 
+          strong $#{teamResult.after_price.toFixed(2)}
     tr.footer
       th(colspan="6")
         u
