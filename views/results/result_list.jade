@@ -3,8 +3,7 @@
 - average = (roundResults[0].round.average*100).toFixed(2)
 - each teamResult in roundResults
   - teams.push(teamResult.team.name)
-  - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
-  - results.push(teamResultPercentage)
+  - results.push((teamResult.percentage_score*100).toFixed(2))
   - prices.push(teamResult.after_price.toFixed(2))
   - old_prices.push(teamResult.before_price.toFixed(2))
 - roundResults.sort(function(a,b){ return b.after_price > a.after_price; })
@@ -20,6 +19,7 @@ li
       th movement
       th after
     each teamResult, i in roundResults
+      - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
       tr.results-row
         td= i+1
         td= teamResult.team.name
