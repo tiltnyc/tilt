@@ -7,8 +7,8 @@ Team = new Schema(
   users: [
     type: ObjectId
     ref: "User"
-   ]
-   
+  ]
+
   last_price:
     type: Number
     default: 1.00

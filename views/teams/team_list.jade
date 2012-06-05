@@ -22,13 +22,13 @@ tr(class="team")
   - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
   td(class=klazz)
     if (team.movement > 0.00) 
-      + 
+      span + 
     else if (team.movement < 0.00)
-      -
-    #{Math.abs(team.movement.toFixed(2))}
+      span -
+    =Math.abs(team.movement.toFixed(2))
   
   if (is_admin)     
     td 
       a(href='/team/'+team._id+'/edit', title="edit") Edit
-      &nbsp;
+      &nbsp
       a(class='destroy', href="/team/"+team._id, title="delete") Del
