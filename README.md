@@ -17,8 +17,7 @@ Story management in Pivotal Tracker: [https://www.pivotaltracker.com/projects/44
 #Installation
 * clone source `git clone git@github.com:justinjmoses/tilt.git`
 * run `npm install` (this downloads all dependencies into `node_modules`)
-* execute `node app.js` to start server (port 3000 by default).
-* install coffee globally if you haven't already `npm install -g coffee-script`
+* install coffee globally if you haven't already via `npm install -g coffee-script`
 
 #Running
 * ensure mongodb is running (`sudo mongod` )
