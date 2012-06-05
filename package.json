@@ -1,9 +1,9 @@
 {
     "name":         "tilt"
   , "description":  "live event app for tilt"
-  , "version":      "0.1.0"
+  , "version":      "0.2.0"
   , "private":      true
-  , "author":       "Justin J. Moses (http://about.me/justinj)"
+  , "author":       "justin j. moses (http://about.me/justinj)"
   , "engines": {
       "node":     ">= 0.6.8"
     }
