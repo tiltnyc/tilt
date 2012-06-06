@@ -44,7 +44,11 @@ Round = new Schema(
     type: Date
     default: Date.now
 )
+
 Round.virtual("processed").get ->
   @standard_deviation?
+
+Round.virtual("is_first").get ->
+  Number(@number) is 1
 
 exports = module.exports = mongoose.model("Round", Round)

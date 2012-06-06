@@ -148,7 +148,7 @@ module.exports = (app) ->
       average = total / req.teamCount
       averagePercentage = average / total
       cumulativeDistanceFromAverage = 0
-      factor = (if (round.number is 1) then 1 else total / req.firstRound.total_funds)
+      factor = if round.is_first then 1 else total / req.firstRound.total_funds
       console.log results
       console.log "total Invested: " + total
       console.log "number of total teams: " + req.teamCount
