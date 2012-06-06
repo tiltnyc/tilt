@@ -17,17 +17,17 @@ Story management in Pivotal Tracker: [https://www.pivotaltracker.com/projects/44
 #Installation
 * clone source `git clone git@github.com:justinjmoses/tilt.git`
 * run `npm install` (this downloads all dependencies into `node_modules`)
-* execute `node app.js` to start server (port 3000 by default).
+* install coffee globally if you haven't already via `npm install -g coffee-script`
 
 #Running
 * ensure mongodb is running (`sudo mongod` )
 * to run the app, simply run:
         
-        node app.js
+        coffee app
 
 * to change the port:
         
-        PORT=5000 node app.js
+        PORT=5000 coffee app
 * alternatively, if you install foreman `npm install -g foreman`, you can run via foreman which will run using the web workers/dynos processes that Heroku employs:
 
         foreman start
