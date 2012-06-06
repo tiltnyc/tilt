@@ -17,23 +17,24 @@ loadListFor = (model, type, display) ->
       error: ->
         alert "Failed to load " + type + "s"
 $ ->
+  totalInvested = 0
+  investments = []
+
   appendInvestment = (index, amount) ->
-    return  if isNaN(amount)
+    return if isNaN(amount)
     investments[index] = new Number(amount.toFixed(2))
     total = 0
-    investments.forEach (val) ->
-      total += val
-
+    (total += val if !isNaN val) for val in investments
     total
+
   resetValues = ->
-    investments.forEach (val, i) ->
-      amount = (val / Math.max(totalInvested, 1))
-      $("#percentage-slider-amount-" + i + " span").text Math.round(amount * 100) + "%"
-      $("#percentage-slider-amount-" + i + " input").val amount
-  loadListFor "user", "team", "name"
-  loadListFor "investment", "team", "name"
-  loadListFor "investment", "user", "username"
-  loadListFor "allocate", "user", "username"
+    for val, i in investments
+      do (val, i) ->
+        if !isNaN val
+          amount = (val / Math.max(totalInvested, 1))
+          $("#percentage-slider-amount-" + i + " span").text Math.round(amount * 100) + "%"
+          $("#percentage-slider-amount-" + i + " input").val amount
+
   $(".percentage-slider").slider
     value: 0
     min: 0
@@ -45,5 +46,7 @@ $ ->
       resetValues()
       $("#total-invested").text Math.round(Math.min(totalInvested, 1) * 100) + "%"
 
-  totalInvested = 0
-  investments = []
+  loadListFor "user", "team", "name"
+  loadListFor "investment", "team", "name"
+  loadListFor "investment", "user", "username"
+  loadListFor "allocate", "user", "username"    
