@@ -51,20 +51,24 @@ launch = (cmd, options=[], env=process.env, callback) ->
   app.stderr.pipe(process.stderr)
   app.on 'exit', (status) -> callback?() if status is 0
 
+testenv = ->
+  custom_env = process.env
+  custom_env.PORT = 3333
+  custom_env.NODE_ENV = "test" 
+  custom_env
+
 #run unit test 
 #JM: to use child_process.spawn, files must be passed as list rather than wildcard match
 task 'mocha', 'run unit tests', -> 
   log "running unit tests...", bold 
-  exec 'mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
+  exec 'NODE_ENV=test mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
     throw err if err
     console.log stdout + stderr
 
 #run cucumber tests
 task 'cuke', 'run integration tests', ->
   log "running integration tests...", bold
-  custom_env = process.env
-  custom_env.PORT = 3333
-  custom_env.NODE_ENV = "test" 
-  launch 'cucumber.js', [], custom_env, (err) ->
+  
+  launch 'cucumber.js', [], testenv(), (err) ->
     throw err if err 
  
