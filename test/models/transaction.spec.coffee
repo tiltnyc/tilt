@@ -10,7 +10,7 @@ describe "Trasaction", ->
     user = new User
       username: 'justin'
       email: 'justin@example.com'
-    .save (err) ->
+    user.save (err) ->
       throw err if err
       done()
 
@@ -20,9 +20,4 @@ describe "Trasaction", ->
   it "on save, modifies funds to user for specified round", (done) ->
     transaction = new Transaction
       user: user._id
-
     done()
-  
-  #create user 
-  #create transaction 
-  #save
