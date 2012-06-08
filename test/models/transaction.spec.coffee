@@ -18,6 +18,16 @@ describe "Trasaction", ->
     clean done
 
   it "on save, modifies funds to user for specified round", (done) ->
+    round = 1
+    amount = 105
     transaction = new Transaction
       user: user._id
-    done()
+      amount: amount
+      round: round
+    transaction.save (err) ->
+      throw err if err
+      User.findOne
+        _id: user._id
+      , (err, user) ->
+        user.getFundsForRoundNbr(round).should.eql amount
+        done()

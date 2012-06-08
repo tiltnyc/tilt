@@ -29,6 +29,17 @@ UserSchema = new Schema(
     type: Date
     default: Date.now
 )
+
+UserSchema.methods.getFundsForRoundNbr = (roundNbr) ->
+  @funds[roundNbr - 1]
+
+UserSchema.methods.addFundsForRoundNbr = (roundNbr, funds) ->
+  i = roundNbr - 1
+  _funds = @funds.concat()
+  _funds[i] = 0 unless _funds[i]
+  _funds[i] += funds
+  @funds = _funds
+
 User = undefined
 UserSchema.plugin mongooseAuth,
   everymodule:
