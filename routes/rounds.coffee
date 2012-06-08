@@ -121,7 +121,7 @@ module.exports = (app) ->
         if investment = investments[index]
           if investment.percentage > 0
             fundsInRound = undefined
-            investedInTeam = investment.percentage * (if isNaN(fundsInRound = investment.user.funds[round.number - 1]) then 0 else fundsInRound)
+            investedInTeam = investment.percentage * (if isNaN(fundsInRound = investment.user.getFundsForRoundNbr(round.number)) then 0 else fundsInRound)
             investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price
             new Transaction(
               user: investment.user.id
@@ -140,7 +140,7 @@ module.exports = (app) ->
           results[investment.team.id] =
             team: investment.team
             result: 0
-        userInvested = investment.percentage * investment.user.funds[round.number - 1]
+        userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
         results[investment.team.id].result += userInvested
         total += userInvested
         investerList.push investment.user.id  if investerList.indexOf(investment.user.id) < 0
