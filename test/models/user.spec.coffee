@@ -55,3 +55,5 @@ describe "User", ->
             throw err if err
             t.users.should.not.include(user._id)
             done()
+
+  it "adding a user to a team with existing users should append to the team's list of users"

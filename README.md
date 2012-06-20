@@ -12,10 +12,7 @@ this is the web application for tilt, which creates and manages a virtual market
 
 #developer requirements
 * local installation of [mongodb (v2.0.2+)](http://www.mongodb.org/downloads).
-* ensure xcode (os x) or other gcc compiler is available
-* install `npm` package manager via `curl http://npmjs.org/install.sh | sh` (via [npmjs.org](http://npmjs.org/)) 
-* install `n` [node version manager](https://github.com/visionmedia/n) via `npm install -g n`
-    * install node >= v0.6.8 (for native heroku support, 0.6.15 is currently supported) - run `n 0.6.8` 
+* local install of node `0.6.8`+
 
 #installation
 * clone source `git clone git@github.com:justinjmoses/tilt.git`
@@ -37,10 +34,7 @@ this is the web application for tilt, which creates and manages a virtual market
 
 
 #tests
-##installation
-* in the root of the app, run `npm install -g cucumber`
-* then run `npm install --dev` (see [cucumber.js docs](https://github.com/cucumber/cucumber-js))
-* to run the cucumber integration tests, run 
-        
-        node_env=test port=3333 cucumber.js
 
+* unit tests can be run via `cake mocha`
+
+* integration tests via `cake cuke`
