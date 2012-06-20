@@ -33,7 +33,7 @@ describe "User", ->
       done()
 
   it "setting a team to a user should add the user to the team", (done) ->
-    user.team = teamA
+    user.addToTeam teamA
     user.save (err) ->
       throw err if err
       User.findById(user).populate('team').exec (err, u) ->
@@ -42,10 +42,10 @@ describe "User", ->
         done()
 
   it "replacing the team should remove the user from old team and add to new", (done) ->
-    user.team = teamA
+    user.addToTeam teamA
     user.save (err) ->
       throw err if err
-      user.team = teamB
+      user.addToTeam teamB
       user.save (err) ->
         throw err if err
         User.findById(user).populate('team').exec (err, u) ->
