@@ -109,6 +109,7 @@ UserSchema.pre "save", (next) ->
       callback() if !team or team.users.indexOf(user.id) >= 0
       team.users.push user._id
       team.save (err) -> callback(err ? null)
+  
   user = @
 
   leaveTeam user, (err) -> 
