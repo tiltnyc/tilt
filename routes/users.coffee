@@ -74,8 +74,9 @@ module.exports = (app) ->
     user = req.theUser
     user.username = req.body.user.username  if req.body.user.username
     user.email = req.body.user.email  if req.body.user.email
-    user.oldTeam = user.team.id  if user.team
-    user.team = (if (req.body.user.team isnt "") then req.body.user.team else null)
+    
+    if req.body.user.team isnt "" then user.addToTeam req.body.user.team
+    
     user.save (err, doc) ->
       throw err  if err
       req.flash "notice", "Updated successfully"

@@ -17,7 +17,7 @@ describe "Trasaction", ->
   afterEach (done) ->
     clean done
 
-  it "on save, modifies funds to user for specified round", (done) ->
+  it "on save, appends funds to user for specified round", (done) ->
    
     createAndTest = (round, amount, total, next) ->
       transaction = new Transaction
