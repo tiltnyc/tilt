@@ -2,6 +2,7 @@
 
 Process = require "../../processors/investments.coffee"
 
+Investment = require "../../models/investment"
 User = require "../../models/user"
 Team = require "../../models/team"
 Round = require "../../models/round" 
@@ -81,13 +82,50 @@ describe "Investment Process", ->
     [
       team: teamA
       percentage: -1
+    ,
+      team: teamB
+      percentage: "justin"
+    ,
+      team: teamC
+      percentage: 0.4
     ]
     Process.investments user, investments, round, (err, results) ->
-      #should.exist err
+      throw err if err
+      results[0].percentage.should.eql 0
+      results[1].percentage.should.eql 0
+      results[2].percentage.should.eql investments[2].percentage
       done()
 
-  it "must replace existing round investments"
+  it "must replace existing round investments", (done) ->
+    old_investments = 
+    [
+      team: teamA
+      percentage: 1
+    ]
+    Process.investments user, old_investments, round, (err, results) ->
+      throw err if err
+      new_investments = 
+      [
+        team: teamA
+        percentage: 0.5
+      ,
+        team: teamC
+        percentage: 0.45 
+      ]  
+      Process.investments user, new_investments, round, (err, results) ->
+        throw err if err
+        Investment.find
+          round: round.number
+          user: user
+        .run (err, investments) ->
+          investments.length.should.eql 2
+          for i in investments
+            if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5
+            else if i.team.toString() is teamC._id.toString() then i.percentage.should.eql 0.45
+            else throw "invalid result"
+          done()
 
   it "must not allow investment in closed round"
 
   it "must override duplicate investments within the one process with the latest entry"
+   

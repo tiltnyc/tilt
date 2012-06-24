@@ -8,6 +8,8 @@ process = (user, array, round, callback) ->
   total = 0
 
   for inv in array
+    inv.percentage = 0 unless 0 <= inv.percentage <= 1
+
     if total + inv.percentage >= 1 
       inv.percentage = Math.roundToFixed(1 - total, 2) #prevent over investment
     total += Math.roundToFixed inv.percentage, 2
