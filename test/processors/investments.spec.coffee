@@ -9,6 +9,7 @@ Round = require "../../models/round"
 describe "Investment Process", ->
   teamA = undefined
   teamB = undefined
+  teamC = undefined
   user = undefined 
   round = undefined
 
@@ -21,18 +22,22 @@ describe "Investment Process", ->
         name: 'teamB'
       teamB.save (err) ->
         throw err if err
-        user = new User
-          username: 'justin'
-          email: 'justin@example.com'
-        user.save (err) ->
+        teamC = new Team
+          name: 'teamC'
+        teamC.save (err) ->
           throw err if err
-          round = new Round
-            number: 1
-            is_current: true
-            is_open: true
-          round.save (err) ->
+          user = new User
+            username: 'justin'
+            email: 'justin@example.com'
+          user.save (err) ->
             throw err if err
-            done()
+            round = new Round
+              number: 1
+              is_current: true
+              is_open: true
+            round.save (err) ->
+              throw err if err
+              done()
 
   afterEach (done) -> clean done
 
@@ -52,7 +57,34 @@ describe "Investment Process", ->
         inv.percentage.should.eql investments[i].percentage
       done()
 
-  it "must cap investments at 100%"
+  it "must cap investments at 100%", (done) ->
+    investments = 
+    [
+      team: teamA
+      percentage: 0.8
+    ,
+      team: teamB
+      percentage: 0.7
+    ,
+      team: teamC
+      percentage: 0.3
+    ]
+    Process.investments user, investments, round, (err, results) ->
+      throw err if err
+      results[0].percentage.should.eql investments[0].percentage
+      results[1].percentage.should.eql Math.roundToFixed(1 - results[0].percentage, 2)
+      results[2].percentage.should.eql Math.roundToFixed(1 - results[0].percentage - results[1].percentage, 2)
+      done()
+
+  it "only accepts investments between 0 and 1", (done) ->
+    investments = 
+    [
+      team: teamA
+      percentage: -1
+    ]
+    Process.investments user, investments, round, (err, results) ->
+      #should.exist err
+      done()
 
   it "must replace existing round investments"
 

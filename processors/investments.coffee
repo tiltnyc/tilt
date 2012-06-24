@@ -1,17 +1,26 @@
 Investment = require("../models/investment")
 
+Math.roundToFixed = (num, dec) -> Math.round(num*100)/100; 
+
 process = (user, array, round, callback) ->
   investments = []
 
+  total = 0
+
+  for inv in array
+    if total + inv.percentage >= 1 
+      inv.percentage = Math.roundToFixed(1 - total, 2) #prevent over investment
+    total += Math.roundToFixed inv.percentage, 2
+    
   saveInvestment = (index, next) ->
     rowData = array[index]
     return next() unless rowData
     
-    Investment.findOne(
+    Investment.findOne
       round: round.number
       user: user
       team: rowData.team
-    ).run (err, investment) ->
+    .run (err, investment) ->
       return next err if err
       investment ?= new Investment
         round: round.number
