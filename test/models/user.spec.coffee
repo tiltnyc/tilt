@@ -56,4 +56,17 @@ describe "User", ->
             t.users.should.not.include(user._id)
             done()
 
-  it "adding a user to a team with existing users should append to the team's list of users"
+  it "adding a user to a team with existing users should append to the team's list of users", (done) ->
+    user.addToTeam teamA
+    user.save (err) ->
+      throw err if err
+      userB = new User
+        username: 'paul'
+        email: 'paul@example.com'
+      userB.addToTeam teamA
+      userB.save (err) ->
+        throw err if err
+        User.findById(user).populate('team').exec (err, u) ->
+          u.team.users.should.include(user._id)   
+          u.team.users.should.include(u._id)
+          done()
