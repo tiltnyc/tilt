@@ -6,6 +6,8 @@ RoundHelpers = require("../helpers/round_helpers")
 AuthHelpers = require("../helpers/auth_helpers")
 TeamHelpers = require("../helpers/team_helpers")
 SystemHelpers = require("../helpers/system_helpers")
+Process = require("../processors/investments")
+
 module.exports = (app) ->
   handleError = (req, res, error, redirect) ->
     if req.params.format is "json"
@@ -26,40 +28,20 @@ module.exports = (app) ->
     console.log req.body
     return handleError(req, res, "Not authorized.", "/")  if req.body.investment.user and not req.user.is_admin
     user = req.body.investment.user or req.user
-    user = User.findOne(_id: user._id or user).run((err, user) ->
-      saveInvestment = (array, index, callback) ->
-        rowData = undefined
-        if rowData = array[index]
-          Investment.findOne(
-            round: round.number
-            user: user
-            team: rowData.team
-          ).run (err, investment) ->
-            unless investment
-              investment = new Investment(
-                round: round.number
-                user: user
-                team: rowData.team
-              )
-            investment.percentage = rowData.percentage
-            investment.save (err) ->
-              unless err
-                investments.push investment
-                saveInvestment array, index + 1, callback
-        else
-          callback()
+    user = User.findOne(_id: user._id or user).run (err, user) ->
+     
       return handleError(req, res, "invalid user", "/investment/new")  if err
-      unless req.body.investment.investments
+
+      if !req.body.investment.investments
         req.body.investment.investments = []
         for prop of req.body.investment
           req.body.investment.investments[prop.split("_")[1]] = req.body.investment[prop]  if prop.substring(0, 5) is "team_"
-      investments = []
-      round = req.currentRound
-      unless round
-        return handleError(req, res, "no current round.", "/investment/new")
-      else return handleError(req, res, "cannot invest - round no longer open.", "/investment/new")  unless round.is_open
-      err = saveInvestment(req.body.investment.investments, 0, (err) ->
-        return handleError(req, res, err, "/investment/new")  if err
+      
+      return handleError(req, res, "no current round.", "/investment/new") unless req.currentRound
+      return handleError(req, res, "cannot invest - round no longer open.", "/investment/new")  unless req.currentRound.is_open
+    
+      Process.investments user, req.body.investment.investments, req.currentRound, (err, investments) ->
+        return handleError(req, res, err, "/investment/new") if err
         if req.params.format is "json"
           res.contentType "application/json"
           res.send JSON.stringify(investments)
@@ -69,5 +51,3 @@ module.exports = (app) ->
             res.redirect "/investment/new"
           else
             res.redirect "/user/dash"
-      )
-    )
