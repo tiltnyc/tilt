@@ -3,7 +3,7 @@ this is the web application for tilt, which creates and manages a virtual market
 
 #current status
 
-* build: [![build status](https://secure.travis-ci.org/justinjmoses/tilt.png)](http://travis-ci.org/justinjmoses/tilt)
+* build: [![build status](https://secure.travis-ci.org/tiltnyc/tilt.png)](http://travis-ci.org/tiltnyc/tilt)
 
 * story management in pivotal tracker: [https://www.pivotaltracker.com/projects/440359](https://www.pivotaltracker.com/projects/440359).
 
