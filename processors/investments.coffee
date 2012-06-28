@@ -6,7 +6,9 @@ process = (user, array, round, callback) ->
   investments = []
 
   total = 0
-
+ 
+  return callback 'cannot invest, this round is not open' unless round.is_open
+  
   for inv in array
     inv.percentage = 0 unless 0 <= inv.percentage <= 1
 

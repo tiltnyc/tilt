@@ -8,34 +8,29 @@ Team = require "../../models/team"
 Round = require "../../models/round" 
 
 describe "Investment Process", ->
-  teamA = undefined
-  teamB = undefined
-  teamC = undefined
-  user = undefined 
-  round = undefined
+  teamA = new Team
+    name: 'teamA'
+  teamB = new Team
+    name: 'teamB'
+  teamC = new Team
+    name: 'teamC'
+  user = new User
+    username: 'justin'
+    email: 'justin@example.com' 
+  round = new Round
+    number: 1
+    is_current: true
+    is_open: true
 
   beforeEach (done) ->
-    teamA = new Team
-      name: 'teamA'
     teamA.save (err) ->
       throw err if err
-      teamB = new Team
-        name: 'teamB'
       teamB.save (err) ->
         throw err if err
-        teamC = new Team
-          name: 'teamC'
         teamC.save (err) ->
           throw err if err
-          user = new User
-            username: 'justin'
-            email: 'justin@example.com'
           user.save (err) ->
             throw err if err
-            round = new Round
-              number: 1
-              is_current: true
-              is_open: true
             round.save (err) ->
               throw err if err
               done()
@@ -125,7 +120,21 @@ describe "Investment Process", ->
             else throw "invalid result"
           done()
 
-  it "must not allow investment in closed round"
-
+  it "must not allow investment in closed round", (done) ->
+    round.is_open = false
+    round.save (err) ->
+      throw err if err
+      investments = 
+      [
+        team: teamA
+        percentage: 0.4
+      ,
+        team: teamB
+        percentage: 0.6
+      ]
+      Process.investments user, investments, round, (err, results) ->
+        should.exist err
+        done()
+     
   it "must override duplicate investments within the one process with the latest entry"
    
