@@ -17,10 +17,7 @@ describe "Investment Process", ->
   user = new User
     username: 'justin'
     email: 'justin@example.com' 
-  round = new Round
-    number: 1
-    is_current: true
-    is_open: true
+  round = undefined
 
   beforeEach (done) ->
     teamA.save (err) ->
@@ -31,6 +28,10 @@ describe "Investment Process", ->
           throw err if err
           user.save (err) ->
             throw err if err
+            round = new Round
+              number: 1
+              is_current: true
+              is_open: true
             round.save (err) ->
               throw err if err
               done()
@@ -50,6 +51,7 @@ describe "Investment Process", ->
       throw err if err
       for inv, i in results
         inv.team.should.eql investments[i].team._id
+        inv.user.should.eql user._id
         inv.percentage.should.eql investments[i].percentage
       done()
 
@@ -136,5 +138,28 @@ describe "Investment Process", ->
         should.exist err
         done()
      
-  it "must override duplicate investments within the one process with the latest entry"
-   
+  it "must override duplicate investments within the one process with the latest entry", (done) ->
+    investments = 
+    [
+      team: teamA
+      percentage: 0.5
+    ,
+      team: teamB
+      percentage: 0.4
+    ,
+      team: teamA
+      percentage: 0.6
+    ]
+    Process.investments user, investments, round, (err, results) ->
+      throw err if err
+      Investment.find
+        round: round.number
+        user: user
+      .run (err, investments) ->
+        investments.length.should.eql 2
+        for i in investments
+          if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5
+          else if i.team.toString() is teamB._id.toString() then i.percentage.should.eql 0.4
+          else throw "invalid result"
+        done()
+  
