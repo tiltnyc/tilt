@@ -3,6 +3,9 @@ mongooseAuth = require 'mongoose-auth'
 
 app = module.exports = express.createServer()
 
+#core math requirement for money calculations
+Math.roundToFixed = (num, dec) -> Math.round(num*Math.pow(10, dec))/Math.pow(10,dec)
+
 #load configuration
 require('./settings').boot app
 

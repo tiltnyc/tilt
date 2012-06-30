@@ -1,7 +1,5 @@
 Investment = require("../models/investment")
 
-Math.roundToFixed = (num, dec) -> Math.round(num*100)/100; 
-
 process = (user, array, round, callback) ->
   investments = []
   teams = [] #track dupes
@@ -10,10 +8,10 @@ process = (user, array, round, callback) ->
   return callback 'cannot invest, this round is not open' unless round.is_open
   
   for inv, i in array
-    if teams.indexOf(inv.team._id.toString()) >= 0 
+    if teams.indexOf(inv.team) >= 0 
       array[i] = undefined #remove dups if any
       break
-    else teams.push(inv.team._id.toString())
+    else teams.push(inv.team)
 
     inv.percentage = 0 unless 0 <= inv.percentage <= 1
     if total + inv.percentage >= 1 

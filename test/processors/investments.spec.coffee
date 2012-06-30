@@ -28,7 +28,7 @@ describe "Investment Process", ->
           throw err if err
           user.save (err) ->
             throw err if err
-            round = new Round
+            round = new Round #defined in beforeEach() as these props will change in tests
               number: 1
               is_current: true
               is_open: true
@@ -41,16 +41,16 @@ describe "Investment Process", ->
   it "must save investments as entered", (done) ->
     investments = 
     [
-      team: teamA
+      team: teamA._id
       percentage: 0.4
     ,
-      team: teamB
+      team: teamB._id
       percentage: 0.6
     ]
     Process.investments user, investments, round, (err, results) ->
       throw err if err
       for inv, i in results
-        inv.team.should.eql investments[i].team._id
+        inv.team.should.eql investments[i].team
         inv.user.should.eql user._id
         inv.percentage.should.eql investments[i].percentage
       done()
@@ -58,13 +58,13 @@ describe "Investment Process", ->
   it "must cap investments at 100%", (done) ->
     investments = 
     [
-      team: teamA
+      team: teamA._id
       percentage: 0.8
     ,
-      team: teamB
+      team: teamB._id
       percentage: 0.7
     ,
-      team: teamC
+      team: teamC._id
       percentage: 0.3
     ]
     Process.investments user, investments, round, (err, results) ->
@@ -77,13 +77,13 @@ describe "Investment Process", ->
   it "only accepts investments between 0 and 1", (done) ->
     investments = 
     [
-      team: teamA
+      team: teamA._id
       percentage: -1
     ,
-      team: teamB
+      team: teamB._id
       percentage: "justin"
     ,
-      team: teamC
+      team: teamC._id
       percentage: 0.4
     ]
     Process.investments user, investments, round, (err, results) ->
@@ -96,17 +96,17 @@ describe "Investment Process", ->
   it "must replace existing round investments", (done) ->
     old_investments = 
     [
-      team: teamA
+      team: teamA._id
       percentage: 1
     ]
     Process.investments user, old_investments, round, (err, results) ->
       throw err if err
       new_investments = 
       [
-        team: teamA
+        team: teamA._id
         percentage: 0.5
       ,
-        team: teamC
+        team: teamC._id
         percentage: 0.45 
       ]  
       Process.investments user, new_investments, round, (err, results) ->
@@ -128,10 +128,10 @@ describe "Investment Process", ->
       throw err if err
       investments = 
       [
-        team: teamA
+        team: teamA._id
         percentage: 0.4
       ,
-        team: teamB
+        team: teamB._id
         percentage: 0.6
       ]
       Process.investments user, investments, round, (err, results) ->
@@ -141,13 +141,13 @@ describe "Investment Process", ->
   it "must override duplicate investments within the one process with the latest entry", (done) ->
     investments = 
     [
-      team: teamA
+      team: teamA._id
       percentage: 0.5
     ,
-      team: teamB
+      team: teamB._id
       percentage: 0.4
     ,
-      team: teamA
+      team: teamA._id
       percentage: 0.6
     ]
     Process.investments user, investments, round, (err, results) ->
