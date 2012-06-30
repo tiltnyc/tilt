@@ -7,6 +7,8 @@ Result = require("../models/result")
 RoundHelpers = require("../helpers/round_helpers")
 TeamHelpers = require("../helpers/team_helpers")
 AuthHelpers = require("../helpers/auth_helpers")
+Process = require("../processors/rounds")
+
 module.exports = (app) ->
   handleError = (req, res, error, redirect) ->
     if req.params.format is "json"
@@ -81,96 +83,12 @@ module.exports = (app) ->
         res.redirect redirect
 
   app.put "/round/:roundNumber/process", AuthHelpers.restricted, TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, (req, res) ->
-    round = req.round
-    results = {}
-    total = 0
-    investerList = []
-    return handleError(req, res, "cannot process again.", redirect)  if round.processed
-    Investment.find(round: round.number).populate("user").populate("team").run (err, investments) ->
-      saveResults = (data, index, callback) ->
-        if Object.keys(data).length is index
-          return callback()
-        else
-          teamId = Object.keys(data)[index]
-          team = data[teamId].team
-          teamPercentage = data[teamId].result / total
-          teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
-          before_price = team.last_price
-          teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
-          cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage)
-          console.log "team: " + team.name + " got: " + teamPercentage
-          console.log "resulting in: " + teamPriceMovement.toFixed(2)
-          team.last_price += teamPriceMovement
-          team.movement = teamPriceMovement
-          team.movement_percentage = teamPriceMovement / before_price
-          team.save (err, team) ->
-            return callback(err)  if err
-            new Result(
-              team: team.id
-              round: round.id
-              before_price: before_price
-              after_price: team.last_price
-              movement: team.movement
-              movement_percentage: team.movement_percentage
-              percentage_score: teamPercentage
-            ).save (err, result) ->
-              return callback(err)  if err
-              saveResults data, index + 1, callback
-      rewardUsersForInvestments = (investments, index, callback) ->
-        investment = undefined
-        if investment = investments[index]
-          if investment.percentage > 0
-            fundsInRound = undefined
-            investedInTeam = investment.percentage * (if isNaN(fundsInRound = investment.user.getFundsForRoundNbr(round.number)) then 0 else fundsInRound)
-            investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price
-            new Transaction(
-              user: investment.user.id
-              round: round.number + 1
-              label: "return for round " + round.number + " investment in team: " + investment.team.name
-              amount: investmentReturnForTeam
-            ).save (err) ->
-              return callback(err)  if err
-              rewardUsersForInvestments investments, index + 1, callback
-          else
-            rewardUsersForInvestments investments, index + 1, callback
-        else
-          callback()
-      investments.forEach (investment) ->
-        unless results[investment.team.id]
-          results[investment.team.id] =
-            team: investment.team
-            result: 0
-        userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
-        results[investment.team.id].result += userInvested
-        total += userInvested
-        investerList.push investment.user.id  if investerList.indexOf(investment.user.id) < 0
-
-      average = total / req.teamCount
-      averagePercentage = average / total
-      cumulativeDistanceFromAverage = 0
-      factor = if round.is_first then 1 else total / req.firstRound.total_funds
-      console.log results
-      console.log "total Invested: " + total
-      console.log "number of total teams: " + req.teamCount
-      console.log "average Investment: " + average
-      console.log "average As Percentage: " + averagePercentage
-      console.log "number of investors: " + investerList.length
-      console.log "factor: " + factor
-      saveResults results, 0, (err) ->
-        return handleError(req, res, err, redirect)  if err
-        round.standard_deviation = cumulativeDistanceFromAverage / req.teamCount
-        round.total_funds = total
-        round.investor_count = investerList.length
-        round.average = averagePercentage
-        round.factor = factor
-        console.log "sd= " + round.standard_deviation
-        round.is_open = false
-        round.save (err) ->
-          rewardUsersForInvestments investments, 0, (err) ->
-            return handleError(req, res, err, redirect)  if err
-            req.flash "notice", "Round " + round.number.toString() + " processed."
-            res.redirect redirect
-
+    return handleError(req, res, "cannot process again.", redirect) if req.round.processed
+    Process.rounds req.round, req.firstRound, req.teamCount, (err) ->
+      return handleError(req, res, err, redirect) if err 
+      req.flash "notice", "Round " + req.round.number.toString() + " processed."
+      res.redirect redirect
+    
   app.post "/round/:roundNumber/allocate", AuthHelpers.restricted, (req, res) ->
     stream = User.find().stream()
     round = req.round

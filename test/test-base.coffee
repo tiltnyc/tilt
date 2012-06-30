@@ -4,6 +4,8 @@ databaseCleaner = require("database-cleaner")
 
 cleaner = new DatabaseCleaner("mongodb")
 
+Math.roundToFixed = (num, dec) -> Math.round(num*Math.pow(10, dec))/Math.pow(10,dec)
+
 module.exports = 
   should: should
   clean: (callback) -> cleaner.clean mongoose.connection.db, callback
