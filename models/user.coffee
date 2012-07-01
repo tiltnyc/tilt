@@ -31,12 +31,13 @@ UserSchema = new Schema(
 )
 
 UserSchema.methods.getFundsForRoundNbr = (roundNbr) ->
-  @funds[roundNbr - 1]
+  @funds[roundNbr - 1] ? 0
 
-UserSchema.methods.addFundsForRoundNbr = (roundNbr, funds) ->
+UserSchema.methods.addFundsForRoundNbr = (roundNbr, funds) -> 
   i = roundNbr - 1
   _funds = @funds.concat()
-  _funds[i] = 0 unless _funds[i]
+  x = 0
+  _funds[x++] ?= 0 while x < roundNbr #ensure funds for previous rounds initialised
   _funds[i] += funds
   @funds = _funds
 
