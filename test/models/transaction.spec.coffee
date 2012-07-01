@@ -35,5 +35,6 @@ describe "Trasaction", ->
     createAndTest 1, 105, 105, () ->
       createAndTest 1, 200, 305, () ->
         createAndTest 1, -50, 255, () ->
-          createAndTest 2, 10, 10, () ->
-            done()
+          createAndTest 2, 10, 10, () -> 
+            createAndTest 5, 15, 15, () -> #test round out of bounds
+              done()

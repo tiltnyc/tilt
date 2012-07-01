@@ -13,13 +13,13 @@ process = (round, firstRound, teamCount, done) ->
   averagePercentage = 0
   cumulativeDistanceFromAverage = 0
   factor = 0
+  teamCount ?= 0
 
   saveResults = (data, index, callback) ->
     return callback() if Object.keys(data).length is index
-    
     teamId = Object.keys(data)[index]
     team = data[teamId].team
-    teamPercentage = data[teamId].result / total
+    teamPercentage = if total > 0 then data[teamId].result / total else 0
     teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
     before_price = team.last_price
     teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
@@ -28,7 +28,7 @@ process = (round, firstRound, teamCount, done) ->
     console.log "resulting in: " + teamPriceMovement.toFixed(2)
     team.last_price += teamPriceMovement
     team.movement = teamPriceMovement
-    team.movement_percentage = teamPriceMovement / before_price
+    team.movement_percentage = if before_price isnt 0 then teamPriceMovement / before_price else 0
     team.save (err, team) ->
       return callback(err) if err
       new Result(
@@ -47,8 +47,8 @@ process = (round, firstRound, teamCount, done) ->
     investment = undefined
     if investment = investments[index]
       if investment.percentage > 0
-        fundsInRound = undefined
-        investedInTeam = investment.percentage * (if isNaN(fundsInRound = investment.user.getFundsForRoundNbr(round.number)) then 0 else fundsInRound)
+        fundsInRound = investment.user.getFundsForRoundNbr(round.number)
+        investedInTeam = investment.percentage * fundsInRound
         investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price
         new Transaction(
           user: investment.user.id
@@ -56,7 +56,7 @@ process = (round, firstRound, teamCount, done) ->
           label: "return for round " + round.number + " investment in team: " + investment.team.name
           amount: investmentReturnForTeam
         ).save (err) ->
-          return callback(err)  if err
+          return callback(err) if err
           rewardUsersForInvestments investments, index + 1, callback
       else
         rewardUsersForInvestments investments, index + 1, callback
@@ -66,16 +66,16 @@ process = (round, firstRound, teamCount, done) ->
     return done err if err
     investments.forEach (investment) ->
       results[investment.team.id] ?=
-        team: investment.team
-        result: 0
+        team: investment.team, result: 0
       userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
       results[investment.team.id].result += userInvested
+      console.log userInvested
       total += userInvested
       investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
-
+    
     average = total / teamCount
-    averagePercentage = average / total
-    factor = if round.is_first then 1 else total / firstRound.total_funds
+    averagePercentage = if total > 0 then average / total else 0
+    factor = if round.is_first or firstRound.total_funds is 0 then 1 else total / firstRound.total_funds
     console.log results
     console.log "total Invested: " + total
     console.log "number of total teams: " + teamCount
@@ -83,6 +83,7 @@ process = (round, firstRound, teamCount, done) ->
     console.log "average As Percentage: " + averagePercentage
     console.log "number of investors: " + investerList.length
     console.log "factor: " + factor
+
     saveResults results, 0, (err) ->
       return done err if err
       round.standard_deviation = cumulativeDistanceFromAverage / teamCount
