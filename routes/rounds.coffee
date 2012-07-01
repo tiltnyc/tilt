@@ -1,14 +1,15 @@
-Round = require("../models/round")
-User = require("../models/user")
-Transaction = require("../models/transaction")
-Investment = require("../models/investment")
-Team = require("../models/team")
-Result = require("../models/result")
-RoundHelpers = require("../helpers/round_helpers")
-TeamHelpers = require("../helpers/team_helpers")
-AuthHelpers = require("../helpers/auth_helpers")
-Process = require("../processors/rounds")
+Round = require "../models/round"
+User = require "../models/user"
+Transaction = require "../models/transaction"
+Investment = require "../models/investment"
+Team = require "../models/team"
+Result = require "../models/result"
+RoundHelpers = require "../helpers/round_helpers"
+TeamHelpers = require "../helpers/team_helpers"
+AuthHelpers = require "../helpers/auth_helpers"
+Rounds = require "../processors/rounds"
 Allocation = require "../processors/allocation"
+Reset = require "../processors/reset"
 
 module.exports = (app) ->
   handleError = (req, res, error, redirect) ->
@@ -87,7 +88,7 @@ module.exports = (app) ->
 
   app.put "/round/:roundNumber/process", AuthHelpers.restricted, TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, (req, res) ->
     return handleError(req, res, "cannot process again.", redirect) if req.round.processed
-    Process.rounds req.round, req.firstRound, req.teamCount, (err) ->
+    Rounds.process req.round, req.firstRound, req.teamCount, (err) ->
       return handleError(req, res, err, redirect) if err 
       req.flash "notice", "Round " + req.round.number.toString() + " processed."
       res.redirect redirect
@@ -99,7 +100,7 @@ module.exports = (app) ->
       res.redirect redirect
 
   app.post "/rounds/reset", AuthHelpers.restricted, (req, res) ->
-    Process.reset (err) ->
+    Reset.process (err) ->
       return handleError req, res, err, redirect if err
       req.flash "notice", "tilt has been reset."
       res.redirect redirect

@@ -1,6 +1,6 @@
 {should, clean, create} = require "../test-base"
 
-Process = require "../../processors/rounds"
+Rounds = require "../../processors/rounds"
 
 Investment = require "../../models/investment"
 User = require "../../models/user"
@@ -40,7 +40,7 @@ describe "Round Process", ->
     invest userA, teamA, 0.5, () ->
       invest userA, teamB, 0.5, () ->
         invest userB, teamA, 1, () ->
-          Process.rounds round1, round1, 3, (err) ->
+          Rounds.process round1, round1, 3, (err) ->
             throw err if err
             #todo: check values...
             done()

@@ -31,5 +31,3 @@ describe "Allocation Process", ->
         User.findById userB, (err, user) ->
           user.getFundsForRoundNbr(round.number).should.eql(50)
           done()
-
-  
