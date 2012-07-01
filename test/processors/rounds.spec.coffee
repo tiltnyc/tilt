@@ -1,6 +1,7 @@
 {should, clean, create} = require "../test-base"
 
 Rounds = require "../../processors/rounds"
+Allocation = require "../../processors/allocation"
 
 Investment = require "../../models/investment"
 User = require "../../models/user"
@@ -36,13 +37,15 @@ describe "Round Process", ->
     , () -> done()
 
   it "must valuate teams and reward investors for round 1", (done) ->
-    #TODO: allocate users money...
-    invest userA, teamA, 0.5, () ->
-      invest userA, teamB, 0.5, () ->
-        invest userB, teamA, 1, () ->
-          Rounds.process round1, round1, 3, (err) ->
-            throw err if err
-            #todo: check values...
-            done()
+    Allocation.process round1, 100, (err) ->
+      throw err if err
+      invest userA, teamA, 0.55, () ->
+        invest userA, teamB, 0.45, () ->
+          invest userB, teamA, 0.9, () ->
+            invest userB, teamB, 0.1, () ->
+              Rounds.process round1, round1, 3, (err) ->
+                throw err if err
+                #todo: check values...
+                done()
 
   it "must valuate teams and reward investors for round 2"

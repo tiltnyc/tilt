@@ -25,7 +25,7 @@ process = (round, firstRound, teamCount, done) ->
     teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
     cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage)
     console.log "team: " + team.name + " got: " + teamPercentage
-    console.log "resulting in: " + teamPriceMovement.toFixed(2)
+    console.log "resulting in: " + Math.roundToFixed(teamPriceMovement, 2)
     team.last_price += teamPriceMovement
     team.movement = teamPriceMovement
     team.movement_percentage = if before_price isnt 0 then teamPriceMovement / before_price else 0
