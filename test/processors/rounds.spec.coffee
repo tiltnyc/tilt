@@ -36,7 +36,7 @@ describe "Round Process", ->
     , () -> done()
 
   it "must valuate teams and reward investors for round 1", (done) ->
-    #allocate users money...
+    #TODO: allocate users money...
     invest userA, teamA, 0.5, () ->
       invest userA, teamB, 0.5, () ->
         invest userB, teamA, 1, () ->

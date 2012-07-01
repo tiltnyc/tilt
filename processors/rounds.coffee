@@ -69,7 +69,6 @@ process = (round, firstRound, teamCount, done) ->
         team: investment.team, result: 0
       userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
       results[investment.team.id].result += userInvested
-      console.log userInvested
       total += userInvested
       investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
     

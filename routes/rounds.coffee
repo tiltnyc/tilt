@@ -8,6 +8,7 @@ RoundHelpers = require("../helpers/round_helpers")
 TeamHelpers = require("../helpers/team_helpers")
 AuthHelpers = require("../helpers/auth_helpers")
 Process = require("../processors/rounds")
+Allocation = require "../processors/allocation"
 
 module.exports = (app) ->
   handleError = (req, res, error, redirect) ->
@@ -48,6 +49,7 @@ module.exports = (app) ->
   app.del "/round/:roundNumber", AuthHelpers.restricted, (req, res) ->
     round = req.round
     round.remove (err) ->
+      return handleError(req, res, err, redirect)  if err
       req.flash "notice", "Removed round"
       res.redirect redirect
 
@@ -61,6 +63,7 @@ module.exports = (app) ->
           title: "Current Round"
           round: round
 
+  #edit the round - toggle open/close or move to the next round
   app.put "/round/:roundNumber", AuthHelpers.restricted, (req, res) ->
     round = req.round
     round.is_open = (req.body.round.is_open.toLowerCase() is "true")  if req.body.round.is_open
@@ -90,36 +93,10 @@ module.exports = (app) ->
       res.redirect redirect
     
   app.post "/round/:roundNumber/allocate", AuthHelpers.restricted, (req, res) ->
-    stream = User.find().stream()
-    round = req.round
-    amount = new Number(req.body.allocate.amount)
-    number = round.number
-    stream.on "data", (user) ->
-      @pause()
-      self = this
-      new Transaction(
-        amount: amount
-        round: number
-        user: user.id
-        label: "round " + number.toString() + " allocation."
-      ).save (err, doc) ->
-        return handleError(req, res, err, redirect)  if err
-        self.resume()
-
-    errorMode = false
-    stream.on "error", (err) ->
-      req.flash "error", "Error allocating funds."
+    Allocation.process req.round, new Number(req.body.allocate.amount), (err) ->
+      return handleError(req, res, err, redirect) if err
+      req.flash "notice", "Allocated funds to all users for round " + req.round.number.toString() + "."
       res.redirect redirect
-      @destroy()
-
-    stream.on "close", ->
-      round.allocated += amount
-      round.save (err) ->
-        if err
-          handleError req, res, err, redirect
-        else
-          req.flash "notice", "Allocated funds to all users for round " + req.round.number.toString() + "."
-          res.redirect redirect
 
   app.post "/rounds/reset", AuthHelpers.restricted, (req, res) ->
     Process.reset (err) ->
