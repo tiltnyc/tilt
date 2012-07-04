@@ -4,6 +4,7 @@ Rounds = require "../../processors/rounds"
 Allocation = require "../../processors/allocation"
 
 Investment = require "../../models/investment"
+Result = require "../../models/result"
 User = require "../../models/user"
 Team = require "../../models/team"
 Round = require "../../models/round" 
@@ -45,7 +46,29 @@ describe "Round Process", ->
             invest userB, teamB, 0.1, () ->
               Rounds.process round1, round1, 3, (err) ->
                 throw err if err
-                #todo: check values...
-                done()
+                Result.findOne
+                  team: teamA
+                  round: round1 
+                .populate("team") 
+                .exec (err, result) -> 
+                  throw err if err
+                  Math.roundToFixed(result.before_price, 1).should.eql 1
+                  Math.roundToFixed(result.after_price, 3).should.eql 1.392
+                  Math.roundToFixed(result.movement, 3).should.eql 0.392
+                  Math.roundToFixed(result.percentage_score, 3).should.eql 0.725
+                  
+                  Result.findOne
+                    team: teamB
+                    round: round1 
+                  .populate("team") 
+                  .exec (err, result) -> 
+                    throw err if err
+                    Math.roundToFixed(result.before_price, 1).should.eql 1
+                    Math.roundToFixed(result.after_price, 3).should.eql 0.942
+                    Math.roundToFixed(result.movement, 3).should.eql -0.058
+                    Math.roundToFixed(result.percentage_score, 3).should.eql 0.275
+                    
+                    console.log result
+                    done()
 
   it "must valuate teams and reward investors for round 2"
