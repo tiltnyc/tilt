@@ -88,9 +88,9 @@ describe "Round Process", ->
           invest userB, teamB, 0.9, () ->
             invest userC, teamD, 0.35, () ->
               invest userC, teamC, 0.65, () ->
-                Rounds.process round2, (err) -> 
-                  throw err if err
-                  done()    
+                #Rounds.process round2, (err) -> 
+                  #throw err if err
+                done()    
 
 
   it "must valuate teams for round 1", (done) ->
