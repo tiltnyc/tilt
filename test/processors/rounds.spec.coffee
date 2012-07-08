@@ -18,6 +18,7 @@ describe "Round Process", ->
   teamC = undefined
   teamD = undefined
   round1 = undefined
+  round2 = undefined
 
   beforeEach (done) ->
     userA = create User, {name: 'justin', email: 'j@example.com'}, () ->
@@ -27,7 +28,9 @@ describe "Round Process", ->
             teamB = create Team, name: 'teamB', () ->
               teamC = create Team, name: 'teamC', () ->
                 teamD = create Team, name: 'teamD', () ->
-                  round1 = create Round, number: 1,  () -> done()
+                  round1 = create Round, number: 1,  () -> 
+                    round2 = create Round, number: 2, () ->
+                      done()
 
   afterEach (done) -> clean done
 
@@ -55,6 +58,7 @@ describe "Round Process", ->
       Math.roundToFixed(result.team.movement_percentage, 3).should.eql movement_percentage
       Math.roundToFixed(result.after_price, 3).should.eql after_price
       Math.roundToFixed(result.team.last_price, 3).should.eql after_price
+      
       done()
 
   checkReward = (user, round, expected, done) ->
@@ -71,9 +75,23 @@ describe "Round Process", ->
           invest userB, teamA, 0.25, () ->
             invest userB, teamB, 0.25, () ->
               invest userB, teamC, 0.5, () ->
-                Rounds.process round1, round1, (err) -> 
+                Rounds.process round1, (err) -> 
                   throw err if err
                   done()    
+
+
+  goRoundTwo = (done) ->
+    Allocation.process round2, 250, (err) ->
+      throw err if err
+      invest userA, teamA, 1, () ->
+        invest userB, teamA, 0.1, () ->
+          invest userB, teamB, 0.9, () ->
+            invest userC, teamD, 0.35, () ->
+              invest userC, teamC, 0.65, () ->
+                Rounds.process round2, (err) -> 
+                  throw err if err
+                  done()    
+
 
   it "must valuate teams for round 1", (done) ->
     goRoundOne () ->
@@ -90,7 +108,11 @@ describe "Round Process", ->
           checkReward userC, round1, 0, () -> 
             done()
 
-  it "must valuate teams for round 2"
+  it "must valuate teams for round 2", (done) ->
+    goRoundOne () -> 
+      goRoundTwo () ->
+        #checkResult teamA, round2, 1.175, 1, 1, 1, 1, () ->
+        done()
 
-  it "mut reward investors for round 2"
+  it "must reward investors for round 2"
 

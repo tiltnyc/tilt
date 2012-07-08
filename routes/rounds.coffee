@@ -86,9 +86,9 @@ module.exports = (app) ->
         req.flash "notice", "Round toggled."
         res.redirect redirect
 
-  app.put "/round/:roundNumber/process", AuthHelpers.restricted, TeamHelpers.loadTeamCount, RoundHelpers.loadFirstRound, (req, res) ->
+  app.put "/round/:roundNumber/process", AuthHelpers.restricted, (req, res) ->
     return handleError(req, res, "cannot process again.", redirect) if req.round.processed
-    Rounds.process req.round, req.firstRound, (err) ->
+    Rounds.process req.round, (err) ->
       return handleError(req, res, err, redirect) if err 
       req.flash "notice", "Round " + req.round.number.toString() + " processed."
       res.redirect redirect

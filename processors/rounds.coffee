@@ -5,7 +5,7 @@ Team = require("../models/team")
 Round = require("../models/round")
 Result = require("../models/result")
 
-process = (round, firstRound, done) ->
+process = (round, done) ->
   results = {}
   total = 0
   investerList = []
@@ -70,39 +70,42 @@ process = (round, firstRound, done) ->
         team: team
         result: 0
 
-    Investment.find(round: round.number).populate("user").populate("team").run (err, investments) ->
+    Round.findOne(number: 1).run (err, firstRound) -> #load first round
       return done err if err
-      investments.forEach (investment) ->
-        userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
-        results[investment.team.id].result += userInvested
-        total += userInvested
-        investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
-      
-      average = total / teamCount
-      averagePercentage = if total > 0 then average / total else 0
-      factor = if round.is_first or firstRound.total_funds is 0 then 1 else total / firstRound.total_funds
-      console.log results
-      console.log "total Invested: " + total
-      console.log "number of total teams: " + teamCount
-      console.log "average Investment: " + average
-      console.log "average As Percentage: " + averagePercentage
-      console.log "number of investors: " + investerList.length
-      console.log "factor: " + factor
 
-      saveResults results, 0, (err) ->
+      Investment.find(round: round.number).populate("user").populate("team").run (err, investments) ->
         return done err if err
-        round.standard_deviation = cumulativeDistanceFromAverage / teamCount
-        round.total_funds = total
-        round.investor_count = investerList.length
-        round.average = averagePercentage
-        round.factor = factor
-        console.log "sd= " + round.standard_deviation
-        round.is_open = false
-        round.save (err) ->
+        investments.forEach (investment) ->
+          userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
+          results[investment.team.id].result += userInvested
+          total += userInvested
+          investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
+        
+        average = total / teamCount
+        averagePercentage = if total > 0 then average / total else 0
+        factor = if round.is_first or firstRound.total_funds is 0 then 1 else total / firstRound.total_funds
+        console.log results
+        console.log "total Invested: " + total
+        console.log "number of total teams: " + teamCount
+        console.log "average Investment: " + average
+        console.log "average As Percentage: " + averagePercentage
+        console.log "number of investors: " + investerList.length
+        console.log "factor: " + factor
+
+        saveResults results, 0, (err) ->
           return done err if err
-          rewardUsersForInvestments investments, 0, (err) ->
+          round.standard_deviation = cumulativeDistanceFromAverage / teamCount
+          round.total_funds = total
+          round.investor_count = investerList.length
+          round.average = averagePercentage
+          round.factor = factor
+          console.log "sd= " + round.standard_deviation
+          round.is_open = false
+          round.save (err) ->
             return done err if err
-            done()
+            rewardUsersForInvestments investments, 0, (err) ->
+              return done err if err
+              done()
 
 module.exports = 
   process: process
