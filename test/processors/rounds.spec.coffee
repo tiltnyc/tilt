@@ -16,7 +16,9 @@ describe "Round Process", ->
   teamA = undefined
   teamB = undefined
   teamC = undefined
+  teamD = undefined
   round1 = undefined
+  teams = [teamA, teamB, teamC, teamD]
 
   beforeEach (done) ->
     userA = create User, {name: 'justin', email: 'j@example.com'}, () ->
@@ -25,7 +27,8 @@ describe "Round Process", ->
           teamA = create Team, name: 'teamA', () ->
             teamB = create Team, name: 'teamB', () ->
               teamC = create Team, name: 'teamC', () ->
-                round1 = create Round, number: 1,  () -> done()
+                teamD = create Team, name: 'teamD', () ->
+                  round1 = create Round, number: 1,  () -> done()
 
   afterEach (done) -> clean done
 
@@ -37,38 +40,38 @@ describe "Round Process", ->
       percentage: percentage
     , () -> done()
 
+  checkResult = (team, round, before_price, percentage_score, movement, movement_percentage, after_price, done) ->
+    Result.findOne
+      team: team
+      round: round 
+    .populate("team") 
+    .exec (err, result) -> 
+      throw err if err
+      console.log result
+      ###Math.roundToFixed(result.before_price, 1).should.eql before_price
+      Math.roundToFixed(result.percentage_score, 3).should.eql percentage_score
+      Math.roundToFixed(result.movement, 3).should.eql movement
+      Math.roundToFixed(result.team.movement, 3).should.eql movement
+      Math.roundToFixed(result.movement_percentage, 3).should.eql movement_percentage
+      Math.roundToFixed(result.team.movement_percentage, 3).should.eql movement_percentage
+      Math.roundToFixed(result.after_price, 3).should.eql after_price
+      Math.roundToFixed(result.team.last_price, 3).should.eql after_price
+      ###
+      done()
+
   it "must valuate teams and reward investors for round 1", (done) ->
     Allocation.process round1, 100, (err) ->
       throw err if err
-      invest userA, teamA, 0.55, () ->
-        invest userA, teamB, 0.45, () ->
-          invest userB, teamA, 0.9, () ->
-            invest userB, teamB, 0.1, () ->
-              Rounds.process round1, round1, 3, (err) ->
-                throw err if err
-                Result.findOne
-                  team: teamA
-                  round: round1 
-                .populate("team") 
-                .exec (err, result) -> 
-                  throw err if err
-                  Math.roundToFixed(result.before_price, 1).should.eql 1
-                  Math.roundToFixed(result.after_price, 3).should.eql 1.392
-                  Math.roundToFixed(result.movement, 3).should.eql 0.392
-                  Math.roundToFixed(result.percentage_score, 3).should.eql 0.725
-                  
-                  Result.findOne
-                    team: teamB
-                    round: round1 
-                  .populate("team") 
-                  .exec (err, result) -> 
-                    throw err if err
-                    Math.roundToFixed(result.before_price, 1).should.eql 1
-                    Math.roundToFixed(result.after_price, 3).should.eql 0.942
-                    Math.roundToFixed(result.movement, 3).should.eql -0.058
-                    Math.roundToFixed(result.percentage_score, 3).should.eql 0.275
-                    
-                    console.log result
-                    done()
+      invest userA, teamA, 0.6, () ->
+        invest userA, teamB, 0.4, () ->
+          invest userB, teamA, 0.25, () ->
+            invest userB, teamB, 0.25, () ->
+              invest userB, teamC, 0.5, () ->
+                Rounds.process round1, round1, teams.length, (err) ->
+                  checkResult teamA, round1, 1, 0.425, 0.175, 0.175, 1.175, () ->
+                    checkResult teamB, round1, 1, 0.325, 0.075, 0.075, 1.075, () ->
+                      checkResult teamC, round1, 1, 0.25, 0, 0, 1, () ->
+                        checkResult teamD, round1, 1, 1, 1, 1, 1, () -> 
+                          done()
 
   it "must valuate teams and reward investors for round 2"
