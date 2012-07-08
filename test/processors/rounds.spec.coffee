@@ -18,7 +18,6 @@ describe "Round Process", ->
   teamC = undefined
   teamD = undefined
   round1 = undefined
-  teams = [teamA, teamB, teamC, teamD]
 
   beforeEach (done) ->
     userA = create User, {name: 'justin', email: 'j@example.com'}, () ->
@@ -48,7 +47,7 @@ describe "Round Process", ->
     .exec (err, result) -> 
       throw err if err
       console.log result
-      ###Math.roundToFixed(result.before_price, 1).should.eql before_price
+      Math.roundToFixed(result.before_price, 1).should.eql before_price
       Math.roundToFixed(result.percentage_score, 3).should.eql percentage_score
       Math.roundToFixed(result.movement, 3).should.eql movement
       Math.roundToFixed(result.team.movement, 3).should.eql movement
@@ -56,10 +55,15 @@ describe "Round Process", ->
       Math.roundToFixed(result.team.movement_percentage, 3).should.eql movement_percentage
       Math.roundToFixed(result.after_price, 3).should.eql after_price
       Math.roundToFixed(result.team.last_price, 3).should.eql after_price
-      ###
       done()
 
-  it "must valuate teams and reward investors for round 1", (done) ->
+  checkReward = (user, round, expected, done) ->
+    User.findById(user.id).run (err, user) ->
+      throw err if err
+      user.getFundsForRoundNbr(round.number + 1).should.eql expected 
+      done()
+
+  goRoundOne = (done) ->
     Allocation.process round1, 100, (err) ->
       throw err if err
       invest userA, teamA, 0.6, () ->
@@ -67,11 +71,26 @@ describe "Round Process", ->
           invest userB, teamA, 0.25, () ->
             invest userB, teamB, 0.25, () ->
               invest userB, teamC, 0.5, () ->
-                Rounds.process round1, round1, teams.length, (err) ->
-                  checkResult teamA, round1, 1, 0.425, 0.175, 0.175, 1.175, () ->
-                    checkResult teamB, round1, 1, 0.325, 0.075, 0.075, 1.075, () ->
-                      checkResult teamC, round1, 1, 0.25, 0, 0, 1, () ->
-                        checkResult teamD, round1, 1, 1, 1, 1, 1, () -> 
-                          done()
+                Rounds.process round1, round1, (err) -> 
+                  throw err if err
+                  done()    
 
-  it "must valuate teams and reward investors for round 2"
+  it "must valuate teams for round 1", (done) ->
+    goRoundOne () ->
+      checkResult teamA, round1, 1, 0.425, 0.175, 0.175, 1.175, () ->
+        checkResult teamB, round1, 1, 0.325, 0.075, 0.075, 1.075, () ->
+          checkResult teamC, round1, 1, 0.25, 0, 0, 1, () ->
+            checkResult teamD, round1, 1, 0, -0.25, -0.25, 0.75, () -> 
+              done()
+
+  it "must reward investors for round 1", (done) ->
+    goRoundOne () ->
+      checkReward userA, round1, 113.5, () -> 
+        checkReward userB, round1, 106.25, () -> 
+          checkReward userC, round1, 0, () -> 
+            done()
+
+  it "must valuate teams for round 2"
+
+  it "mut reward investors for round 2"
+
