@@ -62,8 +62,7 @@ describe "Round Process", ->
   checkReward = (user, round, expected, done) ->
     User.findById(user.id).run (err, user) ->
       throw err if err
-      console.log user
-      #user.getFundsForRoundNbr(round.number + 1).should.eql expected 
+      Math.roundToFixed(user.getFundsForRoundNbr(round.number + 1), 2).should.eql expected 
       done()
 
   goRoundOne = (done) ->
@@ -129,5 +128,7 @@ describe "Round Process", ->
   it "must reward investors for round 2", (done) ->
     goRoundOne () -> 
       goRoundTwo () ->
-        checkReward userA, round2, 113.5, () -> 
-          done()
+        checkReward userA, round2, 711.89, () -> 
+          checkReward userB, round2, 539.79, () -> 
+            checkReward userC, round2, 200.75, () -> 
+              done()
