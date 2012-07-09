@@ -44,4 +44,4 @@ reset = (done) ->
               , (err) -> done err
 
 module.exports = 
-  process: process
+  process: reset
