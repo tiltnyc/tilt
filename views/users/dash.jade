@@ -15,8 +15,8 @@ p
 
 p 
   strong funds this round
-  if (theUser.funds[currentRound.number - 1])
-    span &nbsp $#{theUser.funds[currentRound.number - 1].toFixed(2)}
+  if (theUser.getFundsForRoundNbr(currentRound.number))
+    span &nbsp $#{theUser.getFundsForRoundNbr(currentRound.number).toFixed(2)}
   else
     span &nbsp $0
     

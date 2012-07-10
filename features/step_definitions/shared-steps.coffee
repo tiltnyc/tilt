@@ -1,5 +1,9 @@
 sharedSteps = module.exports = ->
   @World = require("../support/world").World
+  
+  @Given /^I am an administrator$/, (next) ->
+    next()
+    
   @Given /^I am on the home page$/, (next) ->
     @visit "/", next
 

@@ -4,9 +4,6 @@ module.exports = ->
   @After (callback) ->
     @clean callback
 
-  @Given /^I am an administrator$/, (next) ->
-    next()
-
   @Given /^there exists users:$/, (table, next) ->
     createUser = (index, callback) ->
       return callback()  if table.hashes().length is index

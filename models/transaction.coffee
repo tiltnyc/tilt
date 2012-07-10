@@ -30,11 +30,8 @@ Transaction.pre "save", (next) ->
   User.findOne
     _id: @user
   , (err, user) ->
-    return next(err)  if err
-    funds = user.funds.concat()
-    funds[transaction.round - 1] = 0  unless funds[transaction.round - 1]
-    funds[transaction.round - 1] += transaction.amount
-    user.funds = funds
+    return next(err) if err
+    user.addFundsForRoundNbr transaction.round, transaction.amount
     user.save (err) ->
       if err
         next err

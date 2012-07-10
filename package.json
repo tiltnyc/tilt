@@ -8,13 +8,13 @@
       "node":     ">= 0.6.8"
     }
   , "devDependencies": {
-      "cucumber"    : "latest"
-    , "mocha"       : "*"
-    , "should"      : "*"
-    , "sinon"       : "*"
-    , "zombie"      : "latest"
-    , "html5"       : "*"
-    , "database-cleaner" : "*"
+      "cucumber"    : ">= 0.2.15"
+    , "mocha"       : ">= 1.1.0"
+    , "should"      : ">= 0.6.3"
+    , "sinon"       : ">= 1.3.4"
+    , "zombie"      : ">= 1.3.1"
+    , "html5"       : ">= 0.3.8"
+    , "database-cleaner" : ">= 0.7.0"
   }
   , "dependencies": {
       "express"           : "= 2.5.9"
@@ -24,8 +24,8 @@
     , "gzippo"            : ">= 0.0.7"   
     , "express-messages"  : ">= 0.0.2"
     , "mongoose-auth"     : ">= 0.0.11"
-    , "everyauth"         : "*"
-    , "connect-assets"    : "*"
-    , "coffee-script"     : "*"
+    , "everyauth"         : ">= 0.2.32"
+    , "connect-assets"    : ">= 2.2.1"
+    , "coffee-script"     : ">= 1.3.3"
   }
 }
