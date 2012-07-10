@@ -36,8 +36,8 @@ describe "Round Process", ->
 
   invest = (user, round, team, percentage, done) ->
     create Investment, 
-      user: user._id
-      team: team._id
+      user: user.id
+      team: team.id
       round: round.number
       percentage: percentage
     , () -> done()
