@@ -83,7 +83,7 @@ process = (round, done) ->
         
         average = total / teamCount
         averagePercentage = if total > 0 then average / total else 0
-        factor = if round.is_first or firstRound.total_funds is 0 then 1 else total / firstRound.total_funds
+        factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
         console.log results
         console.log "total Invested: " + total
         console.log "number of total teams: " + teamCount
