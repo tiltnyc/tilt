@@ -28,7 +28,7 @@ module.exports = (app) ->
       res.redirect redirect
 
   app.get '/user/dash', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, (request, response) ->
-    new UserController().show(request, response)
+    new UserController().dash(request, response)
 
   app.get '/users.:format?', AuthHelpers.restricted, (req, res) ->
     User.find({}).populate('team').asc('username').run (err, users) ->
