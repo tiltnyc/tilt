@@ -1,18 +1,19 @@
-Allocation    = require '../processors/allocation'
-AuthHelpers   = require '../helpers/auth_helpers'
-Investment    = require '../models/investment'
-Process       = require '../processors/investments'
-Reset         = require '../processors/reset'
-Result        = require '../models/result'
-Round         = require '../models/round'
-RoundHelpers  = require '../helpers/round_helpers'
-Rounds        = require '../processors/rounds'
-SystemHelpers = require '../helpers/system_helpers'
-Team          = require '../models/team'
-TeamHelpers   = require '../helpers/team_helpers'
-Transaction   = require '../models/transaction'
-User          = require '../models/user'
-UserHelpers   = require '../helpers/user_helpers'
+Allocation     = require '../processors/allocation'
+AuthHelpers    = require '../helpers/auth_helpers'
+Investment     = require '../models/investment'
+Process        = require '../processors/investments'
+Reset          = require '../processors/reset'
+Result         = require '../models/result'
+Round          = require '../models/round'
+RoundHelpers   = require '../helpers/round_helpers'
+Rounds         = require '../processors/rounds'
+SystemHelpers  = require '../helpers/system_helpers'
+Team           = require '../models/team'
+TeamHelpers    = require '../helpers/team_helpers'
+Transaction    = require '../models/transaction'
+User           = require '../models/user'
+UserController = require '../app/controllers/users_controller'
+UserHelpers    = require '../helpers/user_helpers'
 
 module.exports = (app) ->
 
@@ -26,19 +27,8 @@ module.exports = (app) ->
       req.flash 'error', error
       res.redirect redirect
 
-  app.get '/user/dash', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, (req, res) ->
-    User.findOne(_id: req.user.id).populate('team').run (err, user) ->
-      return SystemHandlers.error(req, res, err, '/')  if err
-      UserHelpers.loadInvestments user, (err, investments) ->
-        return SystemHandlers.error(req, res, err, '/')  if err
-        user.investments = investments
-        UserHelpers.loadTransactions user, (err, transactions) ->
-          return SystemHandlers.error(req, res, err, '/')  if err
-          user.transactions = transactions
-          res.render 'users/dash',
-            title: 'Dashboard'
-            theUser: user
-            currentRound: req.currentRound
+  app.get '/user/dash', AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, (request, response) ->
+    new UserController().show(request, response)
 
   app.get '/users.:format?', AuthHelpers.restricted, (req, res) ->
     User.find({}).populate('team').asc('username').run (err, users) ->
