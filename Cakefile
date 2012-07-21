@@ -61,7 +61,7 @@ testenv = ->
 #JM: to use child_process.spawn, files must be passed as list rather than wildcard match
 task 'mocha', 'run unit tests', -> 
   log "running unit tests...", bold 
-  exec 'NODE_ENV=test mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
+  exec 'NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
     throw err if err
     console.log stdout + stderr
 
@@ -69,6 +69,6 @@ task 'mocha', 'run unit tests', ->
 task 'cuke', 'run integration tests', ->
   log "running integration tests...", bold
   
-  launch 'cucumber.js', [], testenv(), (err) ->
+  launch './node_modules/cucumber/bin/cucumber.js', [], testenv(), (err) ->
     throw err if err 
  
