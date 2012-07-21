@@ -1,6 +1,7 @@
 bootApplication = (app) ->
   compile = (str, path) ->
     stylus(str).set("filename", path).set("warn", true).set "compress", true
+
   app.configure ->
     app.set "views", __dirname + "/views"
     app.set "view engine", "jade"
@@ -27,14 +28,18 @@ bootApplication = (app) ->
     messages: require("express-messages")
 
   app.use require("connect-assets")()
+
   app.use stylus.middleware(
     debug: true
     src: __dirname + "/stylus"
     dest: __dirname + "/public"
     compile: compile
   )
+
   app.set "showStackError", false
+
   oneYear = 31557600000
+
   app.configure "development", ->
     app.set "showStackError", true
     app.use express.static(__dirname + "/public",
@@ -56,6 +61,7 @@ bootApplication = (app) ->
     app.use gzippo.staticGzip(__dirname + "/public",
       maxAge: oneYear
     )
+
 bootErrorConfig = (app) ->
   NotFound = (path) ->
     @name = "NotFound"
@@ -65,13 +71,16 @@ bootErrorConfig = (app) ->
     else
       Error.call this, "Not Found"
     Error.captureStackTrace this, arguments.callee
+
   app.use (req, res, next) ->
     next new NotFound(req.url)
 
   NotFound::__proto__ = Error::
+
   app.error (err, req, res, next) ->
+    console.log err.stack
+
     if err instanceof NotFound
-      console.log err.stack
       res.render "404",
         layout: "layouts/default"
         status: 404
@@ -79,19 +88,21 @@ bootErrorConfig = (app) ->
         showStack: app.settings.showStackError
         title: "Oops! The page you requested desn't exist"
     else
-      console.log err.stack
       res.render "500",
         layout: "layouts/default"
         status: 500
         error: err
         showStack: app.settings.showStackError
         title: "Oops! Something went wrong!"
-fs = require("fs")
-stylus = require("stylus")
-express = require("express")
-gzippo = require("gzippo")
+
+fs           = require("fs")
+stylus       = require("stylus")
+express      = require("express")
+gzippo       = require("gzippo")
 mongooseAuth = require("mongoose-auth")
-userModel = require("./models/user")
+
+# Todo Refactor, so the user model is not required here
+require("./models/user")
 
 exports.boot = (app) ->
   bootApplication app
