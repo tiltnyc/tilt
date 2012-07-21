@@ -10,7 +10,7 @@ Math.roundToFixed = (num, dec) -> Math.round(num*Math.pow(10, dec))/Math.pow(10,
 require('./settings').boot app
 
 app.dynamicHelpers
-  base: -> 
+  base: ->
     if '/' == app.route then '' else app.route
   appName: (req, res) -> 'tilt investor app'
 
@@ -20,7 +20,7 @@ require('./app/routes')(app)
 #add route for login check via REST
 app.get '/login.json', (req, res) ->
   res.contentType('application/json')
-  if (req.user) 
+  if (req.user)
     res.send(JSON.stringify(req.user))
   else
     res.send(JSON.stringify({error: "not authorized."}))
@@ -30,5 +30,5 @@ app.get '/login.json', (req, res) ->
 mongooseAuth.helpExpress(app)
 
 port = process.env.PORT || 3000
-app.listen port 
+app.listen port
 console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env

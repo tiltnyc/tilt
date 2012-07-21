@@ -4,3 +4,4 @@ node_modules
 .cuke
 public/stylesheets/*.css
 *.sw[nomp]
+npm-debug.log

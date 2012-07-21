@@ -1,5 +1,7 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
+
 mongooseAuth = require("mongoose-auth")
+
 UserSchema = new Schema(
   username:
     type: String
@@ -33,7 +35,7 @@ UserSchema = new Schema(
 UserSchema.methods.getFundsForRoundNbr = (roundNbr) ->
   @funds[roundNbr - 1] ? 0
 
-UserSchema.methods.addFundsForRoundNbr = (roundNbr, funds) -> 
+UserSchema.methods.addFundsForRoundNbr = (roundNbr, funds) ->
   i = roundNbr - 1
   _funds = @funds.concat()
   x = 0
@@ -93,16 +95,16 @@ UserSchema.plugin mongooseAuth,
 
 Team = require("./team")
 UserSchema.pre "save", (next) ->
-  
-  leaveTeam = (user, callback) -> 
+
+  leaveTeam = (user, callback) ->
     return callback() unless user.oldTeam
     Team.findById user.oldTeam, (err, team) ->
       return callback(err)  if err
       team.users.splice team.users.indexOf(user._id), 1
-      team.save (err) -> 
+      team.save (err) ->
         user.oldTeam = null
         callback(err ? null)
-  
+
   joinTeam = (user, callback) ->
     return callback() unless user.team
     Team.findById user.team, (err, team) ->
@@ -110,11 +112,11 @@ UserSchema.pre "save", (next) ->
       callback() if !team or team.users.indexOf(user.id) >= 0
       team.users.push user._id
       team.save (err) -> callback(err ? null)
-  
+
   user = @
 
-  leaveTeam user, (err) -> 
-    if err then next err  
+  leaveTeam user, (err) ->
+    if err then next err
     else joinTeam user, (err) -> next(err ? null)
 
 mongoose.model "User", UserSchema
