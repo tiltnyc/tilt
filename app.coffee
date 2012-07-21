@@ -15,12 +15,14 @@ app.dynamicHelpers
   appName: (req, res) -> 'tilt investor app'
 
 #Routes...
-require('./routes/index')(app)
-require('./routes/users')(app)
-require('./routes/teams')(app)
-require('./routes/investments')(app)
-require('./routes/rounds')(app)
-require('./routes/results')(app)
+#require('./routes/index')(app)
+#require('./routes/users')(app)
+#require('./routes/teams')(app)
+#require('./routes/investments')(app)
+#require('./routes/rounds')(app)
+#require('./routes/results')(app)
+
+require('./app/routes')(app)
 
 #add route for login check via REST
 app.get '/login.json', (req, res) ->

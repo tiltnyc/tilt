@@ -3,3 +3,4 @@ node_modules
 .s
 .cuke
 public/stylesheets/*.css
+*.sw[nomp]
