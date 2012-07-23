@@ -5,3 +5,4 @@ node_modules
 public/stylesheets/*.css
 *.sw[nomp]
 npm-debug.log
+build

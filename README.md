@@ -1,5 +1,6 @@
 this is the web application for tilt, which creates and manages a virtual market, with investment occuring within a series of rounds.  
 
+__current version__: 0.3 (in development)
 
 #current status
 
@@ -12,7 +13,7 @@ this is the web application for tilt, which creates and manages a virtual market
 
 #developer requirements
 * local installation of [mongodb (v2.0.2+)](http://www.mongodb.org/downloads).
-* local install of node `0.6.8`+
+* local install of node `0.8.3`+
 
 #installation
 * clone source `git clone git@github.com:justinjmoses/tilt.git`
@@ -28,7 +29,8 @@ this is the web application for tilt, which creates and manages a virtual market
 * to change the port:
         
         port=5000 coffee app
-* alternatively, if you install foreman `npm install -g foreman`, you can run via foreman which will run using the web workers/dynos processes that heroku employs:
+
+* alternatively, if you install foreman ([download heroku toolkit](https://toolbelt.heroku.com/)), you can run via foreman which will run using the web workers/dynos processes that heroku employs:
 
         foreman start
 
