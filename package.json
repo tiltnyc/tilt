@@ -6,7 +6,7 @@
   , "author":       "justin j. moses (http://about.me/justinj)"
   , "engines": {
       "node"        : "0.8.3"
-    , "npm"         : "1.1.44"     
+    , "npm"         : "1.1.43"     
     }
   , "devDependencies": {
       "cucumber"    : ">= 0.2.15"
