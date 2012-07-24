@@ -3,7 +3,17 @@
   , "description":  "live event app for tilt"
   , "version":      "0.2.0"
   , "private":      true
-  , "author":       "justin j. moses (http://about.me/justinj)"
+  , "author":       "tiltnyc (http://github.com/tiltnyc)"
+  , "contributors": [
+      {
+        "name": "justin j. moses"
+      , "email": "justinjmoses@gmail.com"
+      }
+    , {
+        "name": "jon storer"
+      , "email": "jonathon.scott.storer@gmail.com"
+      }
+    ]
   , "engines": {
       "node"        : "0.8.3"
     , "npm"         : "1.1.43"     
