@@ -1,9 +1,9 @@
 tr(class="investment")
   td.round-column
-    #{investment.round}
+    =investment.round
   td.text-column
-    #{investment.team.name}    
+    =investment.team.name    
   td.value-column
-    #{(investment.percentage * 100).toFixed(2)}%
+    | #{Math.roundToFixed(investment.percentage * 100, 2)}%
 
   

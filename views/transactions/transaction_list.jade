@@ -1,8 +1,8 @@
 tr(class="transaction")
   td.round-column
-    #{transaction.round}
+    =transaction.round
   td.text-column
-    #{transaction.label}
+    =transaction.label
   td.value-column
-    $#{transaction.amount.toFixed(2)}
+    $#{Math.roundToFixed(transaction.amount, 2)}
   
