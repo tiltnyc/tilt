@@ -3,9 +3,9 @@
 - average = (roundResults[0].round.average*100).toFixed(2)
 - each teamResult in roundResults
   - teams.push(teamResult.team.name)
-  - results.push((teamResult.percentage_score*100).toFixed(2))
-  - prices.push(teamResult.after_price.toFixed(2))
-  - old_prices.push(teamResult.before_price.toFixed(2))
+  - results.push(Math.roundToFixed(teamResult.percentage_score*100, 2))
+  - prices.push(Math.roundToFixed(teamResult.after_price, 2))
+  - old_prices.push(Math.roundToFixed(teamResult.before_price, 2))
 - roundResults.sort(function(a,b){ return b.after_price > a.after_price; })
 li  
   table.round-results
@@ -32,7 +32,7 @@ li
             + 
           else if (teamResult.movement < 0.00)
             -
-          #{Math.abs(teamResult.movement.toFixed(2))} (#{teamResult.movement_percentage.toFixed(2)}%)
+          | #{Math.abs(Math.roundToFixed(teamResult.movement, 2))} (#{Math.roundToFixed(teamResult.movement_percentage, 2)}%)
         td 
           strong $#{teamResult.after_price.toFixed(2)}
     tr.footer

@@ -8,7 +8,7 @@ $ ->
         text: "Round " + $(container).data("round") + " distribution"
 
       xAxis:
-        categories: $(container).data("teams").split(",")
+        categories: $(container).data("teams")
 
       yAxis:
         min: 0
@@ -38,13 +38,13 @@ $ ->
 
       series: [
         type: "column"
-        data: JSON.parse("[" + $(container).data("results") + "]")
+        data: $(container).data("results")
       ]
     )
 
   $(".price-chart").each (i, container) ->
-    old_prices = JSON.parse("[" + $(container).data("old_prices") + "]")
-    new_prices = JSON.parse("[" + $(container).data("prices") + "]")
+    old_prices = $(container).data("old_prices")
+    new_prices = $(container).data("prices")
     new_data = []
     for i of new_prices
       color = (if (new_prices[i] > old_prices[i]) then "green" else (if (new_prices[i] < old_prices[i]) then "red" else "#666666"))
@@ -59,7 +59,7 @@ $ ->
         text: "Round " + $(container).data("round") + " prices"
 
       xAxis:
-        categories: $(container).data("teams").split(",")
+        categories: $(container).data("teams")
 
       yAxis:
         min: 0
@@ -80,7 +80,7 @@ $ ->
         name: "old price"
         type: "column"
         color: "#BBBBBB"
-        data: JSON.parse("[" + $(container).data("old_prices") + "]")
+        data: $(container).data("old_prices")
       ,
         name: "new price"
         type: "column"
