@@ -1,9 +1,12 @@
 sharedSteps = module.exports = ->
   @World = require("../support/world").World
-  
+
+  @Given /^this test is pending$/, (next) ->
+    next.pending()
+
   @Given /^I am an administrator$/, (next) ->
     next()
-    
+
   @Given /^I am on the home page$/, (next) ->
     @visit "/", next
 

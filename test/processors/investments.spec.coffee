@@ -5,7 +5,7 @@ Process = require "../../processors/investments.coffee"
 Investment = require "../../models/investment"
 User = require "../../models/user"
 Team = require "../../models/team"
-Round = require "../../models/round" 
+Round = require "../../models/round"
 
 describe "Investment Process", ->
   teamA = new Team
@@ -16,7 +16,7 @@ describe "Investment Process", ->
     name: 'teamC'
   user = new User
     username: 'justin'
-    email: 'justin@example.com' 
+    email: 'justin@example.com'
   round = undefined
 
   beforeEach (done) ->
@@ -39,7 +39,7 @@ describe "Investment Process", ->
   afterEach (done) -> clean done
 
   it "must save investments as entered", (done) ->
-    investments = 
+    investments =
     [
       team: teamA._id
       percentage: 0.4
@@ -56,7 +56,7 @@ describe "Investment Process", ->
       done()
 
   it "must cap investments at 100%", (done) ->
-    investments = 
+    investments =
     [
       team: teamA._id
       percentage: 0.8
@@ -75,7 +75,7 @@ describe "Investment Process", ->
       done()
 
   it "only accepts investments between 0 and 1", (done) ->
-    investments = 
+    investments =
     [
       team: teamA._id
       percentage: -1
@@ -94,27 +94,27 @@ describe "Investment Process", ->
       done()
 
   it "must replace existing round investments", (done) ->
-    old_investments = 
+    old_investments =
     [
       team: teamA._id
       percentage: 1
     ]
     Process.investments user, old_investments, round, (err, results) ->
       throw err if err
-      new_investments = 
+      new_investments =
       [
         team: teamA._id
         percentage: 0.5
       ,
         team: teamC._id
-        percentage: 0.45 
-      ]  
+        percentage: 0.45
+      ]
       Process.investments user, new_investments, round, (err, results) ->
         throw err if err
         Investment.find
           round: round.number
           user: user
-        .run (err, investments) ->
+        .exec (err, investments) ->
           investments.length.should.eql 2
           for i in investments
             if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5
@@ -126,7 +126,7 @@ describe "Investment Process", ->
     round.is_open = false
     round.save (err) ->
       throw err if err
-      investments = 
+      investments =
       [
         team: teamA._id
         percentage: 0.4
@@ -137,9 +137,9 @@ describe "Investment Process", ->
       Process.investments user, investments, round, (err, results) ->
         should.exist err
         done()
-     
+
   it "must override duplicate investments within the one process with the latest entry", (done) ->
-    investments = 
+    investments =
     [
       team: teamA._id
       percentage: 0.5
@@ -155,11 +155,10 @@ describe "Investment Process", ->
       Investment.find
         round: round.number
         user: user
-      .run (err, investments) ->
+      .exec (err, investments) ->
         investments.length.should.eql 2
         for i in investments
           if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5
           else if i.team.toString() is teamB._id.toString() then i.percentage.should.eql 0.4
           else throw "invalid result"
         done()
-  

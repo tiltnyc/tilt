@@ -4,29 +4,29 @@ process = (user, array, round, callback) ->
   investments = []
   teams = [] #track dupes
   total = 0
- 
+
   return callback 'cannot invest, this round is not open' unless round.is_open
-  
+
   for inv, i in array
-    if teams.indexOf(inv.team) >= 0 
+    if teams.indexOf(inv.team) >= 0
       array[i] = undefined #remove dups if any
       break
     else teams.push(inv.team)
 
     inv.percentage = 0 unless 0 <= inv.percentage <= 1
-    if total + inv.percentage >= 1 
+    if total + inv.percentage >= 1
       inv.percentage = Math.roundToFixed(1 - total, 2) #prevent over investment
     total += Math.roundToFixed inv.percentage, 2
 
   saveInvestment = (index, next) ->
     rowData = array[index]
     return next() unless rowData
-    
-    Investment.findOne
+
+    Investment.findOne {
       round: round.number
       user: user
       team: rowData.team
-    .run (err, investment) ->
+    }, (err, investment) ->
       return next err if err
       investment ?= new Investment
         round: round.number
@@ -37,7 +37,7 @@ process = (user, array, round, callback) ->
         return next err if err
         investments.push investment
         saveInvestment index + 1, next
-  
+
   saveInvestment 0, (err) -> callback err, investments
 
 exports.investments = (investor, investments, round, done) ->

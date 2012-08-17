@@ -1,14 +1,14 @@
 Feature: Allocation of funds to users
   In order to allow users to invest
-  As an administrator 
+  As an administrator
   I need to allocate seed money to all users per round
 
   Background:
     Given I am an administrator
     And there exists users:
       | username    | email               |
-      | justin      | justin@example.com  | 
-      | paul        | paul@example.com    |  
+      | justin      | justin@example.com  |
+      | paul        | paul@example.com    |
     And there are 3 rounds
 
   Scenario: Initial Allocation to Multiple Users
