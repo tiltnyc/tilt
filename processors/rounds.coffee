@@ -61,7 +61,7 @@ process = (round, done) ->
         rewardUsersForInvestments investments, index + 1, callback
     else callback()
 
-  Team.find {}, (err, teams) ->
+  Team.find().exec (err, teams) ->
     return done err if err
     teamCount = teams.length
 
