@@ -1,11 +1,14 @@
 sharedSteps = module.exports = ->
   @World = require("../support/world").World
-  
+
   @Given /^I am an administrator$/, (next) ->
-    next()
-    
+    next.pending()
+
   @Given /^I am on the home page$/, (next) ->
     @visit "/", next
+
+  @Given /^this test is pending$/, (next) ->
+    next.pending()
 
   @Then /^I should see "([^"]*)"$/, (text, next) ->
     @browser.text("body").should.include text

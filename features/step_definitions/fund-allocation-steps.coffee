@@ -25,4 +25,4 @@ module.exports = ->
     next.pending()
 
   @Then /^User "([^"]*)" should have \$(\d+) for Round  (\d+)$/, (username, funds, round, next) ->
-    next.pending()  
+    next.pending()

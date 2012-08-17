@@ -5,7 +5,7 @@ Process = require "../../processors/investments.coffee"
 Investment = require "../../models/investment"
 User = require "../../models/user"
 Team = require "../../models/team"
-Round = require "../../models/round" 
+Round = require "../../models/round"
 
 describe "Investment Process", ->
   teamA = new Team
@@ -16,7 +16,7 @@ describe "Investment Process", ->
     name: 'teamC'
   user = new User
     username: 'justin'
-    email: 'justin@example.com' 
+    email: 'justin@example.com'
   round = undefined
 
   beforeEach (done) ->
@@ -101,20 +101,20 @@ describe "Investment Process", ->
     ]
     Process.investments user, old_investments, round, (err, results) ->
       throw err if err
-      new_investments = 
+      new_investments =
       [
         team: teamA._id
         percentage: 0.5
       ,
         team: teamC._id
-        percentage: 0.45 
-      ]  
+        percentage: 0.45
+      ]
       Process.investments user, new_investments, round, (err, results) ->
         throw err if err
-        Investment.find
+        Investment.find {
           round: round.number
           user: user
-        .run (err, investments) ->
+        }, (err, investments) ->
           investments.length.should.eql 2
           for i in investments
             if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5
@@ -126,7 +126,7 @@ describe "Investment Process", ->
     round.is_open = false
     round.save (err) ->
       throw err if err
-      investments = 
+      investments =
       [
         team: teamA._id
         percentage: 0.4
@@ -137,9 +137,9 @@ describe "Investment Process", ->
       Process.investments user, investments, round, (err, results) ->
         should.exist err
         done()
-     
+
   it "must override duplicate investments within the one process with the latest entry", (done) ->
-    investments = 
+    investments =
     [
       team: teamA._id
       percentage: 0.5
@@ -152,10 +152,10 @@ describe "Investment Process", ->
     ]
     Process.investments user, investments, round, (err, results) ->
       throw err if err
-      Investment.find
+      Investment.find {
         round: round.number
         user: user
-      .run (err, investments) ->
+      }, (err, investments) ->
         investments.length.should.eql 2
         for i in investments
           if i.team.toString() is teamA._id.toString() then i.percentage.should.eql 0.5

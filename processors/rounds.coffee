@@ -23,8 +23,8 @@ process = (round, done) ->
     before_price = team.last_price
     teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
     cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage)
-    console.log "team: " + team.name + " got: " + teamPercentage
-    console.log "resulting in: " + Math.roundToFixed(teamPriceMovement, 2)
+    #console.log "team: " + team.name + " got: " + teamPercentage
+    #console.log "resulting in: " + Math.roundToFixed(teamPriceMovement, 2)
     team.last_price += teamPriceMovement
     team.movement = teamPriceMovement
     team.movement_percentage = if before_price isnt 0 then teamPriceMovement / before_price else 0
@@ -60,37 +60,37 @@ process = (round, done) ->
       else
         rewardUsersForInvestments investments, index + 1, callback
     else callback()
-  
-  Team.find().run (err, teams) ->
+
+  Team.find {}, (err, teams) ->
     return done err if err
     teamCount = teams.length
-    
+
     teams.forEach (team) -> #preset results to 0 for each team
-      results[team.id] = 
+      results[team.id] =
         team: team
         result: 0
 
-    Round.findOne(number: 1).run (err, firstRound) -> #load first round
+    Round.findOne { number: 1 }, (err, firstRound) -> #load first round
       return done err if err
 
-      Investment.find(round: round.number).populate("user").populate("team").run (err, investments) ->
+      Investment.find(round: round.number).populate("user").populate("team").exec (err, investments) ->
         return done err if err
         investments.forEach (investment) ->
           userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
           results[investment.team.id].result += userInvested
           total += userInvested
           investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
-        
+
         average = total / teamCount
         averagePercentage = if total > 0 then average / total else 0
         factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
-        console.log results
-        console.log "total Invested: " + total
-        console.log "number of total teams: " + teamCount
-        console.log "average Investment: " + average
-        console.log "average As Percentage: " + averagePercentage
-        console.log "number of investors: " + investerList.length
-        console.log "factor: " + factor
+        #console.log results
+        #console.log "total Invested: " + total
+        #console.log "number of total teams: " + teamCount
+        #console.log "average Investment: " + average
+        #console.log "average As Percentage: " + averagePercentage
+        #console.log "number of investors: " + investerList.length
+        #console.log "factor: " + factor
 
         saveResults results, 0, (err) ->
           return done err if err
@@ -99,7 +99,7 @@ process = (round, done) ->
           round.investor_count = investerList.length
           round.average = averagePercentage
           round.factor = factor
-          console.log "sd= " + round.standard_deviation
+          #console.log "sd= " + round.standard_deviation
           round.is_open = false
           round.save (err) ->
             return done err if err
@@ -107,5 +107,5 @@ process = (round, done) ->
               return done err if err
               done()
 
-module.exports = 
+module.exports =
   process: process
