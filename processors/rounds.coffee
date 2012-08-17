@@ -70,7 +70,7 @@ process = (round, done) ->
         team: team
         result: 0
 
-    Round.findOne { number: 1 }, (err, firstRound) -> #load first round
+    Round.findOne(number: 1).exec (err, firstRound) -> #load first round
       return done err if err
 
       Investment.find(round: round.number).populate("user").populate("team").exec (err, investments) ->
