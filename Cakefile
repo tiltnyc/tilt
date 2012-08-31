@@ -16,7 +16,7 @@ red = `'\033[0;31m'`
 
 # Internal Functions
 #
-# ## *walk* 
+# ## *walk*
 #
 # **given** string as dir which represents a directory in relation to local directory
 # **and** callback as done in the form of (err, results)
@@ -54,21 +54,20 @@ launch = (cmd, options=[], env=process.env, callback) ->
 testenv = ->
   custom_env = process.env
   custom_env.PORT = 3333
-  custom_env.NODE_ENV = "test" 
+  custom_env.NODE_ENV = "test"
   custom_env
 
-#run unit test 
+#run unit test
 #JM: to use child_process.spawn, files must be passed as list rather than wildcard match
-task 'mocha', 'run unit tests', -> 
-  log "running unit tests...", bold 
-  exec 'NODE_ENV=test ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
+task 'mocha', 'run unit tests', ->
+  log "running unit tests...", bold
+  exec 'NODE_ENV=test ./node_modules/.bin/mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee', (err, stdout, stderr) ->
     throw err if err
     console.log stdout + stderr
 
 #run cucumber tests
 task 'cuke', 'run integration tests', ->
   log "running integration tests...", bold
-  
-  launch './node_modules/cucumber/bin/cucumber.js', [], testenv(), (err) ->
-    throw err if err 
- 
+
+  launch './node_modules/.bin/cucumber-js', [], testenv(), (err) ->
+    throw err if err
