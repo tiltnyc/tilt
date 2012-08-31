@@ -41,7 +41,7 @@
   }
   , "scripts": {
     "test": "./node_modules/.bin/cake mocha",
-    "build": "./node_modules/.bin/cake mocha && ./node_modules/.bin/cake cuke"
+    "build": "./node_modules/.bin/mocha --compilers coffee:coffee-script --colors test/**/*.spec.coffee && ./node_modules/.bin/cucumber-js features"
   }
 
 }
