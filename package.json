@@ -40,7 +40,7 @@
     , "coffee-script"     : ">= 1.3.3"
   }
   , "scripts": {
-    "test": "cake mocha",
+    "test": "./node_modules/.bin/cake mocha",
     "build": "./node_modules/.bin/cake mocha && ./node_modules/.bin/cake cuke"
   }
 
