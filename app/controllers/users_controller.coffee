@@ -33,8 +33,6 @@ class UsersController extends BaseController
   show: (request, response) ->
     Transaction.find(user: request.theUser._id).asc('round', 'created').run (error, transactions) ->
       throw error if error
-      console.log transactions
-      console.log request.theUser
       request.theUser.transactions = transactions
       Investment.find(user: request.theUser._id).populate('team').asc('round', 'team.name').run (error, investments) ->
         throw error if error

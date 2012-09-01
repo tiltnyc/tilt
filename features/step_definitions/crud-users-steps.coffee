@@ -1,6 +1,8 @@
 User = require("../../models/user")
+
 module.exports = ->
   @World = require("../support/world").World
+
   @After (callback) ->
     @clean callback
 
@@ -31,5 +33,4 @@ module.exports = ->
   @When /^I click the link "([^"]*)" for user "([^"]*)"$/, (link, username, callback) ->
     @browser.onconfirm (text) ->
       true
-
     @browser.clickLink "tr:contains(" + username + ") a:contains(" + link + ")", callback

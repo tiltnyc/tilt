@@ -12,7 +12,10 @@ bootApplication = (app) ->
     app.use express.methodOverride()
     app.use express.cookieParser()
     app.use express.session(secret: "flkjgjoieolk")
-    app.use express.logger(":method :url :status")
+
+    # To log requests, uncomment the following line
+    #app.use express.logger(":method :url :status")
+
     app.use express.favicon()
     app.use mongooseAuth.middleware()
     app.use app.router

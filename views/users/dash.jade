@@ -3,27 +3,28 @@
 h2= title
 
 p
-  strong current round: 
-  span #{currentRound.number}
+  strong current round:
+  if (currentRound)
+    span #{currentRound.number}
 
 p
   strong status: &nbsp
-  if (currentRound.is_open) 
+  if (currentRound && currentRound.is_open)
     span.open-round  open
-  else 
+  else
     span.closed-round closed
 
-p 
+p
   strong funds this round
-  if (theUser.getFundsForRoundNbr(currentRound.number))
+  if (currentRound && theUser.getFundsForRoundNbr(currentRound.number))
     span &nbsp $#{theUser.getFundsForRoundNbr(currentRound.number).toFixed(2)}
   else
     span &nbsp $0
-    
+
 table#user-transactions.inner-table
   tr
     th.header(colspan=3)
-      &nbsp transactions  
+      &nbsp transactions
   tr
     th round
     th label
