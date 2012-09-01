@@ -1,0 +1,10 @@
+h2= title
+p Create a new event
+
+form(method="post",action="/events")
+  //input(type="hidden", name="csrf", value=csrf)
+  
+  != partial('_form', {event: {}})
+
+  &nbsp;
+  a(href="/events", title="[back to events]") [all events]

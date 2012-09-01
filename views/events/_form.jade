@@ -1,0 +1,11 @@
+p 
+  label(for='event[name]') Name
+  br
+  input(type="text", id="event[name]", name="event[name]", value=event.name)
+
+p
+  label(for='event[date]') Date
+  br
+  input(type="text", id="event[date]", name="event[date]", class="datepicker", value=(event.date)?event.date.toDateString():"")
+
+input(type="submit", value="Submit")

@@ -1,0 +1,10 @@
+h2= title
+p Edit event
+
+form(method="post",action="/events/#{event._id}")
+  input(name="_method", value='PUT', type='hidden')
+
+  != partial('_form')
+  
+  &nbsp;
+  a(href="/events", title="[back to events]") [all events]

@@ -1,0 +1,16 @@
+!= messages()
+
+h2= title
+
+div#events
+  - if(events.length)
+    table.events_list
+      tr
+        th name
+        th date
+        th actions
+      != partial('_event_list', {collection: events, as: 'event'})
+  - else
+    #no-results No events found. 
+  
+  a(href='/events/new') Create one here.

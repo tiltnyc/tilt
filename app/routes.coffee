@@ -1,6 +1,8 @@
 Allocation      = require '../processors/allocation'
 AuthHelpers     = require '../helpers/auth_helpers'
 Investment      = require '../models/investment'
+Event           = require '../models/event'
+EventsController = require '../app/controllers/events_controller'
 Process         = require '../processors/investments'
 Reset           = require '../processors/reset'
 Result          = require '../models/result'
@@ -15,6 +17,7 @@ User            = require '../models/user'
 UsersController = require '../app/controllers/users_controller'
 UserHelpers     = require '../helpers/user_helpers'
 
+
 module.exports = (app) ->
 
   redirect = '/rounds'
@@ -26,6 +29,49 @@ module.exports = (app) ->
     else
       req.flash 'error', error
       res.redirect redirect
+
+  map = (Controller, route) ->
+    action = route.action ? route.path.match(/[a-zA-Z0-9\-_]+(?=\/$|$)/)[0]
+    middleware = if route.middleware instanceof Array then route.middleware else if route.middleware then [route.middleware] else []
+    args = [route.path].concat middleware, (request, response, next, id) ->
+      new Controller()[action](request, response, next, id)
+    app[route.method ? 'get'].apply app, args
+
+  mapToController = (Controller, routes) -> map Controller, route for route in routes
+
+  mapToController EventsController,
+  [
+    path: 'event_id'
+    method: 'param'
+    action: 'setParam'
+  ,
+    path: '/events/new'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/events.:format?'
+    action: 'index'
+  ,
+    path: '/events'
+    method: 'post'
+    action: 'create'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/event/:event_id.:format?'
+    action: 'show'
+  ,
+    path: '/event/:event_id/edit'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/events/:event_id'
+    method: 'put'
+    action: 'update'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/event/:event_id'
+    method: 'del'
+    action: 'delete'
+    middleware: AuthHelpers.restricted
+  ]   
 
   app.param 'id', (req, res, next, id) ->
     User.findOne(_id: req.params.id).populate('team').run (err, user) ->
