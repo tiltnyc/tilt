@@ -36,31 +36,16 @@ bootApplication = (app) ->
     compile: compile
   )
 
-  app.set "showStackError", false
-
   oneYear = 31557600000
 
-  app.configure "development", ->
-    app.set "showStackError", true
-    app.use express.static(__dirname + "/public",
-      maxAge: oneYear
-    )
+  switch process.env.NODE_ENV || 'production'
+    when 'test', 'devleopment'
+      app.set 'showStackError', true
+      app.use express.static(__dirname + '/public', { maxAge: oneYear })
+    else
+      app.set "showStackError", false
+      app.use gzippo.staticGzip(__dirname + '/public', { maxAge: oneYear })
 
-  app.configure "test", ->
-    app.set "showStackError", true
-    app.use express.static(__dirname + "/public",
-      maxAge: oneYear
-    )
-
-  app.configure "staging", ->
-    app.use gzippo.staticGzip(__dirname + "/public",
-      maxAge: oneYear
-    )
-
-  app.configure "production", ->
-    app.use gzippo.staticGzip(__dirname + "/public",
-      maxAge: oneYear
-    )
 
 bootErrorConfig = (app) ->
   NotFound = (path) ->

@@ -1,5 +1,5 @@
-express = require 'express'
-mongooseAuth = require 'mongoose-auth'
+express       = require 'express'
+mongooseAuth  = require 'mongoose-auth'
 
 app = module.exports = express.createServer()
 
