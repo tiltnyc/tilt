@@ -5,8 +5,7 @@ sharedSteps = module.exports = ->
     next.pending()
 
   @Given /^I am an administrator$/, (next) ->
-    @browser.visit '/', (error, browser) ->
-      next()
+    @browser.visit '/', next
 
   @Given /^I am on the home page$/, (next) ->
     @visit "/", next

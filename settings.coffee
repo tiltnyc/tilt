@@ -17,6 +17,18 @@ bootApplication = (app) ->
     app.use mongooseAuth.middleware()
     app.use app.router
 
+    #TODO figure out how to have unzipped assets in test
+    #app.use require("connect-assets")({ minifyBuilds: false, build: false })
+    app.set 'showStackError', false
+    app.use express.static(__dirname + '/public', { maxAge: 31557600000 })
+
+    app.use stylus.middleware(
+      debug: false
+      src: __dirname + "/stylus"
+      dest: __dirname + "/public"
+      compile: compile
+    )
+
   app.dynamicHelpers
     request: (req) ->
       req
@@ -26,25 +38,6 @@ bootApplication = (app) ->
       Object.keys(req.session.flash or {}).length
 
     messages: require("express-messages")
-
-  app.use require("connect-assets")()
-
-  app.use stylus.middleware(
-    debug: true
-    src: __dirname + "/stylus"
-    dest: __dirname + "/public"
-    compile: compile
-  )
-
-  oneYear = 31557600000
-
-  switch process.env.NODE_ENV || 'production'
-    when 'test', 'devleopment'
-      app.set 'showStackError', true
-      app.use express.static(__dirname + '/public', { maxAge: oneYear })
-    else
-      app.set "showStackError", false
-      app.use gzippo.staticGzip(__dirname + '/public', { maxAge: oneYear })
 
 
 bootErrorConfig = (app) ->
@@ -80,11 +73,10 @@ bootErrorConfig = (app) ->
         showStack: app.settings.showStackError
         title: "Oops! Something went wrong!"
 
-fs           = require("fs")
-stylus       = require("stylus")
-express      = require("express")
-gzippo       = require("gzippo")
-mongooseAuth = require("mongoose-auth")
+fs           = require "fs"
+stylus       = require "stylus"
+express      = require "express"
+mongooseAuth = require "mongoose-auth"
 
 # Todo Refactor, so the user model is not required here
 require("./models/user")

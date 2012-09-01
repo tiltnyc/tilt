@@ -11,8 +11,9 @@ dbCleaner                    = new DatabaseCleaner("mongodb")
 exports.World = (callback) ->
   @browser = new zombie.Browser(
     runScripts: true
-    debug: true
+    debug: false
     htmlParser: HTML5
+    site: "http://localhost:" + server.address().port
   )
 
   @page = (path) ->
@@ -25,4 +26,4 @@ exports.World = (callback) ->
   @clean = (callback) ->
     dbCleaner.clean mongoose.connection.db, callback
 
-  callback this
+  callback @
