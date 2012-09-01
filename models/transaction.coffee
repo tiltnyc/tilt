@@ -1,5 +1,8 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
-Transaction = new Schema(
+
+User = require("./user")
+
+Transaction = new Schema
   amount:
     type: Number
     required: true
@@ -7,6 +10,11 @@ Transaction = new Schema(
   user:
     type: ObjectId
     ref: "User"
+    required: true
+
+  event:
+    type: ObjectId
+    ref: "Event"
     required: true
 
   round:
@@ -23,8 +31,7 @@ Transaction = new Schema(
   updated_at:
     type: Date
     default: Date.now
-)
-User = require("./user")
+
 Transaction.pre "save", (next) ->
   transaction = this
   User.findOne

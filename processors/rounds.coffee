@@ -50,6 +50,7 @@ process = (round, done) ->
         new Transaction(
           user: investment.user.id
           round: round.number + 1
+          event: round.event
           label: "return for round " + round.number + " investment in team: " + investment.team.name
           amount: investmentReturnForTeam
         ).save (err) ->

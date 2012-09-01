@@ -1,17 +1,16 @@
-{should, clean} = require "../test-base"
+{should, clean, factory} = require "../test-base"
 
 Transaction = require "../../models/transaction"
 User = require "../../models/user"
   
-describe "Trasaction", ->
+describe "Transaction", ->
   user = undefined
+  event = undefined
 
   beforeEach (done) ->
-    user = new User
-      username: 'justin'
-      email: 'justin@example.com'
-    user.save (err) ->
-      throw err if err
+    factory.starter 1, (result) ->
+      user = result.users[0]
+      event = result.event 
       done()
 
   afterEach (done) ->
@@ -21,9 +20,10 @@ describe "Trasaction", ->
    
     createAndTest = (round, amount, total, next) ->
       transaction = new Transaction
-        user: user._id
+        user: user
         amount: amount
         round: round
+        event: event
       transaction.save (err) ->
         throw err if err
         User.findOne

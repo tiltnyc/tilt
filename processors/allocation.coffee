@@ -1,7 +1,7 @@
 User = require "../models/user"
 Transaction = require "../models/transaction"
 
-process = (round, amount, done) ->
+process = (event, round, amount, done) ->
   stream = User.find().stream()
   number = round.number
   stream.on "data", (user) ->
@@ -10,6 +10,7 @@ process = (round, amount, done) ->
       amount: amount
       round: number
       user: user.id
+      event: event
       label: "round " + number.toString() + " allocation."
     ).save (err, doc) ->
       return done err if err

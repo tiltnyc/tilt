@@ -1,4 +1,4 @@
-{should, clean} = require "../test-base"
+{should, clean, factory} = require "../test-base"
 
 Process = require "../../processors/investments.coffee"
 
@@ -8,33 +8,25 @@ Team = require "../../models/team"
 Round = require "../../models/round"
 
 describe "Investment Process", ->
-  teamA = new Team
-    name: 'teamA'
-  teamB = new Team
-    name: 'teamB'
-  teamC = new Team
-    name: 'teamC'
-  user = new User
-    username: 'justin'
-    email: 'justin@example.com'
+  user = undefined
+  teamA = undefined
+  teamB = undefined
+  teamC = undefined
   round = undefined
 
   beforeEach (done) ->
-    teamA.save (err) ->
-      throw err if err
-      teamB.save (err) ->
+   factory.starter 3, (result) ->
+      user = result.users[0]
+      teamA = result.teams[0]
+      teamB = result.teams[1]
+      teamC = result.teams[2]
+      round = result.rounds[0]
+      event = result.event
+      round.is_current = true
+      round.is_open = true
+      round.save (err) ->
         throw err if err
-        teamC.save (err) ->
-          throw err if err
-          user.save (err) ->
-            throw err if err
-            round = new Round #defined in beforeEach() as these props will change in tests
-              number: 1
-              is_current: true
-              is_open: true
-            round.save (err) ->
-              throw err if err
-              done()
+        done()
 
   afterEach (done) -> clean done
 

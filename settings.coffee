@@ -37,7 +37,7 @@ bootApplication = (app) ->
       req
 
     hasMessages: (req) ->
-      return false  unless req.session
+      return false unless req.session
       Object.keys(req.session.flash or {}).length
 
     messages: require("express-messages")

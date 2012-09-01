@@ -5,6 +5,11 @@ Round = new Schema(
     type: Number
     required: true
 
+  event:
+    type: ObjectId 
+    ref:  "Event"
+    required: true
+    
   is_current:
     type: Boolean
     default: false

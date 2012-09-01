@@ -4,6 +4,11 @@ Team = new Schema(
     type: String
     required: true
 
+  event: 
+    type: ObjectId
+    ref: "Event"
+    required: true
+    
   users: [
     type: ObjectId
     ref: "User"

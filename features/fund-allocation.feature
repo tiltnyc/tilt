@@ -4,7 +4,7 @@ Feature: Allocation of funds to users
   I need to allocate seed money to all users per round
 
   Background:
-    Given I am an administrator
+    Given I am logged in as an administrator
     And there exists users:
       | username    | email               |
       | justin      | justin@example.com  |

@@ -1,4 +1,4 @@
-{should, clean, create} = require "../test-base"
+{should, clean, factory} = require "../test-base"
 
 Rounds = require "../../processors/rounds"
 Allocation = require "../../processors/allocation"
@@ -19,23 +19,26 @@ describe "Round Process", ->
   teamD = undefined
   round1 = undefined
   round2 = undefined
+  event = undefined
 
   beforeEach (done) ->
-    userA = create User, {name: 'justin', email: 'j@example.com'}, () ->
-      userB = create User, {name: 'paul', email: 'p@example.com'}, () ->
-        userC = create User, {name: 'fred', email: 'f@example.com'}, () ->
-          teamA = create Team, name: 'teamA', () ->
-            teamB = create Team, name: 'teamB', () ->
-              teamC = create Team, name: 'teamC', () ->
-                teamD = create Team, name: 'teamD', () ->
-                  round1 = create Round, number: 1,  () ->
-                    round2 = create Round, number: 2, () ->
-                      done()
+    factory.starter 4, (result) ->
+      userA = result.users[0]
+      userB = result.users[1]
+      userC = result.users[2]
+      teamA = result.teams[0]
+      teamB = result.teams[1]
+      teamC = result.teams[2]
+      teamD = result.teams[3]
+      round1 = result.rounds[0]
+      round2 = result.rounds[1]
+      event = result.event
+      done()
 
   afterEach (done) -> clean done
 
   invest = (user, round, team, percentage, done) ->
-    create Investment,
+    factory.create Investment,
       user: user.id
       team: team.id
       round: round.number
@@ -66,7 +69,7 @@ describe "Round Process", ->
       done()
 
   goRoundOne = (done) ->
-    Allocation.process round1, 100, (err) ->
+    Allocation.process event, round1, 100, (err) ->
       throw err if err
       invest userA, round1, teamA, 0.6, () ->
         invest userA, round1, teamB, 0.4, () ->
@@ -79,7 +82,7 @@ describe "Round Process", ->
 
 
   goRoundTwo = (done) ->
-    Allocation.process round2, 250, (err) ->
+    Allocation.process event, round2, 250, (err) ->
       throw err if err
       invest userA, round2, teamA, 1, () ->
         invest userB, round2, teamA, 0.1, () ->

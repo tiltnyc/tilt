@@ -1,27 +1,22 @@
-{should, clean} = require "../test-base"
+{should, clean, factory} = require "../test-base"
 
 User = require "../../models/user"
 Team = require "../../models/team"
+Event = require "../../models/event"
   
 describe "User", ->
   user = undefined 
+  event = undefined
   teamA = undefined
   teamB = undefined 
 
-  beforeEach (done) ->
-    user = new User
-      username: 'justin'
-      email: 'justin@example.com'
-    
-    teamA = new Team
-      name: 'teamA'
-    teamA.save (err) ->
-      throw err if err
-      teamB = new Team
-        name: 'teamB'
-      teamB.save (err) ->
-        throw err if err
-        done()
+  beforeEach (done) ->    
+    factory.starter 2, (result) ->
+      user = result.users[0]
+      teamA = result.teams[0]
+      teamB = result.teams[1]
+      event = result.event 
+      done()
 
   afterEach (done) ->
     clean done

@@ -1,4 +1,4 @@
-{should, clean, create} = require "../test-base"
+{should, clean, factory} = require "../test-base"
 
 Reset = require "../../processors/reset"
 Rounds = require "../../processors/rounds"
@@ -18,9 +18,10 @@ describe "Reset Process", ->
   teamB = undefined
   round1 = undefined
   round2 = undefined
+  event = undefined
 
   invest = (user, round, team, percentage, done) ->
-    create Investment, 
+    factory.create Investment, 
       user: user.id
       team: team.id
       round: round.number
@@ -28,24 +29,27 @@ describe "Reset Process", ->
     , () -> done()
 
   beforeEach (done) ->
-    userA = create User, {name: 'justin', email: 'j@example.com'}, () ->
-      userB = create User, {name: 'paul', email: 'p@example.com'}, () ->
-        teamA = create Team, name: 'teamA', () ->
-          teamB = create Team, name: 'teamB', () ->
-            round1 = create Round, number: 1,  () -> 
-              round2 = create Round, number: 2, () ->
-                invest userA, round1, teamA, 0.6, () ->
-                  invest userA, round1, teamB, 0.4, () ->
-                    invest userB, round1, teamA, 1, () ->
-                      Allocation.process round1, 100, (err) ->
-                        Rounds.process round1, (err) -> 
-                          throw err if err
-                          invest userA, round2, teamA, 1, () ->
-                            invest userB, round2, teamB, 1, () ->
-                              Allocation.process round2, 200, (err) ->
-                                Rounds.process round2, (err) ->  
-                                  throw err if err
-                                  done()
+    factory.starter 2, (result) ->
+      userA = result.users[0]
+      userB = result.users[1]
+      teamA = result.teams[0]
+      teamB = result.teams[1]
+      round1 = result.rounds[0]
+      round2 = result.rounds[1]
+      event = result.event
+
+      invest userA, round1, teamA, 0.6, () ->
+        invest userA, round1, teamB, 0.4, () ->
+          invest userB, round1, teamA, 1, () ->
+            Allocation.process event, round1, 100, (err) ->
+              Rounds.process round1, (err) -> 
+                throw err if err
+                invest userA, round2, teamA, 1, () ->
+                  invest userB, round2, teamB, 1, () ->
+                    Allocation.process event, round2, 200, (err) ->
+                      Rounds.process round2, (err) ->  
+                        throw err if err
+                        done()
 
   afterEach (done) -> clean done
 
