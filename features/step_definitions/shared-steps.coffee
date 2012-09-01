@@ -21,8 +21,8 @@ module.exports = ->
             fill('password', user.password).
             pressButton 'input[type="submit"]', next
 
-  @Given /^I am on the home page$/, (next) ->
-    @visit "/", next
+  @Given /^I am on the home ?page$/, (next) ->
+    @browser.visit '/', next
 
   @Then /^I should see "([^"]*)"$/, (text, next) ->
     @browser.text("body").should.include text
