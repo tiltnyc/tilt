@@ -7,7 +7,7 @@ Team = new Schema(
   event: 
     type: ObjectId
     ref: "Event"
-    required: true
+    #required: true JM: should be required in future
     
   users: [
     type: ObjectId

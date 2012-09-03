@@ -1,5 +1,5 @@
 BaseController = require './base_controller'
-Event           = require '../../models/event'
+Event          = require '../../models/event'
 
 class EventsController extends BaseController
 
@@ -10,7 +10,7 @@ class EventsController extends BaseController
       next()
 
   index: (request, response) ->
-    Event.find().desc('date').exec (error, events) ->
+    Event.find().sort("date", "ascending").exec (error, events) ->
       throw error if error
 
       if request.params.format is 'json'
@@ -48,8 +48,7 @@ class EventsController extends BaseController
 
   update: (request, response) ->
     event = request.event
-    props = ["name", "date"]
-    event[key] = request.body.event[key] for key in props when request.body.event[key]
+    @updateIfChanged ["name", "date"], event, request.body.event
     event.save (err) ->
       throw err if err
       request.flash 'notice', 'Updated successfully'

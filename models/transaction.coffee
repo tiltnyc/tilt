@@ -15,7 +15,7 @@ Transaction = new Schema
   event:
     type: ObjectId
     ref: "Event"
-    required: true
+    #required: true JM: uncomment when ready
 
   round:
     type: Number

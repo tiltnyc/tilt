@@ -8,7 +8,7 @@ Round = new Schema(
   event:
     type: ObjectId 
     ref:  "Event"
-    required: true
+    #required: true JM: should be required in future
     
   is_current:
     type: Boolean

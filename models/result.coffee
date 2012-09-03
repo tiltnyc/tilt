@@ -6,6 +6,11 @@ Result = new Schema(
     ref: "Team"
     required: true
 
+  event:
+    type: ObjectId 
+    ref:  "Event"
+    #required: true JM: should be required in future
+    
   round:
     type: ObjectId
     ref: "Round"

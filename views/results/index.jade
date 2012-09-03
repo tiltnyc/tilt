@@ -18,4 +18,3 @@ h2 past rounds
     ul.results
       - results.shift()
       != partial('result_list', {collection: results, as: 'roundResults'})
-

@@ -13,5 +13,6 @@ div#users
         th actions 
       != partial('user_list', {collection: users, as: 'aUser'})
   - else
-    #no-results No users found. Register one here: &nbsp
-    a(href='/users/register') here
+    #no-results No users found.
+  
+  a(href='/register') Create a user

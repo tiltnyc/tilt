@@ -1,7 +1,8 @@
 Team = require("../models/team")
+
 exports.loadTeamCount = (req, res, next) ->
   Team.count {}, (err, count) ->
-    return next(err)  if err
+    return if err
     req.teamCount = count
     next()
 

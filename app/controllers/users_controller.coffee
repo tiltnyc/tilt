@@ -6,6 +6,13 @@ Investment     = require '../../models/investment'
 
 class UsersController extends BaseController
 
+  setParam: (request, response, next, id) ->
+    User.findById(id).populate('team').exec (err, user) ->
+      return next(err) if err
+      return next(new Error('Failed loading user ' + id)) unless user
+      request.theUser = user
+      next()
+
   index: (request, response) ->
     User.find({}).populate('team').asc('username').run (error, users) ->
       throw error if error
@@ -52,9 +59,7 @@ class UsersController extends BaseController
 
   update: (request, response) ->
     user = request.theUser
-    user.username = request.body.user.username if request.body.user.username
-    user.email = request.body.user.email if request.body.user.email
-
+    @updateIfChanged ["name", "date"], user, request.body.user
     if request.body.user.team isnt '' then user.addToTeam request.body.user.team
 
     user.save (error, doc) ->
