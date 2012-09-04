@@ -1,0 +1,108 @@
+primary = #001845
+secondary = blue
+highlight = #F58606
+
+body
+  padding 0
+  margin 0
+
+h1
+  color primary
+  text-align center
+
+h2
+  margin-top 30px
+  font-family "pt-sans-narrow", helvetica
+  font-size: 28px
+  color primary
+  text-align center
+  text-transform uppercase
+  background secondary
+  background url(../images/under.png) no-repeat bottom
+  padding-bottom 10px
+
+.logo-container
+  height 1px
+
+.logo
+  display inline
+  position absolute
+  vertical-align middle
+
+.main-headline
+  display block
+  position absolute
+  right 40%
+  padding-top 80px
+
+.video-placeholder
+  background url(../images/video-placeholder.jpg) no-repeat center
+  height 450px
+  border-left 1px solid white
+
+.nav-container
+  background #A4D7F4
+  border-bottom 1px #eeeeee
+  whitespace nowrap
+
+// Bootstrap navbar overrides
+.navbar
+  margin 0
+  display table
+  margin 0 auto
+  .navbar-inner
+    text-align center
+    min-height 80px
+    background none
+    border none
+    box-shadow none
+    .nav
+      padding-left 200px
+      white-space nowrap
+    ul
+      padding-top 20px
+      text-align center
+      li
+        font-family "myriad-pro", helvetica
+        text-transform uppercase
+        padding 0 25px 0 25px
+        a
+          color primary
+          text-shadow none
+  .active
+    text-decoration underline
+    
+// Bootstrap Scaffolding Overrides
+.row-fluid
+  padding 0
+  margin 0
+  .span4
+    margin-left -20px
+    width 35.5%
+ .container-fluid
+  padding 0
+  margin-left -20px
+
+// Bootstrap base css overrides
+.btn
+  border-radius 3px
+  background highlight
+  color white
+  &:hover
+    background #EF5A24
+  &.homepage
+    margin-right 10%
+    margin-top 320px
+    right 30%
+    position absolute
+    padding 15px 60px
+    font-size 18px
+    font-weight bold
+
+.btn-navbar
+  &.homepage
+    background none
+    float left
+    position absolute
+    top 18px
+    left 20px
