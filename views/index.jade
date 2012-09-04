@@ -1,9 +1,30 @@
 != messages()
 
-h1= title
-p Welcome to #{title}
+.container-fluid
+  .row-fluid(style="border-top: 1px solid white;")
+    .span8(style="background: #007DC3; height: 450px;")
+      img(src="/images/main-headline.png", class="main-headline")
+      a(href="#", class="btn btn-large btn-primary homepage") Apply to join »
 
-if (everyauth.loggedIn)
-  a(href='/investment/new', title='new investment') invest in a team
-else
-  a(href='/login', title='login') login to start
+    .span4.video-placeholder
+      h2(style="color: white; margin-top: 70px;") Watch the video
+
+.container
+  .row
+    .span12
+      h2 How it works
+  .row
+    .span6
+      h2 Testimonials
+      hr
+      h2 Organizers
+
+    .span6
+      h2 Past &amp; Present Mentors
+  .row
+    .span12
+
+  if (everyauth.loggedIn)
+    a(href='/investment/new', title='new investment') invest in a team
+  else
+    a(href='/login', title='login') login to start
