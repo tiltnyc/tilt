@@ -24,7 +24,7 @@ describe "Reset Process", ->
     factory.create Investment, 
       user: user.id
       team: team.id
-      round: round.number
+      round: round.id
       percentage: percentage
     , () -> done()
 
