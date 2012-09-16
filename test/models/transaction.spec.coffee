@@ -6,11 +6,15 @@ User = require "../../models/user"
 describe "Transaction", ->
   user = undefined
   event = undefined
+  round1 = undefined
+  round2 = undefined
 
   beforeEach (done) ->
-    factory.starter 1, (result) ->
+    factory.starter 2, (result) ->
       user = result.users[0]
       event = result.event 
+      round1 = result.rounds[0]
+      round2 = result.rounds[1]
       done()
 
   afterEach (done) ->
@@ -29,12 +33,11 @@ describe "Transaction", ->
         User.findOne
           _id: user._id
         , (err, user) ->
-          user.getFundsForRoundNbr(round).should.eql total
+          user.getFundsForRoundNbr(round.number).should.eql total
           next()
 
-    createAndTest 1, 105, 105, () ->
-      createAndTest 1, 200, 305, () ->
-        createAndTest 1, -50, 255, () ->
-          createAndTest 2, 10, 10, () -> 
-            createAndTest 5, 15, 15, () -> #test round out of bounds
-              done()
+    createAndTest round1, 105, 105, () ->
+      createAndTest round1, 200, 305, () ->
+        createAndTest round1, -50, 255, () ->
+          createAndTest round2, 10, 10, () -> 
+            done()

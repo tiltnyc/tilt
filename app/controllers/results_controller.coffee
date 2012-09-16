@@ -4,11 +4,15 @@ Result          = require '../../models/result'
 class ResultsController extends BaseController
 
   index: (request, response) ->
-    Result.find().populate('round', null, {},
+    if !request.currentEvent
+      return response.render 'results/index',
+        title: 'Current Results'
+    Result.find(event: request.currentEvent._id).populate('round', null, {},
       sort: 'number'
     ).populate('team', null, {},
       sort: 'name'
-    ).exec (err, results) ->
+    ).exec (err, results) =>
+      return @error(request, response, err, '/') if err
       roundResults = []
       results.forEach (result) ->
         singleRoundResults = []

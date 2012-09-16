@@ -71,3 +71,13 @@ task 'cuke', 'run integration tests', ->
 
   launch './node_modules/.bin/cucumber-js', [], testenv(), (err) ->
     throw err if err
+
+runCommand = (name, args...) ->
+  proc =           spawn name, args
+  proc.stderr.on   'data', (buffer) -> console.log buffer.toString()
+  proc.stdout.on   'data', (buffer) -> console.log buffer.toString()
+  proc.on          'exit', (status) -> process.exit(1) if status isnt 0
+
+task 'watch', 'Watch source files and build JS & CSS', (options) ->
+  runCommand 'coffee', '-wc', '-o', 'public/js/', 'assets/js/'
+  runCommand 'stylus', '-w', 'stylus/stylesheets', '-o', 'public/stylesheets'

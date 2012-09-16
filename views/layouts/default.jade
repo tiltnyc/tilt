@@ -9,6 +9,10 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
     li 
       a(href='/events',title='events') events
     
+    if (typeof(currentEvent) != 'undefined')
+      li.event-name
+        h4= currentEvent.name
+
     if (everyauth.loggedIn)
       li
         a(href='/user/dash', title='dashboard') dashboard
@@ -39,8 +43,6 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
         li
           a(href='/login', title='login') login
 
-    end
-        
   #content 
     != body
 

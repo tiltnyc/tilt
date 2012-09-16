@@ -104,7 +104,7 @@ describe "Investment Process", ->
       Process.investments user, new_investments, round, (err, results) ->
         throw err if err
         Investment.find
-          round: round.number
+          round: round
           user: user
         .exec (err, investments) ->
           investments.length.should.eql 2
@@ -145,7 +145,7 @@ describe "Investment Process", ->
     Process.investments user, investments, round, (err, results) ->
       throw err if err
       Investment.find
-        round: round.number
+        round: round
         user: user
       .exec (err, investments) ->
         investments.length.should.eql 2

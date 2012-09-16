@@ -23,14 +23,12 @@ bootApplication = (app) ->
     #TODO figure out how to have unzipped assets in test
     #app.use require("connect-assets")({ minifyBuilds: false, build: false })
     app.set 'showStackError', false
+    
     app.use express.static(__dirname + '/public', { maxAge: 31557600000 })
 
-    app.use stylus.middleware(
-      debug: false
-      src: __dirname + "/stylus"
-      dest: __dirname + "/public"
-      compile: compile
-    )
+    app.use (err, req, res, next) ->
+      res.status(500)
+      res.render('error', { error: err })
 
   app.dynamicHelpers
     request: (req) ->

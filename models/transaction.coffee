@@ -1,6 +1,7 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
 
 User = require("./user")
+Round = require("./round")
 
 Transaction = new Schema
   amount:
@@ -15,10 +16,11 @@ Transaction = new Schema
   event:
     type: ObjectId
     ref: "Event"
-    #required: true JM: uncomment when ready
+    required: true 
 
   round:
-    type: Number
+    type: ObjectId
+    ref: "Round"
     required: true
 
   label:
@@ -33,16 +35,14 @@ Transaction = new Schema
     default: Date.now
 
 Transaction.pre "save", (next) ->
-  transaction = this
-  User.findOne
-    _id: @user
-  , (err, user) ->
+  transaction = @
+  Round.findById(transaction.round).exec (err, round) ->
     return next(err) if err
-    user.addFundsForRoundNbr transaction.round, transaction.amount
-    user.save (err) ->
-      if err
-        next err
-      else
+    User.findById(transaction.user).exec (err, user) ->
+      return next(err) if err
+      user.addFundsForRoundNbr round.number, transaction.amount
+      user.save (err) ->
+        return next err if err
         next()
 
 exports = module.exports = mongoose.model("Transaction", Transaction)

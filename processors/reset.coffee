@@ -5,27 +5,27 @@ Team = require("../models/team")
 Round = require("../models/round")
 Result = require("../models/result")
 
-reset = (done) ->
+reset = (event, done) ->
   options = multi: true
-  Transaction.find({}).remove (err) ->
+  Transaction.find(event: event.id).remove (err) ->
     return done err if err
-    Investment.find({}).remove (err) ->
+    Investment.find(event: event.id).remove (err) ->
       return done err if err
-      Result.find({}).remove (err) ->
+      Result.find(event: event.id).remove (err) ->
         return done err if err
         User.update {},
           $set:
             funds: []
         , options, (err) ->
           return done err if err
-          Team.update {},
+          Team.update {event: event.id},
             $set:
               movement: 0
               last_price: 1.00
               movement_percentage: 0
           , options, (err) ->
             return done err if err
-            Round.update {},
+            Round.update {event: event.id},
               $set:
                 is_open: false
                 is_current: false

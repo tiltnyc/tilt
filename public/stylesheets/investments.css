@@ -1,0 +1,41 @@
+.rounds ul {
+  display: inline-block;
+  padding-left: 1em;
+}
+.rounds ul li {
+  display: inline-block;
+  list-style-type: none;
+  margin-right: 1em;
+}
+ul#team-list {
+  padding: 0;
+  width: 70%;
+}
+ul#team-list > li {
+  border-bottom: 1px solid #aaa;
+  list-style-type: none;
+  margin-bottom: 1em;
+}
+ul#team-list > li .team-name {
+  font-weight: bold;
+}
+ul#team-list > li ul.percentage-slider-container {
+  float: right;
+  width: 21em;
+}
+ul#team-list > li ul.percentage-slider-container li {
+  display: inline-block;
+}
+ul#team-list > li ul.percentage-slider-container li.percentage-slider {
+  min-width: 15em;
+}
+ul#team-list > li ul.percentage-slider-container li.percentage-slider-amount {
+  font-size: 0.75em;
+  text-align: right;
+  font-weight: bold;
+  width: 5em;
+}
+#invested {
+  width: 70%;
+  text-align: right;
+}

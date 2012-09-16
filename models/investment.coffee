@@ -10,7 +10,13 @@ Investment = new Schema(
     ref: "User"
 
   round:
-    type: Number
+    type: ObjectId
+    ref: "Round"
+    required: true
+
+  event:
+    type: ObjectId 
+    ref:  "Event"
     required: true
 
   team:

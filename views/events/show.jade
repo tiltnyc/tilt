@@ -1,4 +1,5 @@
 != messages()
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
 h2 Event details
 
@@ -11,8 +12,9 @@ p
   span &nbsp #{event.date.toDateString()}
 
 p
-  a(href="/event/#{event._id}/edit", title="edit") Edit
-  &nbsp;
-  a(class='destroy', href="/event/#{event._id}", title="delete") Delete
-  &nbsp;
+  if (is_admin)
+    a(href="/event/#{event._id}/edit", title="edit") Edit
+    &nbsp;
+    a(class='destroy', href="/event/#{event._id}", title="delete") Delete
+    &nbsp;
   a(href='/events', title="back") List of Events

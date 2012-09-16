@@ -1,0 +1,40 @@
+ul.results {
+  padding: 0;
+}
+ul.results li {
+  list-style-type: none;
+  display: inline-block;
+  padding-right: 1em;
+  width: 100%;
+  margin-bottom: 2em;
+  position: relative;
+  font-size: 85%;
+}
+ul.results li table {
+  background-color: #ddd;
+  width: 25%;
+  float: left;
+}
+ul.results li table tr.heading {
+  background-color: #000;
+  color: #ffa500;
+}
+ul.results li table td {
+  padding: 0.5em;
+  text-align: center;
+}
+ul.results li table li {
+  width: auto;
+}
+ul.results li .round-chart {
+  width: 35%;
+  float: left;
+}
+.positive {
+  color: #008000;
+  font-weight: bold;
+}
+.negative {
+  color: #f00;
+  font-weight: bold;
+}

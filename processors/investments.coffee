@@ -23,15 +23,16 @@ process = (user, array, round, callback) ->
     return next() unless rowData
 
     Investment.findOne {
-      round: round.number
+      round: round.id
       user: user
       team: rowData.team
     }, (err, investment) ->
       return next err if err
       investment ?= new Investment
-        round: round.number
+        round: round.id
         user: user
         team: rowData.team
+        event: round.event
       investment.percentage = rowData.percentage
       investment.save (err) ->
         return next err if err
