@@ -147,8 +147,8 @@ ul#top-nav li {
   list-style-type: none;
   margin-right: 1em;
 }
-ul#top-nav li .event-names h4 {
-  height: 1em;
+ul#top-nav li.event-name h4 {
+  margin: 0;
 }
 ul#top-nav a {
   color: #ff0;
