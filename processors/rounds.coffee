@@ -14,6 +14,7 @@ process = (round, done) ->
   averagePercentage = 0
   cumulativeDistanceFromAverage = 0
   factor = 0
+  nextRound = undefined
 
   saveResults = (data, index, callback) ->
     return callback() if Object.keys(data).length is index
@@ -42,7 +43,7 @@ process = (round, done) ->
         return callback(err)  if err
         saveResults data, index + 1, callback
 
-  rewardUsersForInvestments = (nextRound, investments, index, callback) ->
+  rewardUsersForInvestments = (investments, index, callback) ->
     investment = undefined
     if investment = investments[index]
       if investment.percentage > 0
@@ -74,9 +75,9 @@ process = (round, done) ->
     Round.findOne(event: round.event, number: 1).exec (err, firstRound) -> #load first round
       return done err if err
 
-      RoundHelpers.getOrCreateNextRound (err, nextRound) ->
+      RoundHelpers.getOrCreateNextRound round, (err, upcomingRound) ->
         return done err if err
-
+        nextRound = upcomingRound
         Investment.find(round: round.id).populate("user").populate("team").exec (err, investments) ->
           return done err if err
           investments.forEach (investment) ->
@@ -99,7 +100,7 @@ process = (round, done) ->
             round.is_open = false
             round.save (err) ->
               return done err if err
-              rewardUsersForInvestments nextRound, investments, 0, (err) ->
+              rewardUsersForInvestments investments, 0, (err) ->
                 return done err if err
                 done()
 

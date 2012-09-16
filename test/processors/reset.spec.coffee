@@ -25,6 +25,7 @@ describe "Reset Process", ->
       user: user.id
       team: team.id
       round: round.id
+      event: event.id
       percentage: percentage
     , () -> done()
 
@@ -54,7 +55,7 @@ describe "Reset Process", ->
   afterEach (done) -> clean done
 
   it "must wipe all user funds", (done) ->
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       User.findById(userA.id).exec (err, user) ->
         throw err if err
@@ -80,14 +81,14 @@ describe "Reset Process", ->
         round.is_current.should.eql(Number(round.number) is 1)
         callback()
 
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       check round1, () ->
         check round2, () ->
           done()
 
   it "must remove all investments", (done) ->
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       Investment.find().exec (err, investments) ->
         throw err if err
@@ -95,7 +96,7 @@ describe "Reset Process", ->
         done()
 
   it "must remove all transactions", (done) ->
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       Transaction.find().exec (err, transactions) ->
         throw err if err
@@ -103,7 +104,7 @@ describe "Reset Process", ->
         done()
 
   it "must remove all results", (done) ->
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       Result.find().exec (err, results) ->
         throw err if err
@@ -119,7 +120,7 @@ describe "Reset Process", ->
         team.last_price.should.eql 1
         callback()
 
-    Reset.process (err) ->
+    Reset.process event, (err) ->
       throw err if err
       check teamA, () ->
         check teamB, () ->

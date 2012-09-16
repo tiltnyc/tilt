@@ -17,7 +17,8 @@ Investment = new Schema(
   event:
     type: ObjectId 
     ref:  "Event"
-  
+    required: true
+
   team:
     type: ObjectId
     ref: "Team"

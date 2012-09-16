@@ -16,9 +16,10 @@ exports.getOrCreateNextRound = (round, done) ->
   Round.findOne(event: round.event, number: number).exec (err, nextRound) -> 
     return done err if err
     return done null, nextRound if nextRound
-    new Round(
+    r = new Round(
       number: number
       event: round.event
-    ).save (err, round) ->
+    )
+    r.save (err, round) ->
       return done err if err
       done null, round
