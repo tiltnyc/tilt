@@ -2,7 +2,7 @@
 
 mongooseAuth = require("mongoose-auth")
 
-CompetitorSchema = new Schema(
+Competitor = new Schema(
   user:
     type: ObjectId
     ref: "User"
@@ -31,10 +31,10 @@ CompetitorSchema = new Schema(
 )
 
 
-CompetitorSchema.methods.getFundsForRoundNbr = (roundNbr) ->
+Competitor.methods.getFundsForRoundNbr = (roundNbr) ->
   @funds[roundNbr - 1] ? 0
 
-CompetitorSchema.methods.addFundsForRoundNbr = (roundNbr, funds) ->
+Competitor.methods.addFundsForRoundNbr = (roundNbr, funds) ->
   i = roundNbr - 1
   _funds = @funds.concat()
   x = 0
@@ -42,12 +42,12 @@ CompetitorSchema.methods.addFundsForRoundNbr = (roundNbr, funds) ->
   _funds[i] += funds
   @funds = _funds
 
-CompetitorSchema.methods.addToTeam = (team) ->
+Competitor.methods.addToTeam = (team) ->
   @oldTeam = @team
   @team = team
 
 Team = require("./team")
-CompetitorSchema.pre "save", (next) ->
+Competitor.pre "save", (next) ->
   leaveTeam = (competitor, callback) ->
     return callback() unless competitor.oldTeam
     Team.findById competitor.oldTeam, (err, team) ->

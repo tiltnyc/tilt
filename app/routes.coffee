@@ -6,6 +6,7 @@ TeamsController   = require '../app/controllers/teams_controller'
 RoundsController  = require '../app/controllers/rounds_controller'
 ResultsController = require '../app/controllers/results_controller'
 InvestmentsController = require '../app/controllers/investments_controller'
+CompetitorsController = require '../app/controllers/competitors_controller'
 HomeController    = require '../app/controllers/home_controller'
 Process           = require '../processors/investments'
 Result            = require '../models/result'
@@ -187,6 +188,12 @@ module.exports = (app) ->
     path: '/rounds/reset'
     method: 'post'
     middleware: AuthHelpers.restricted
+  ]
+
+  mapToController CompetitorsController, 
+  [
+    path: '/competitors.:format?'
+    action: 'index'
   ]
 
   mapToController ResultsController,

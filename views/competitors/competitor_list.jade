@@ -1,0 +1,18 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
+tr(class="competitor")
+  td.competitor_username 
+    #{aCompetitor.user.username}
+  td.competitor_funds
+    each fund in aCompetitor.funds
+      $#{Math.round(fund)}
+  td.competitor_team
+    - if (aCompetitor.team)
+      a(href='/team/'+aCompetitor.team._id, title=aCompetitor.team.name) #{aCompetitor.team.name}
+    - else
+      &nbsp;
+  if (is_admin)
+    td
+      //a(href='/user/'+aCompetitor._id+'/edit', title="edit") Edit
+      //&nbsp;
+      a(class='destroy', href="/competitor/"+aCompetitor._id, title="delete") Del

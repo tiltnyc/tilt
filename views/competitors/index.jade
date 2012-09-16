@@ -1,0 +1,17 @@
+!= messages()
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
+h2= title
+
+div#competitors
+  - if(competitors.length)
+    table.competitors_list
+      tr
+        th username
+        th funds
+        th team
+        if (is_admin)
+          th actions 
+      != partial('competitor_list', {collection: competitors, as: 'aCompetitor'})
+  - else
+    #no-results No competitors found.
