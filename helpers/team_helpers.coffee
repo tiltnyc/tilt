@@ -7,12 +7,11 @@ exports.loadTeamCount = (req, res, next) ->
     next()
 
 exports.getUserInvestable = (event, user, next) ->
-  query = {}
+  query = 
+    event: event._id
   if user and not user.is_admin and user.team
-    query = 
-      event: event._id
-      _id:
-        $ne: user.team
+    query._id =
+      $ne: user.team
   Team.find(query).asc("name").run (err, teams) ->
     return next(err)  if err
     next null, (if (teams) then teams else [])

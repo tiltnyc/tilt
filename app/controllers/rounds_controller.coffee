@@ -11,7 +11,7 @@ class RoundsController extends BaseController
   redirect = '/rounds'
 
   setParam: (request, response, next, number) ->
-    Round.findOne(number: number).exec (err, round) ->
+    Round.findOne(event: request.currentEvent.id, number: number).exec (err, round) ->
       return next(err) if err
       return next(new Error('Failed loading round ' + number))  unless round
       request.round = round
@@ -26,7 +26,7 @@ class RoundsController extends BaseController
         teamCount: request.teamCount
     
   append: (request, response) ->
-    Round.count {}, (err, numRounds) ->
+    Round.count {event: request.currentEvent.id}, (err, numRounds) ->
       throw err if err
       isCurrentRound = (numRounds is 0)
       new Round
