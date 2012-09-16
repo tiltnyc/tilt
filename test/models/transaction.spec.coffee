@@ -10,7 +10,7 @@ describe "Transaction", ->
   round2 = undefined
 
   beforeEach (done) ->
-    factory.starter 1, (result) ->
+    factory.starter 2, (result) ->
       user = result.users[0]
       event = result.event 
       round1 = result.rounds[0]

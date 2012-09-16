@@ -40,7 +40,7 @@ Transaction.pre "save", (next) ->
     return next(err) if err
     User.findById(transaction.user).exec (err, user) ->
       return next(err) if err
-      user.addFundsForRoundNbr round, transaction.amount
+      user.addFundsForRoundNbr round.number, transaction.amount
       user.save (err) ->
         return next err if err
         next()

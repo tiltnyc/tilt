@@ -8,7 +8,7 @@ class InvestmentController extends BaseController
 
   new: (request, response) ->
     TeamHelpers.getUserInvestable request.currentEvent, request.user, (err, teams) =>
-      @error(request, response, err, '/')
+      return @error(request, response, err, '/') if err
       response.render 'investments/new',
         title: 'New Investment'
         teams: teams

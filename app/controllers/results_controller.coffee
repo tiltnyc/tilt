@@ -12,7 +12,7 @@ class ResultsController extends BaseController
     ).populate('team', null, {},
       sort: 'name'
     ).exec (err, results) =>
-      @error(request, response, err, '/')
+      return @error(request, response, err, '/') if err
       roundResults = []
       results.forEach (result) ->
         singleRoundResults = []
