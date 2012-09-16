@@ -3,6 +3,7 @@ Transaction = require("../models/transaction")
 User = require("../models/user")
 Team = require("../models/team")
 Round = require("../models/round")
+RoundHelpers = require("../helpers/round_helpers")
 Result = require("../models/result")
 
 process = (round, done) ->
@@ -41,7 +42,7 @@ process = (round, done) ->
         return callback(err)  if err
         saveResults data, index + 1, callback
 
-  rewardUsersForInvestments = (investments, index, callback) ->
+  rewardUsersForInvestments = (nextRound, investments, index, callback) ->
     investment = undefined
     if investment = investments[index]
       if investment.percentage > 0
@@ -50,7 +51,7 @@ process = (round, done) ->
         investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price
         new Transaction(
           user: investment.user.id
-          round: round.number + 1
+          round: nextRound.id
           event: round.event
           label: "return for round " + round.number + " investment in team: " + investment.team.name
           amount: investmentReturnForTeam
@@ -73,31 +74,34 @@ process = (round, done) ->
     Round.findOne(event: round.event, number: 1).exec (err, firstRound) -> #load first round
       return done err if err
 
-      Investment.find(round: round.id).populate("user").populate("team").exec (err, investments) ->
+      RoundHelpers.getOrCreateNextRound (err, nextRound) ->
         return done err if err
-        investments.forEach (investment) ->
-          userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
-          results[investment.team.id].result += userInvested
-          total += userInvested
-          investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
 
-        average = total / teamCount
-        averagePercentage = if total > 0 then average / total else 0
-        factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
-
-        saveResults results, 0, (err) ->
+        Investment.find(round: round.id).populate("user").populate("team").exec (err, investments) ->
           return done err if err
-          round.standard_deviation = cumulativeDistanceFromAverage / teamCount
-          round.total_funds = total
-          round.investor_count = investerList.length
-          round.average = averagePercentage
-          round.factor = factor
-          round.is_open = false
-          round.save (err) ->
+          investments.forEach (investment) ->
+            userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
+            results[investment.team.id].result += userInvested
+            total += userInvested
+            investerList.push investment.user.id unless investerList.indexOf(investment.user.id) >= 0
+
+          average = total / teamCount
+          averagePercentage = if total > 0 then average / total else 0
+          factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
+
+          saveResults results, 0, (err) ->
             return done err if err
-            rewardUsersForInvestments investments, 0, (err) ->
+            round.standard_deviation = cumulativeDistanceFromAverage / teamCount
+            round.total_funds = total
+            round.investor_count = investerList.length
+            round.average = averagePercentage
+            round.factor = factor
+            round.is_open = false
+            round.save (err) ->
               return done err if err
-              done()
+              rewardUsersForInvestments nextRound, investments, 0, (err) ->
+                return done err if err
+                done()
 
 module.exports =
   process: process

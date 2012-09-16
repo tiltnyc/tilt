@@ -76,10 +76,10 @@ class UsersController extends BaseController
   dash: (request, response) ->
     User.findOne(_id: request.user.id).populate('team').run (error, user) ->
       throw error if error
-      UserHelpers.loadInvestments user, (error, investments) ->
+      UserHelpers.loadInvestments request.currentEvent, user, (error, investments) ->
         throw error if error
         user.investments = investments
-        UserHelpers.loadTransactions user, (error, transactions) ->
+        UserHelpers.loadTransactions request.currentEvent, user, (error, transactions) ->
           throw error if error
           user.transactions = transactions
           response.render 'users/dash',

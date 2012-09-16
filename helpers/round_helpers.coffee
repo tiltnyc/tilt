@@ -10,3 +10,15 @@ exports.loadFirstRound = (req, res, next) ->
     return next(err)  if err
     req.firstRound = round
     next()
+
+exports.getOrCreateNextRound = (round, done) ->
+  number = round.number + 1
+  Round.findOne(event: round.event, number: number).exec (err, nextRound) -> 
+    return done err if err
+    return done null, nextRound if nextRound
+    new Round(
+      number: number
+      event: round.event
+    ).save (err, round) ->
+      return done err if err
+      done null, round

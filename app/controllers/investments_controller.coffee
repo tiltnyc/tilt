@@ -7,33 +7,33 @@ TeamHelpers     = require '../../helpers/team_helpers'
 class InvestmentController extends BaseController
 
   new: (request, response) ->
-    TeamHelpers.getUserInvestable request.currentEvent, request.user, (err, teams) ->
-      throw err if err
+    TeamHelpers.getUserInvestable request.currentEvent, request.user, (err, teams) =>
+      @error(request, response, err, '/')
       response.render 'investments/new',
         title: 'New Investment'
         teams: teams
         currentRound: request.currentRound
 
   create: (request, response) ->
-    console.log request.body
-    return throw 'Not authorized' if request.body.investment.user and not request.user.is_admin
+    error = (msg) => @error(request, response, msg, '/investment/new') 
+
+    return error('Not authorized') if request.body.investment.user and not request.user.is_admin
     
     user = request.body.investment.user or request.user
-    user = User.findById(user._id or user).exec (err, user) ->
+    user = User.findById(user._id or user).exec (err, user) =>
 
-      # return handleError(req, res, 'invalid user', '/investment/new')  if err
-      throw err if err
+      return error err if err
 
       if !request.body.investment.investments
         request.body.investment.investments = []
         for prop of request.body.investment
           request.body.investment.investments[prop.split('_')[1]] = request.body.investment[prop]  if prop.substring(0, 5) is 'team_'
 
-      throw 'no current round.' unless request.currentRound
-      throw 'cannot invest - round no longer open.' unless request.currentRound.is_open
+      return error 'cannot invest - no currently open round' unless request.currentRound
+      return error 'cannot invest - round no longer open' unless request.currentRound.is_open
 
       Process.investments user, request.body.investment.investments, request.currentRound, (err, investments) ->
-        throw err if err
+        return error err if err
         if request.params.format is 'json'
           response.contentType 'application/json'
           response.send JSON.stringify(investments)

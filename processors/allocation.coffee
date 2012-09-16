@@ -8,9 +8,9 @@ process = (event, round, amount, done) ->
     stream.pause()
     new Transaction(
       amount: amount
-      round: number
+      round: round.id
       user: user.id
-      event: event
+      event: event.id
       label: "round " + number.toString() + " allocation."
     ).save (err, doc) ->
       return done err if err
