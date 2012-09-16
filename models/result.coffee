@@ -9,7 +9,7 @@ Result = new Schema(
   event:
     type: ObjectId 
     ref:  "Event"
-    #required: true JM: should be required in future
+    required: true 
     
   round:
     type: ObjectId
