@@ -1,0 +1,22 @@
+body{padding:0;margin:0}
+h1{color:#001845;text-align:center}
+h2{margin-top:30px;font-family:"pt-sans-narrow",helvetica;font-size:28px;color:#001845;text-align:center;text-transform:uppercase;background:#00f;background:url("/images/under.png") no-repeat bottom;padding-bottom:10px}
+.logo-container{height:1px}
+.logo{display:inline;position:absolute;vertical-align:middle}
+.main-headline{display:block;position:absolute;right:40%;padding-top:80px}
+.video-placeholder{background:url("/images/video-placeholder.jpg") no-repeat center;height:450px;border-left:1px solid #fff}
+.nav-container{background:#a4d7f4;border-bottom:1px #eee;whitespace:nowrap}
+.navbar{margin:0;display:table;margin:0 auto;}
+.navbar .navbar-inner{text-align:center;min-height:80px;background:none;border:none;box-shadow:none;}
+.navbar .navbar-inner .nav{padding-left:200px;white-space:nowrap}
+.navbar .navbar-inner ul{padding-top:20px;text-align:center;}
+.navbar .navbar-inner ul li{font-family:"myriad-pro",helvetica;text-transform:uppercase;padding:0 25px 0 25px;}
+.navbar .navbar-inner ul li a{color:#001845;text-shadow:none}
+.navbar .active{text-decoration:underline}
+.row-fluid{padding:0;margin:0;}
+.row-fluid .span4{margin-left:-20px;width:35.5%}
+.container-fluid{padding:0;margin-left:-20px}
+.btn{border-radius:3px;background:#f58606;color:#fff;}
+.btn:hover{background:#ef5a24}
+.btn.homepage{margin-right:10%;margin-top:320px;right:30%;position:absolute;padding:15px 60px;font-size:18px;font-weight:bold}
+.btn-navbar.homepage{background:none;float:left;position:absolute;top:18px;left:20px}

@@ -1,0 +1,54 @@
+table.users_list td,
+table.users_list th {
+  padding: 3px;
+  margin: 5px;
+}
+table.users_list th {
+  text-align: left;
+}
+#unassigned {
+  color: #aaa;
+}
+#team-list-inline {
+  display: inline-block;
+  font-size: 80%;
+}
+.in-the-red {
+  color: #f00;
+}
+.inner-table {
+  width: 40%;
+  float: left;
+  margin-right: 1em;
+  font-size: 0.9em;
+}
+.inner-table .header {
+  background-color: #ddd;
+  font-weight: bold;
+  text-align: center;
+}
+.inner-table th {
+  text-align: left;
+}
+.inner-table .round-column {
+  width: 10%;
+}
+.inner-table .text-column {
+  width: 80%;
+}
+.inner-table .value-column {
+  width: 10%;
+  text-align: right;
+}
+#user-transactions .header {
+  color: #008000;
+}
+#user-investments .header {
+  color: #a52a2a;
+}
+.open-round {
+  color: #008000;
+}
+.closed-round {
+  color: #f00;
+}

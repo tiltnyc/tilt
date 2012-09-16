@@ -1,0 +1,40 @@
+#rounds {
+  padding: 0;
+}
+#rounds li.round.open-round {
+  background-color: #0f0;
+}
+#rounds li.round.closed-round {
+  background-color: #ffc0cb;
+}
+#rounds li.round.current-round {
+  background-color: #999;
+}
+#rounds li.round {
+  padding: 1em;
+  list-style-type: none;
+  display: inline-block;
+  margin-right: 2em;
+  text-align: center;
+  border: 1px solid #aaa;
+  width: 20%;
+  vertical-align: top;
+}
+#rounds li.round h5 {
+  font-size: 1.1em;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  margin: 0 0 1em 0;
+}
+#rounds li.round .round-contents {
+  color: #666;
+  font-size: 0.8em;
+}
+#rounds li.round .round-contents input {
+  display: inline;
+  width: 5em;
+  padding: 0.1em;
+}
+.red-text {
+  color: #f00;
+}
