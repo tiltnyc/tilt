@@ -4,6 +4,10 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
   body
   
   ul#top-nav
+    if (typeof(currentEvent) != 'undefined')
+      li.event-name
+        h4= currentEvent.name
+
     li 
       a(href='/',title='home') home
     li 
@@ -38,9 +42,6 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
       ul#login-bar
         li
           a(href='/login', title='login') login
-
-    end
-    
 
   #content 
     != body

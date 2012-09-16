@@ -10,11 +10,6 @@ Math.roundToFixed = (num, dec) -> Math.round(num*Math.pow(10, dec))/Math.pow(10,
 #load configuration
 require('./settings').boot app
 
-app.dynamicHelpers
-  base: ->
-    if '/' == app.route then '' else app.route
-  appName: (req, res) -> 'tilt investor app'
-
 #Routes...
 require('./app/routes')(app)
 
