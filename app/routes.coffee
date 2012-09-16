@@ -6,6 +6,7 @@ TeamsController   = require '../app/controllers/teams_controller'
 RoundsController  = require '../app/controllers/rounds_controller'
 ResultsController = require '../app/controllers/results_controller'
 InvestmentsController = require '../app/controllers/investments_controller'
+HomeController    = require '../app/controllers/home_controller'
 Process           = require '../processors/investments'
 Result            = require '../models/result'
 Round             = require '../models/round'
@@ -33,6 +34,7 @@ module.exports = (app) ->
   map = (Controller, route) ->
     action = route.action ? route.path.match(/[a-zA-Z0-9\-_]+(?=\/$|$)/)[0]
     middleware = if route.middleware instanceof Array then route.middleware else if route.middleware then [route.middleware] else []
+    middleware.splice(0, 0, EventHelpers.loadCurrentEvent)
     args = [route.path].concat middleware, (request, response, next, id) ->
       new Controller()[action](request, response, next, id)
     app[route.method ? 'get'].apply app, args
@@ -191,7 +193,7 @@ module.exports = (app) ->
   [
     path: '/results.:format?'
     action: 'index'
-    middleware: [EventHelpers.loadCurrentEvent, RoundHelpers.loadCurrentRound]
+    middleware: RoundHelpers.loadCurrentRound
   ]
 
   mapToController InvestmentsController, 
@@ -204,15 +206,12 @@ module.exports = (app) ->
     method: 'post'  
     action: 'create'
   ]
-  
-  app.get '/', (req, res) ->
-    res.render 'index',
-      title: 'tilt'
 
-  #add route for login check via REST
-  app.get '/login.json', (req, res) ->
-    res.contentType('application/json')
-    if (req.user)
-      res.send(JSON.stringify(req.user))
-    else
-      res.send(JSON.stringify({error: "not authorized."}))
+  mapToController HomeController,
+  [
+    path: '/'
+    action: 'index'
+  ,
+    path: '/login.json'
+    action: 'login'
+  ]
