@@ -31,6 +31,7 @@ process = (round, done) ->
       new Result(
         team: team.id
         round: round.id
+        event: round.event
         before_price: before_price
         after_price: team.last_price
         movement: team.movement
@@ -60,7 +61,7 @@ process = (round, done) ->
         rewardUsersForInvestments investments, index + 1, callback
     else callback()
 
-  Team.find().exec (err, teams) ->
+  Team.find(event: round.event).exec (err, teams) ->
     return done err if err
     teamCount = teams.length
 
@@ -69,10 +70,10 @@ process = (round, done) ->
         team: team
         result: 0
 
-    Round.findOne(number: 1).exec (err, firstRound) -> #load first round
+    Round.findOne(event: round.event, number: 1).exec (err, firstRound) -> #load first round
       return done err if err
 
-      Investment.find(round: round.number).populate("user").populate("team").exec (err, investments) ->
+      Investment.find(round: round.id).populate("user").populate("team").exec (err, investments) ->
         return done err if err
         investments.forEach (investment) ->
           userInvested = investment.percentage * investment.user.getFundsForRoundNbr(round.number)
