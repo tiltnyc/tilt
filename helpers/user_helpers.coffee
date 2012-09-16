@@ -2,7 +2,7 @@ User = require("../models/user")
 Investment = require("../models/investment")
 Transaction = require("../models/transaction")
 exports.loadInvestments = (user, next) ->
-  Investment.find(user: user._id).populate("team").asc("round", "team.name").run (err, investments) ->
+  Investment.find(user: user._id).populate("team").populate("round").asc("round", "team.name").run (err, investments) ->
     return next(err)  if err
     next null, investments
 
