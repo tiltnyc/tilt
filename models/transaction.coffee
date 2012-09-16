@@ -8,9 +8,9 @@ Transaction = new Schema
     type: Number
     required: true
 
-  user:
+  competitor:
     type: ObjectId
-    ref: "User"
+    ref: "Competitor"
     required: true
 
   event:

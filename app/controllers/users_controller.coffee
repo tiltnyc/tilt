@@ -7,14 +7,14 @@ Investment     = require '../../models/investment'
 class UsersController extends BaseController
 
   setParam: (request, response, next, id) ->
-    User.findById(id).populate('team').exec (err, user) ->
+    User.findById(id).exec (err, user) ->
       return next(err) if err
       return next(new Error('Failed loading user ' + id)) unless user
       request.theUser = user
       next()
 
   index: (request, response) ->
-    User.find({}).populate('team').asc('username').run (error, users) ->
+    User.find({}).asc('username').run (error, users) ->
       throw error if error
 
       if request.params.format is 'json'
@@ -30,7 +30,6 @@ class UsersController extends BaseController
       title: 'New User'
 
   create: (request, response) ->
-    request.body.user.team = null if request.body.user.team is ''
     user = new User(request.body.user)
     user.save (error) ->
       throw error if error

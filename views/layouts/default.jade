@@ -9,6 +9,11 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
     li 
       a(href='/events',title='events') events
     
+    if (everyauth.loggedIn && everyauth.user.is_admin)
+      li 
+        a(href='/users',title='users') users 
+    
+
     if (typeof(currentEvent) != 'undefined')
       li.event-name
         h4= currentEvent.name
@@ -20,14 +25,12 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
         a(href='/investment/new',title='new investment') new investment 
         
     if (everyauth.loggedIn && everyauth.user.is_admin)
-      li 
-        a(href='/users',title='users') users 
       li
         a(href='/rounds', title='rounds') rounds
     li 
-        a(href='/competitors',title='competitors') competitors 
+      a(href='/competitors',title='competitors') competitors 
     li 
-        a(href='/teams',title='teams') teams 
+      a(href='/teams',title='teams') teams 
     li
       a(href='/results', title='results') results
     
