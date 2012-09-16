@@ -10,6 +10,7 @@ Process           = require '../processors/investments'
 Result            = require '../models/result'
 Round             = require '../models/round'
 RoundHelpers      = require '../helpers/round_helpers'
+EventHelpers      = require '../helpers/event_helpers'
 SystemHelpers     = require '../helpers/system_helpers'
 TeamHelpers       = require '../helpers/team_helpers'
 Transaction       = require '../models/transaction'
@@ -190,7 +191,7 @@ module.exports = (app) ->
   [
     path: '/results.:format?'
     action: 'index'
-    middleware: RoundHelpers.loadCurrentRound
+    middleware: [EventHelpers.loadCurrentEvent, RoundHelpers.loadCurrentRound]
   ]
 
   mapToController InvestmentsController, 
