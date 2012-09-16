@@ -5,7 +5,7 @@ TeamHelpers     = require '../../helpers/team_helpers'
 class TeamsController extends BaseController
 
   setParam: (request, response, next, id) ->
-    Team.findById(id).populate('users').exec (err, team) ->
+    Team.findById(id).populate('competitors').exec (err, team) ->
       return next(err)  if err
       return next(new Error('Failed loading team ' + id)) unless team
       request.team = team
@@ -18,7 +18,7 @@ class TeamsController extends BaseController
         response.contentType 'application/json'
         response.send JSON.stringify(teams)
     else
-      Team.find({event: request.currentEvent._id}).sort("name", "ascending").populate('users').exec (err, teams) ->
+      Team.find({event: request.currentEvent.id}).sort("name", "ascending").populate('competitors').populate('user').exec (err, teams) ->
         throw err if err
         response.render 'teams/index',
           title: 'List of Teams'
