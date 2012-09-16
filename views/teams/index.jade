@@ -15,9 +15,8 @@ div#teams
           th actions
       != partial('team_list', {collection: teams, as: 'team'})
   - else
-    #no-results No teams found. Create one
-      a(href='/teams/new') here
-
+    #no-results No teams found. 
+  
 hr
 if (is_admin)
   a(href='/teams/new') create new

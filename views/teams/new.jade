@@ -4,6 +4,10 @@ p Create a new team
 form(method="post",action="/teams")
   //input(type="hidden", name="csrf", value=csrf)
   p 
+    label Event 
+    span= currentEvent.name
+    input(type="hidden", name="team[event]", value=currentEvent._id)
+  p 
     label(for='team[name]') Name
     br
     input(type="text", id="team[name]", name="team[name]")
