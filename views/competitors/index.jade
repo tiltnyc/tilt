@@ -7,8 +7,10 @@ div#competitors
   - if(competitors.length)
     table.competitors_list
       tr
+        th event
         th username
-        th funds
+        if (is_admin)
+          th funds
         th team
         if (is_admin)
           th actions 
