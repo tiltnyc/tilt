@@ -3,6 +3,9 @@ tr(class="user")
     a(href='/user/'+aUser._id, title=aUser.username) #{aUser.username}
   td.user_email
     =aUser.email
+  td.user_events
+    each competitor in aUser.competing_in
+      =competitor.event
   td
     a(href='/user/'+aUser._id+'/edit', title="edit") Edit
     &nbsp;

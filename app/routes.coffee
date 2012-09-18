@@ -14,6 +14,7 @@ Round             = require '../models/round'
 RoundHelpers      = require '../helpers/round_helpers'
 EventHelpers      = require '../helpers/event_helpers'
 SystemHelpers     = require '../helpers/system_helpers'
+CompetitorHelper  = require '../helpers/competitor_helpers'
 TeamHelpers       = require '../helpers/team_helpers'
 Transaction       = require '../models/transaction'
 UsersController   = require '../app/controllers/users_controller'
@@ -35,7 +36,7 @@ module.exports = (app) ->
   map = (Controller, route) ->
     action = route.action ? route.path.match(/[a-zA-Z0-9\-_]+(?=\/$|$)/)[0]
     middleware = if route.middleware instanceof Array then route.middleware else if route.middleware then [route.middleware] else []
-    middleware.splice(0, 0, EventHelpers.loadCurrentEvent)
+    middleware.splice(0, 0, EventHelpers.loadCurrentEvent, CompetitorHelper.loadCompetitor)
     args = [route.path].concat middleware, (request, response, next, id) ->
       new Controller()[action](request, response, next, id)
     app[route.method ? 'get'].apply app, args
@@ -91,6 +92,7 @@ module.exports = (app) ->
   ,
     path: '/users.:format?'
     action: 'index'
+    middleware: AuthHelpers.restricted
   ,
     path: '/users'
     method: 'post'
@@ -220,7 +222,7 @@ module.exports = (app) ->
   mapToController InvestmentsController, 
   [
     path: '/investment/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelper.isCompetitor] 
   ,
     path: '/investments.:format?'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
