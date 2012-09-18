@@ -1,15 +1,15 @@
-User = require "../models/user"
+Competitor = require "../models/competitor"
 Transaction = require "../models/transaction"
 
 process = (event, round, amount, done) ->
-  stream = User.find().stream()
+  stream = Competitor.find({event: event.id}).stream()
   number = round.number
-  stream.on "data", (user) ->
+  stream.on "data", (competitor) ->
     stream.pause()
     new Transaction(
       amount: amount
       round: round.id
-      user: user.id
+      competitor: competitor.id
       event: event.id
       label: "round " + number.toString() + " allocation."
     ).save (err, doc) ->
