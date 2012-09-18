@@ -50,14 +50,14 @@ UserSchema.plugin mongooseAuth,
       registerLocals:
         title: "Register"
 
-      loginSuccessRedirect: "/user/dash"
+      loginSuccessRedirect: "/user/profile"
       registerSuccessRedirect: "/"
       respondToLoginSucceed: (res, user) ->
         if user
           if res.req.query.json?
             res.redirect "/login.json"
           else
-            res.redirect "/user/dash"
+            res.redirect "/user/profile"
           res.end()
 
       respondToLoginFail: (req, res, errors, login) ->

@@ -1,8 +1,9 @@
 BaseController = require './base_controller'
 User           = require '../../models/user'
-UserHelpers    = require '../../helpers/user_helpers'
 Transaction    = require '../../models/transaction'
 Investment     = require '../../models/investment'
+Competitor     = require '../../models/competitor'
+
 
 class UsersController extends BaseController
 
@@ -72,10 +73,17 @@ class UsersController extends BaseController
       request.flash 'notice', 'Deleted'
       response.redirect '/users'
 
-  dash: (request, response) ->
-    User.findOne(_id: request.user.id).populate('team').run (error, user) ->
-      throw error if error
-      UserHelpers.loadInvestments request.currentEvent, user, (error, investments) ->
+  profile: (request, response) ->
+    #get user's competitor status 
+    Competitor.find(user: request.user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
+      throw error if err
+      response.render 'users/profile',
+        title: 'Profile'
+        theUser: request.user
+        competitors: competitors
+        currentRound: request.currentRound
+      ###
+      CompetitorHelpers.loadInvestments request.currentEvent, user, (error, investments) ->
         throw error if error
         user.investments = investments
         UserHelpers.loadTransactions request.currentEvent, user, (error, transactions) ->
@@ -85,5 +93,5 @@ class UsersController extends BaseController
             title: 'Dashboard'
             theUser: user
             currentRound: request.currentRound
-
+      ###
 module.exports = UsersController

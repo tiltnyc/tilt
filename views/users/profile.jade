@@ -1,0 +1,15 @@
+!= messages()
+
+h2= title
+
+h3 competed in
+
+ul.event-list
+each competitor in competitors
+  li
+    strong= competitor.event.name 
+    br 
+    = competitor.event.date.toDateString()
+    if (competitor.team)
+      div member of 
+        strong= competitor.team.name

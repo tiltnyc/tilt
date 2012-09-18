@@ -79,7 +79,7 @@ module.exports = (app) ->
 
   mapToController UsersController,
   [
-    path: '/user/dash'
+    path: '/user/profile'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
   ,
     path: 'id'
@@ -194,6 +194,21 @@ module.exports = (app) ->
   [
     path: '/competitors.:format?'
     action: 'index'
+    middleware: [AuthHelpers.restricted]
+  ,
+    path: '/competitor/dash'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: 'comp_id'
+    method: 'param'
+    action: 'setParam'
+  ,
+    path: '/competitor/:comp_id/show'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: '/competitor/create'
+    middleware: [AuthHelpers.loggedIn]
+    method: 'post'
   ]
 
   mapToController ResultsController,
