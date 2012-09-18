@@ -3,18 +3,6 @@ tr(class="user")
     a(href='/user/'+aUser._id, title=aUser.username) #{aUser.username}
   td.user_email
     =aUser.email
-  - if (aUser.funds < 0)
-    td.user_funds.in-the-red
-      =aUser.funds
-  - else 
-    td.user_funds
-      each fund in aUser.funds
-        $#{Math.round(fund)}
-  td.user_team
-    - if (aUser.team)
-      a(href='/team/'+aUser.team._id, title=aUser.team.name) #{aUser.team.name}
-    - else
-      &nbsp;
   td
     a(href='/user/'+aUser._id+'/edit', title="edit") Edit
     &nbsp;

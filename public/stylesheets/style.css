@@ -162,3 +162,14 @@ ul#top-nav #login-bar a {
 .error-text {
   color: #f00;
 }
+ul.no-bullets {
+  margin: 0;
+  padding: 0;
+}
+ul.no-bullets > li {
+  padding: 1em;
+  list-style-type: none;
+}
+ul.no-bullets > li:nth-child(odd) {
+  background-color: #eee;
+}

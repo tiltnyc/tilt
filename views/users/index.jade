@@ -8,8 +8,6 @@ div#users
       tr
         th username
         th email
-        th funds
-        th team
         th actions 
       != partial('user_list', {collection: users, as: 'aUser'})
   - else

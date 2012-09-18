@@ -15,7 +15,7 @@ class UsersController extends BaseController
       next()
 
   index: (request, response) ->
-    User.find({}).asc('username').run (error, users) ->
+    User.find().asc('username').exec (error, users) ->
       throw error if error
 
       if request.params.format is 'json'
