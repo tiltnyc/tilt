@@ -46,11 +46,8 @@ class CompetitorsController extends BaseController
         event: request.currentEvent
 
   create: (request, response) ->
-    new Competitor
-      user: request.user.id
-      event: request.currentEvent.id
-    .save (error) ->
-      throw error if error
+    request.user.joinEvent request.currentEvent, (err) =>
+      return @error(request, response, "cannot join event.", "/competitor/dash") if err 
       request.flash 'notice', 'Joined the event.'
       response.redirect '/competitor/dash'
 

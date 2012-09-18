@@ -1,6 +1,7 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
 
 mongooseAuth = require("mongoose-auth")
+Competitor = require("./competitor")
 
 UserSchema = new Schema(
   username:
@@ -15,6 +16,11 @@ UserSchema = new Schema(
     type: Boolean
     default: false
 
+  competing_in: [
+    type: ObjectId
+    ref: "Competitor"
+  ]
+
   created_at:
     type: Date
     default: Date.now
@@ -24,6 +30,16 @@ UserSchema = new Schema(
     default: Date.now
 )
 
+UserSchema.methods.joinEvent = (event, done) ->
+  new Competitor
+    user: @id
+    event: event.id
+  .save (err, competitor) =>
+    return done err if err
+    done null, competitor
+    @competing_in ?= []
+    @competing_in.push competitor
+    @save()
 
 User = undefined
 UserSchema.plugin mongooseAuth,

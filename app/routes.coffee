@@ -194,7 +194,6 @@ module.exports = (app) ->
   [
     path: '/competitors.:format?'
     action: 'index'
-    middleware: [AuthHelpers.restricted]
   ,
     path: '/competitor/dash'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
