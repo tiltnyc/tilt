@@ -10,11 +10,9 @@ tr(class="competitor")
         =Math.round(fund)
   td.competitor_team
     - if (aCompetitor.team)
-      a(href='/team/'+aCompetitor.team._id, title=aCompetitor.team.name) #{aCompetitor.team.name}
+      a(href='/team/'+aCompetitor.team.id, title=aCompetitor.team.name) #{aCompetitor.team.name}
     - else
       &nbsp;
   if (is_admin)
     td
-      //a(href='/user/'+aCompetitor._id+'/edit', title="edit") Edit
-      //&nbsp;
-      a(class='destroy', href="/competitor/"+aCompetitor._id, title="delete") Del
+      a(class='destroy', href="/competitor/"+aCompetitor.id, title="delete") Del
