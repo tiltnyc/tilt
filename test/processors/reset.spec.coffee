@@ -6,7 +6,7 @@ Allocation = require "../../processors/allocation"
 
 Investment = require "../../models/investment"
 Result = require "../../models/result"
-User = require "../../models/user"
+Competitor = require "../../models/competitor"
 Transaction = require "../../models/transaction"
 Team = require "../../models/team"
 Round = require "../../models/round" 
@@ -14,15 +14,17 @@ Round = require "../../models/round"
 describe "Reset Process", ->
   userA = undefined
   userB = undefined
+  competitorA = undefined
+  competitorB = undefined
   teamA = undefined
   teamB = undefined
   round1 = undefined
   round2 = undefined
   event = undefined
 
-  invest = (user, round, team, percentage, done) ->
+  invest = (competitor, round, team, percentage, done) ->
     factory.create Investment, 
-      user: user.id
+      competitor: competitor.id
       team: team.id
       round: round.id
       event: event.id
@@ -33,20 +35,22 @@ describe "Reset Process", ->
     factory.starter 2, (result) ->
       userA = result.users[0]
       userB = result.users[1]
+      competitorA = result.competitors[0]
+      competitorB = result.competitors[1]
       teamA = result.teams[0]
       teamB = result.teams[1]
       round1 = result.rounds[0]
       round2 = result.rounds[1]
       event = result.event
 
-      invest userA, round1, teamA, 0.6, () ->
-        invest userA, round1, teamB, 0.4, () ->
-          invest userB, round1, teamA, 1, () ->
+      invest competitorA, round1, teamA, 0.6, () ->
+        invest competitorA, round1, teamB, 0.4, () ->
+          invest competitorB, round1, teamA, 1, () ->
             Allocation.process event, round1, 100, (err) ->
               Rounds.process round1, (err) -> 
                 throw err if err
-                invest userA, round2, teamA, 1, () ->
-                  invest userB, round2, teamB, 1, () ->
+                invest competitorA, round2, teamA, 1, () ->
+                  invest competitorB, round2, teamB, 1, () ->
                     Allocation.process event, round2, 200, (err) ->
                       Rounds.process round2, (err) ->  
                         throw err if err
@@ -54,17 +58,17 @@ describe "Reset Process", ->
 
   afterEach (done) -> clean done
 
-  it "must wipe all user funds", (done) ->
+  it "must wipe all competitor funds", (done) ->
     Reset.process event, (err) ->
       throw err if err
-      User.findById(userA.id).exec (err, user) ->
+      Competitor.findById(competitorA.id).exec (err, competitor) ->
         throw err if err
-        user.getFundsForRoundNbr(1).should.eql 0
-        user.getFundsForRoundNbr(2).should.eql 0
-        User.findById(userB.id).exec (err, user) ->
+        competitor.getFundsForRoundNbr(1).should.eql 0
+        competitor.getFundsForRoundNbr(2).should.eql 0
+        Competitor.findById(competitorB.id).exec (err, competitor) ->
           throw err if err
-          user.getFundsForRoundNbr(1).should.eql 0
-          user.getFundsForRoundNbr(2).should.eql 0
+          competitor.getFundsForRoundNbr(1).should.eql 0
+          competitor.getFundsForRoundNbr(2).should.eql 0
           done()
 
   it "must unprocess all rounds", (done) ->

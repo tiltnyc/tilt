@@ -10,7 +10,7 @@ body {
   color: #444;
   margin: 0px;
   text-transform: lowercase;
-  background: url("/images/logo.png") bottom right no-repeat;
+  background: url("/images/logo.png") bottom center no-repeat;
 }
 a img {
   border: none;
@@ -139,7 +139,7 @@ textarea {
 ul#top-nav {
   margin: 0px;
   padding: 1em;
-  background: #000;
+  background: #003;
   border: 1px solid #aaa;
 }
 ul#top-nav li {
@@ -161,4 +161,22 @@ ul#top-nav #login-bar a {
 }
 .error-text {
   color: #f00;
+}
+ul.no-bullets {
+  margin: 0;
+  padding: 0;
+}
+ul.no-bullets > li {
+  padding: 1em;
+  list-style-type: none;
+}
+ul.no-bullets > li:nth-child(odd) {
+  background-color: #eee;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 63px;
+  background: #000 url("/images/logo.png") center -58px no-repeat;
 }

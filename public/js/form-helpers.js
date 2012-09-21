@@ -12,12 +12,18 @@
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(msg) {
+          var recurse;
           selector.options = [];
           $(new Option(prompt, "", true)).appendTo(selector);
+          recurse = function(item, chain) {
+            if (!chain.length) return item;
+            return recurse(item[chain.shift()], chain);
+          };
           return $.each(msg, function(index, item) {
-            var selected;
+            var label, selected;
             selected = item._id === selector.data("team");
-            return $(new Option(item[display], item._id, false, selected)).appendTo(selector);
+            label = display instanceof Array ? recurse(item, display.concat()) : item[display];
+            return $(new Option(label, item._id, false, selected)).appendTo(selector);
           });
         },
         error: function() {
@@ -73,7 +79,7 @@
     });
     loadListFor("user", "team", "name");
     loadListFor("investment", "team", "name");
-    loadListFor("investment", "user", "username");
+    loadListFor("investment", "competitor", ["user", "username"]);
     return loadListFor("allocate", "user", "username");
   });
 

@@ -6,6 +6,7 @@ TeamsController   = require '../app/controllers/teams_controller'
 RoundsController  = require '../app/controllers/rounds_controller'
 ResultsController = require '../app/controllers/results_controller'
 InvestmentsController = require '../app/controllers/investments_controller'
+CompetitorsController = require '../app/controllers/competitors_controller'
 HomeController    = require '../app/controllers/home_controller'
 Process           = require '../processors/investments'
 Result            = require '../models/result'
@@ -13,6 +14,7 @@ Round             = require '../models/round'
 RoundHelpers      = require '../helpers/round_helpers'
 EventHelpers      = require '../helpers/event_helpers'
 SystemHelpers     = require '../helpers/system_helpers'
+CompetitorHelper  = require '../helpers/competitor_helpers'
 TeamHelpers       = require '../helpers/team_helpers'
 Transaction       = require '../models/transaction'
 UsersController   = require '../app/controllers/users_controller'
@@ -34,7 +36,7 @@ module.exports = (app) ->
   map = (Controller, route) ->
     action = route.action ? route.path.match(/[a-zA-Z0-9\-_]+(?=\/$|$)/)[0]
     middleware = if route.middleware instanceof Array then route.middleware else if route.middleware then [route.middleware] else []
-    middleware.splice(0, 0, EventHelpers.loadCurrentEvent)
+    middleware.splice(0, 0, EventHelpers.loadCurrentEvent, CompetitorHelper.loadCompetitor)
     args = [route.path].concat middleware, (request, response, next, id) ->
       new Controller()[action](request, response, next, id)
     app[route.method ? 'get'].apply app, args
@@ -78,7 +80,7 @@ module.exports = (app) ->
 
   mapToController UsersController,
   [
-    path: '/user/dash'
+    path: '/user/profile'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
   ,
     path: 'id'
@@ -90,6 +92,7 @@ module.exports = (app) ->
   ,
     path: '/users.:format?'
     action: 'index'
+    middleware: AuthHelpers.restricted
   ,
     path: '/users'
     method: 'post'
@@ -189,6 +192,26 @@ module.exports = (app) ->
     middleware: AuthHelpers.restricted
   ]
 
+  mapToController CompetitorsController, 
+  [
+    path: '/competitors.:format?'
+    action: 'index'
+  ,
+    path: '/competitor/dash'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: 'comp_id'
+    method: 'param'
+    action: 'setParam'
+  ,
+    path: '/competitor/:comp_id/show'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: '/competitor/create'
+    middleware: [AuthHelpers.loggedIn]
+    method: 'post'
+  ]
+
   mapToController ResultsController,
   [
     path: '/results.:format?'
@@ -199,7 +222,7 @@ module.exports = (app) ->
   mapToController InvestmentsController, 
   [
     path: '/investment/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelper.isCompetitor] 
   ,
     path: '/investments.:format?'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 

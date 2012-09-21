@@ -3,12 +3,13 @@
 Process = require "../../processors/investments.coffee"
 
 Investment = require "../../models/investment"
-User = require "../../models/user"
+Competitor = require "../../models/competitor"
 Team = require "../../models/team"
 Round = require "../../models/round"
 
 describe "Investment Process", ->
   user = undefined
+  competitor = undefined
   teamA = undefined
   teamB = undefined
   teamC = undefined
@@ -17,6 +18,7 @@ describe "Investment Process", ->
   beforeEach (done) ->
    factory.starter 3, (result) ->
       user = result.users[0]
+      competitor = result.competitors[0]
       teamA = result.teams[0]
       teamB = result.teams[1]
       teamC = result.teams[2]
@@ -39,11 +41,11 @@ describe "Investment Process", ->
       team: teamB._id
       percentage: 0.6
     ]
-    Process.investments user, investments, round, (err, results) ->
+    Process.investments competitor, investments, round, (err, results) ->
       throw err if err
       for inv, i in results
         inv.team.should.eql investments[i].team
-        inv.user.should.eql user._id
+        inv.competitor.should.eql competitor._id
         inv.percentage.should.eql investments[i].percentage
       done()
 
@@ -59,7 +61,7 @@ describe "Investment Process", ->
       team: teamC._id
       percentage: 0.3
     ]
-    Process.investments user, investments, round, (err, results) ->
+    Process.investments competitor, investments, round, (err, results) ->
       throw err if err
       results[0].percentage.should.eql investments[0].percentage
       results[1].percentage.should.eql Math.roundToFixed(1 - results[0].percentage, 2)
@@ -78,7 +80,7 @@ describe "Investment Process", ->
       team: teamC._id
       percentage: 0.4
     ]
-    Process.investments user, investments, round, (err, results) ->
+    Process.investments competitor, investments, round, (err, results) ->
       throw err if err
       results[0].percentage.should.eql 0
       results[1].percentage.should.eql 0
@@ -91,7 +93,7 @@ describe "Investment Process", ->
       team: teamA._id
       percentage: 1
     ]
-    Process.investments user, old_investments, round, (err, results) ->
+    Process.investments competitor, old_investments, round, (err, results) ->
       throw err if err
       new_investments =
       [
@@ -101,11 +103,11 @@ describe "Investment Process", ->
         team: teamC._id
         percentage: 0.45
       ]
-      Process.investments user, new_investments, round, (err, results) ->
+      Process.investments competitor, new_investments, round, (err, results) ->
         throw err if err
         Investment.find
           round: round
-          user: user
+          competitor: competitor
         .exec (err, investments) ->
           investments.length.should.eql 2
           for i in investments
@@ -126,7 +128,7 @@ describe "Investment Process", ->
         team: teamB._id
         percentage: 0.6
       ]
-      Process.investments user, investments, round, (err, results) ->
+      Process.investments competitor, investments, round, (err, results) ->
         should.exist err
         done()
 
@@ -142,11 +144,11 @@ describe "Investment Process", ->
       team: teamA._id
       percentage: 0.6
     ]
-    Process.investments user, investments, round, (err, results) ->
+    Process.investments competitor, investments, round, (err, results) ->
       throw err if err
       Investment.find
         round: round
-        user: user
+        competitor: competitor
       .exec (err, investments) ->
         investments.length.should.eql 2
         for i in investments

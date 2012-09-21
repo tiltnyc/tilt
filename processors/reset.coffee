@@ -1,6 +1,6 @@
 Investment = require("../models/investment")
 Transaction = require("../models/transaction")
-User = require("../models/user")
+Competitor = require("../models/Competitor")
 Team = require("../models/team")
 Round = require("../models/round")
 Result = require("../models/result")
@@ -13,7 +13,7 @@ reset = (event, done) ->
       return done err if err
       Result.find(event: event.id).remove (err) ->
         return done err if err
-        User.update {},
+        Competitor.update {},
           $set:
             funds: []
         , options, (err) ->
@@ -38,10 +38,7 @@ reset = (event, done) ->
                 standard_deviation: 1
             , options, (err) ->
               return done err if err
-              Round.findOne(number: 1).update
-                $set:
-                  is_current: true
-              , (err) -> done err
+              Round.update {event: event.id, number: 1}, {$set: is_current: true}, (err) -> done err
 
 module.exports = 
   process: reset

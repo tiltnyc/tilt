@@ -7,10 +7,10 @@ form(method="post",action="/investments")
   //input(type="hidden", name="csrf", value=csrf)
 
   p 
-    label(for='investment[user]') User
+    label(for='investment[competitor]') Competitor
     &nbsp;
     - if (everyauth.loggedIn && everyauth.user.is_admin)
-      select(id='investment[user]', name='investment[user]')
+      select(id='investment[competitor]', name='investment[competitor]')
     -else
       span #{everyauth.user.username}      
   p 

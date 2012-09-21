@@ -26,10 +26,6 @@ bootApplication = (app) ->
     
     app.use express.static(__dirname + '/public', { maxAge: 31557600000 })
 
-    app.use (err, req, res, next) ->
-      res.status(500)
-      res.render('error', { error: err })
-
   app.dynamicHelpers
     request: (req) ->
       req

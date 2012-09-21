@@ -1,0 +1,6 @@
+.event-list {
+  font-size: 150%;
+}
+.event-list .date {
+  float: right;
+}

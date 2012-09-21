@@ -8,42 +8,6 @@ p
 p
   strong email
   &nbsp; #{theUser.email}
-p
-  strong funds
-  each fundz in theUser.funds
-    - if (fundz < 0)
-      span(class="in-the-red") 
-        &nbsp; $#{fundz}
-    - else 
-      span
-        &nbsp; $#{fundz}
-p 
-  strong team
-  - if (theUser.team)
-    &nbsp #{theUser.team.name}
-  - else
-    span#unassigned &nbsp none assigned 
-
-
-table#user-transactions.inner-table
-  tr
-    th.header(colspan=3)
-      &nbsp transactions  
-  tr
-    th round
-    th label
-    th amount
-   != partial('../transactions/transaction_list', {collection: theUser.transactions, as: 'transaction'})
-
-table#user-investments.inner-table
-  tr
-    th.header(colspan=3)
-      &nbsp investments
-  tr
-    th round
-    th team
-    th percentage
-   != partial('../investments/investment_list', {collection: theUser.investments, as: 'investment'})
 
 p 
   a(href='/user/'+theUser._id+'/edit', title="edit") Edit

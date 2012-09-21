@@ -1,20 +1,21 @@
 BaseController = require './base_controller'
 User           = require '../../models/user'
-UserHelpers    = require '../../helpers/user_helpers'
 Transaction    = require '../../models/transaction'
 Investment     = require '../../models/investment'
+Competitor     = require '../../models/competitor'
+
 
 class UsersController extends BaseController
 
   setParam: (request, response, next, id) ->
-    User.findById(id).populate('team').exec (err, user) ->
+    User.findById(id).exec (err, user) ->
       return next(err) if err
       return next(new Error('Failed loading user ' + id)) unless user
       request.theUser = user
       next()
 
   index: (request, response) ->
-    User.find({}).populate('team').asc('username').run (error, users) ->
+    User.find().populate('competing_in').asc('username').exec (error, users) ->
       throw error if error
 
       if request.params.format is 'json'
@@ -30,7 +31,6 @@ class UsersController extends BaseController
       title: 'New User'
 
   create: (request, response) ->
-    request.body.user.team = null if request.body.user.team is ''
     user = new User(request.body.user)
     user.save (error) ->
       throw error if error
@@ -38,10 +38,10 @@ class UsersController extends BaseController
       response.redirect '/user/' + user._id
 
   show: (request, response) ->
-    Transaction.find(user: request.theUser._id).asc('round', 'created').run (error, transactions) ->
+    Transaction.find(user: request.theUser.id).asc('round', 'created').exec (error, transactions) ->
       throw error if error
       request.theUser.transactions = transactions
-      Investment.find(user: request.theUser._id).populate('team').asc('round', 'team.name').run (error, investments) ->
+      Investment.find(user: request.theUser.id).populate('team').asc('round', 'team.name').exec (error, investments) ->
         throw error if error
         request.theUser.investments = investments
         if request.params.format is 'json'
@@ -73,18 +73,12 @@ class UsersController extends BaseController
       request.flash 'notice', 'Deleted'
       response.redirect '/users'
 
-  dash: (request, response) ->
-    User.findOne(_id: request.user.id).populate('team').run (error, user) ->
-      throw error if error
-      UserHelpers.loadInvestments request.currentEvent, user, (error, investments) ->
-        throw error if error
-        user.investments = investments
-        UserHelpers.loadTransactions request.currentEvent, user, (error, transactions) ->
-          throw error if error
-          user.transactions = transactions
-          response.render 'users/dash',
-            title: 'Dashboard'
-            theUser: user
-            currentRound: request.currentRound
-
+  profile: (request, response) ->
+    Competitor.find(user: request.user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
+      throw error if err
+      response.render 'users/profile',
+        title: 'Profile'
+        theUser: request.user
+        competitors: competitors
+        currentRound: request.currentRound
 module.exports = UsersController

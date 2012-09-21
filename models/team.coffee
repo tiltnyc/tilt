@@ -9,9 +9,9 @@ Team = new Schema(
     ref: "Event"
     required: true
      
-  users: [
+  competitors: [
     type: ObjectId
-    ref: "User"
+    ref: "Competitor"
   ]
 
   last_price:
