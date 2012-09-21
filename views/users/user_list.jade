@@ -10,3 +10,8 @@ tr(class="user")
     a(href='/user/'+aUser._id+'/edit', title="edit") Edit
     &nbsp;
     a(class='destroy', href="/user/"+aUser._id, title="delete") Del
+    &nbsp;
+  td
+    form(method='post', action='/competitor/create')
+      input(type='hidden', name='theUser[id]', value=aUser.id)
+      button Join Current Event

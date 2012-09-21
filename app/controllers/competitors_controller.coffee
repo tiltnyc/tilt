@@ -1,6 +1,7 @@
 BaseController = require './base_controller'
 Competitor = require '../../models/Competitor'
 CompetitorHelpers = require '../../helpers/competitor_helpers'
+User = require '../../models/User'
 
 class CompetitorsController extends BaseController
 
@@ -9,6 +10,9 @@ class CompetitorsController extends BaseController
       return next(err) if err
       request.competitor = competitor
       next()
+
+  redirect = (request) ->
+    if request.user.is_admin then '/users' else '/competitor/dash'
 
   index: (request, response) ->
     Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
@@ -44,11 +48,14 @@ class CompetitorsController extends BaseController
       response.render 'competitors/dash',
         title: 'Competitor Dashboard'
         event: request.currentEvent
-
+      
   create: (request, response) ->
-    request.user.joinEvent request.currentEvent, (err) =>
-      return @error(request, response, "cannot join event.", "/competitor/dash") if err 
-      request.flash 'notice', 'Joined the event.'
-      response.redirect '/competitor/dash'
+    uid = if request.user.is_admin and request.body.theUser then request.body.theUser.id else request.user.id
+    User.findById(uid).exec (err, user) =>
+      console.log err if err
+      user.joinEvent request.currentEvent, (err) =>
+        return @error(request, response, "cannot join event.", redirect(request)) if err 
+        request.flash 'notice', 'Joined the event.'
+        response.redirect redirect(request) 
 
 module.exports = CompetitorsController

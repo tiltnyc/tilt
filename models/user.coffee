@@ -31,15 +31,17 @@ UserSchema = new Schema(
 )
 
 UserSchema.methods.joinEvent = (event, done) ->
-  new Competitor
-    user: @id
-    event: event.id
-  .save (err, competitor) =>
-    return done err if err
-    done null, competitor
-    @competing_in ?= []
-    @competing_in.push competitor
-    @save()
+  Competitor.findOne(event: event.id, user: @id).exec (err, comp) =>
+    return done "already joined" if comp
+    new Competitor
+      user: @id
+      event: event.id
+    .save (err, competitor) =>
+      return done err if err
+      done null, competitor
+      @competing_in ?= []
+      @competing_in.push competitor
+      @save()
 
 User = undefined
 UserSchema.plugin mongooseAuth,

@@ -24,7 +24,7 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
       if (everyauth.loggedIn)
         li
           a(href='/competitor/dash', title='dashboard') dashboard
-        if(everyauth.user.is_admin || typeof('competingCurrent') != 'undefined')
+        if(everyauth.user.is_admin || typeof(competingCurrent) != 'undefined')
           li
             a(href='/investment/new',title='new investment') new investment 
           

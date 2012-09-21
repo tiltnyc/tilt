@@ -9,17 +9,16 @@ exports.isCompetitor = (req, res, next) ->
   return result() unless req.user
   Competitor.findOne(event: req.currentEvent.id, user: req.user.id).exec (err, competitor) ->
     return next(err) if err
-    return result() unless competitor
+    return result() unless competitor or req.user.is_admin
     next()
 
 exports.loadCompetitor = (req, res, next) ->
-  console.log "fore"
   return next() unless req.user and req.currentEvent
-  console.log "here!"
   Competitor.findOne(event: req.currentEvent.id, user: req.user.id).populate("team").exec (err, competitor) ->
     return next(err) if err
-    req.competitor = competitor
-    res.local('competingCurrent', competitor)
+    if competitor
+      req.competitor = competitor 
+      res.local('competingCurrent', competitor)
     next()
 
 exports.loadInvestments = (event, competitor, next) ->
