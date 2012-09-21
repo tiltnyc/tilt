@@ -4,14 +4,16 @@ h2= title
 
 h3 you've competed in
 
-ul.event-list.no-bullets
-  each competitor in competitors
-    li
-      strong= competitor.event.name 
-      if (competitor.team)
-        span member of 
-          strong= competitor.team.name
+if competitors.length
+  ul.event-list.no-bullets
+    each competitor in competitors
+      li
+        strong= competitor.event.name 
+        if (competitor.team)
+          span member of 
+            strong= competitor.team.name
 
-      div.date
-        = competitor.event.date.toDateString() 
-      
+        div.date
+          = competitor.event.date.toDateString() 
+else 
+  div no events yet      
