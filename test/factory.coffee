@@ -2,6 +2,7 @@ User = require "../models/user"
 Team = require "../models/team"
 Event = require "../models/event"
 Round = require "../models/round"
+Competitor = require "../models/competitor"
 
 nouns = ["fox", "lion", "ball", "street", "tree", "cat", "bird"]
 verbs = ["jump", "talk", "look", "walk", "growl", "think", "swallow", "mentor"]
@@ -19,15 +20,15 @@ create = (Model, props, done) ->
 createLoop = (Model, count, props, done) ->
   created = []
 
-  doCreate = (callback) ->
+  doCreate = (i, callback) ->
     propIns = {}
     for key, value of props
-      propIns[key] = if value instanceof Function then value() else value 
+      propIns[key] = if value instanceof Function then value(i) else value 
     create Model, propIns, (result) -> callback result 
 
   doneCount = 1
   for i in [1..count] 
-    created.push doCreate () ->
+    created.push doCreate i-1, () ->
       done(created) if doneCount++ is count 
 
 starter = (count, done) ->
@@ -37,19 +38,24 @@ starter = (count, done) ->
       name: () -> randomWordPair()
       email: () -> randomWordPair("_")+"@example.com" 
     , (users) ->
-      createLoop Team, count, 
-        name: () -> randomWordPair()
+      createLoop Competitor, count, 
+        user: (i) -> users[i]
         event: event
-      , (teams) ->  
-        createLoop Round, count,
-          number: () -> roundNbr++ 
+      , (competitors) ->   
+        createLoop Team, count, 
+          name: () -> randomWordPair()
           event: event
-        , (rounds) ->
-          done
+        , (teams) ->  
+          createLoop Round, count,
+            number: () -> roundNbr++ 
             event: event
-            users: users
-            teams: teams
-            rounds: rounds
+          , (rounds) ->
+            done
+              event: event
+              users: users
+              competitors: competitors
+              teams: teams
+              rounds: rounds
 
 module.exports = 
   create: create
