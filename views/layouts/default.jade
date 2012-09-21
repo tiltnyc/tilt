@@ -21,23 +21,23 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
       li.event-name
         h4= currentEvent.name
 
-    if (everyauth.loggedIn)
-      li
-        a(href='/competitor/dash', title='dashboard') dashboard
-      if(everyauth.user.is_admin || typeof('competingCurrent') != 'undefined')
+      if (everyauth.loggedIn)
         li
-          a(href='/investment/new',title='new investment') new investment 
-        
-    if (everyauth.loggedIn && everyauth.user.is_admin)
+          a(href='/competitor/dash', title='dashboard') dashboard
+        if(everyauth.user.is_admin || typeof('competingCurrent') != 'undefined')
+          li
+            a(href='/investment/new',title='new investment') new investment 
+          
+      if (everyauth.loggedIn && everyauth.user.is_admin)
+        li
+          a(href='/rounds', title='rounds') rounds
+      li 
+        a(href='/competitors',title='competitors') competitors 
+      li 
+        a(href='/teams',title='teams') teams 
       li
-        a(href='/rounds', title='rounds') rounds
-    li 
-      a(href='/competitors',title='competitors') competitors 
-    li 
-      a(href='/teams',title='teams') teams 
-    li
-      a(href='/results', title='results') results
-    
+        a(href='/results', title='results') results
+      
 
     if (everyauth.loggedIn) 
       ul#login-bar 
