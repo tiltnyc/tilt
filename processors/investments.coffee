@@ -24,13 +24,13 @@ process = (user, array, round, callback) ->
 
     Investment.findOne {
       round: round.id
-      user: user
+      competitor: user.id
       team: rowData.team
     }, (err, investment) ->
       return next err if err
       investment ?= new Investment
         round: round.id
-        user: user
+        competitor: user.id
         team: rowData.team
         event: round.event
       investment.percentage = rowData.percentage

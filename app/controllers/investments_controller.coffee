@@ -19,7 +19,9 @@ class InvestmentController extends BaseController
 
     return error('Not authorized') if request.body.investment.user and not request.user.is_admin
     
+#TODO: this should be a competitor, not a user 
     user = request.body.investment.user or request.user
+
     user = User.findById(user._id or user).exec (err, user) =>
 
       return error err if err
