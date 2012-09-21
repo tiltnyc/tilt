@@ -1,6 +1,7 @@
 BaseController  = require './base_controller'
 Investment      = require '../../models/investment'
 User            = require '../../models/user'
+Competitor      = require '../../models/competitor'
 Process         = require '../../processors/investments'
 TeamHelpers     = require '../../helpers/team_helpers'
 
@@ -19,10 +20,9 @@ class InvestmentController extends BaseController
 
     return error('Not authorized') if request.body.investment.user and not request.user.is_admin
     
-#TODO: this should be a competitor, not a user 
-    user = request.body.investment.user or request.user
+    cid = if request.user.is_admin and request.body.investment.competitor then request.body.investment.competitor else request.competitor.id
 
-    user = User.findById(user._id or user).exec (err, user) =>
+    Competitor.findById(cid).exec (err, competitor) =>
 
       return error err if err
 
@@ -34,7 +34,7 @@ class InvestmentController extends BaseController
       return error 'cannot invest - no currently open round' unless request.currentRound
       return error 'cannot invest - round no longer open' unless request.currentRound.is_open
 
-      Process.investments user, request.body.investment.investments, request.currentRound, (err, investments) ->
+      Process.investments competitor, request.body.investment.investments, request.currentRound, (err, investments) ->
         return error err if err
         if request.params.format is 'json'
           response.contentType 'application/json'

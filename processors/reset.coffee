@@ -38,10 +38,7 @@ reset = (event, done) ->
                 standard_deviation: 1
             , options, (err) ->
               return done err if err
-              Round.findOne(number: 1).update
-                $set:
-                  is_current: true
-              , (err) -> done err
+              Round.update {event: event.id, number: 1}, {$set: is_current: true}, (err) -> done err
 
 module.exports = 
   process: reset
