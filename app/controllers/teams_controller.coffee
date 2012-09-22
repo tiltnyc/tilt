@@ -57,6 +57,8 @@ class TeamsController extends BaseController
     return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team is team.id)
     
     console.log request.files
+    #if request.files.length and request.files.team_picture
+      #todo
 
     @updateIfChanged ["name"], team, request.body.team
     team.save (err, team) ->
