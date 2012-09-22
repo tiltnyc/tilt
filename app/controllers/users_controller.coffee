@@ -59,9 +59,7 @@ class UsersController extends BaseController
 
   update: (request, response) ->
     user = request.theUser
-    @updateIfChanged ["name", "date"], user, request.body.user
-    if request.body.user.team isnt '' then user.addToTeam request.body.user.team
-
+    @updateIfChanged ["username", "email"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'

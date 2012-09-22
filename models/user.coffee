@@ -2,6 +2,7 @@
 
 mongooseAuth = require("mongoose-auth")
 Competitor = require("./competitor")
+Investor = require("./investor")
 
 UserSchema = new Schema(
   username:
@@ -21,6 +22,11 @@ UserSchema = new Schema(
     ref: "Competitor"
   ]
 
+  investing_in: [
+    type: ObjectId
+    ref: "Investor"
+  ]
+
   created_at:
     type: Date
     default: Date.now
@@ -30,7 +36,7 @@ UserSchema = new Schema(
     default: Date.now
 )
 
-UserSchema.methods.joinEvent = (event, done) ->
+UserSchema.methods.joinAsCompetitor = (event, done) ->
   Competitor.findOne(event: event.id, user: @id).exec (err, comp) =>
     return done "already joined" if comp
     new Competitor
@@ -41,6 +47,19 @@ UserSchema.methods.joinEvent = (event, done) ->
       done null, competitor
       @competing_in ?= []
       @competing_in.push competitor
+      @save()
+
+UserSchema.methods.joinAsInvestor = (event, done) ->
+  Investor.findOne(event: event.id, user: @id).exec (err, inv) =>
+    return done "already joined" if inv
+    new Investor
+      user: @id
+      event: event.id
+    .save (err, investor) =>
+      return done err if err
+      done null, investor
+      @investing_in ?= []
+      @investing_in.push competitor
       @save()
 
 User = undefined

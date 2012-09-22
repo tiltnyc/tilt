@@ -212,6 +212,11 @@ module.exports = (app) ->
     path: '/competitor/create'
     middleware: [AuthHelpers.loggedIn]
     method: 'post'
+  , 
+    path: '/competitors/:comp_id'
+    method: 'put'
+    action: 'update'
+    middleware: AuthHelpers.restricted
   ]
 
   mapToController InvestorsController, 

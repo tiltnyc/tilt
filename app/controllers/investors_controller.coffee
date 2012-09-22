@@ -52,7 +52,7 @@ class InvestorsController extends BaseController
   create: (request, response) ->
     uid = if request.user.is_admin and request.body.theUser then request.body.theUser.id else request.user.id
     User.findById(uid).exec (err, user) =>
-      user.joinEvent request.currentEvent, (err) =>
+      user.joinAsInvestor request.currentEvent, (err) =>
         return @error(request, response, "cannot join event.", redirect(request)) if err 
         request.flash 'notice', 'Joined the event.'
         response.redirect redirect(request) 

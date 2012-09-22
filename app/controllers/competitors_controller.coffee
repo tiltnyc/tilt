@@ -17,7 +17,6 @@ class CompetitorsController extends BaseController
   index: (request, response) ->
     Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
       throw err if err
-
       if request.params.format is 'json'
         response.contentType 'application/json'
         response.send JSON.stringify(competitors)
@@ -53,9 +52,23 @@ class CompetitorsController extends BaseController
     uid = if request.user.is_admin and request.body.theUser then request.body.theUser.id else request.user.id
     User.findById(uid).exec (err, user) =>
       console.log err if err
-      user.joinEvent request.currentEvent, (err) =>
+      user.joinAsCompetitor request.currentEvent, (err) =>
         return @error(request, response, "cannot join event.", redirect(request)) if err 
         request.flash 'notice', 'Joined the event.'
         response.redirect redirect(request) 
 
+  edit: (request, response) ->
+    response.render 'competitors/edit',
+      title: 'Edit Competitor'
+      theCompetitor: request.competitor
+
+  update: (request, response) ->
+    competitor = request.competitor
+    @updateIfChanged ["name", "date"], competitor, request.body.competitor
+    if request.body.competitor.team isnt '' then competitor.addToTeam request.body.competitor.team
+
+    competitor.save (error, doc) ->
+      throw error if error
+      request.flash 'notice', 'Updated successfully'
+      response.redirect '/competitor/' + competitor._id
 module.exports = CompetitorsController
