@@ -1,11 +1,11 @@
 {should, clean, factory} = require "../test-base"
 
 Transaction = require "../../models/transaction"
-Competitor = require "../../models/competitor"
+Investor = require "../../models/investor"
   
 describe "Transaction", ->
   user = undefined
-  competitor = undefined
+  investor = undefined
   event = undefined
   round1 = undefined
   round2 = undefined
@@ -13,7 +13,7 @@ describe "Transaction", ->
   beforeEach (done) ->
     factory.starter 2, (result) ->
       user = result.users[0]
-      competitor = result.competitors[0]
+      investor = result.investors[0]
       event = result.event 
       round1 = result.rounds[0]
       round2 = result.rounds[1]
@@ -26,14 +26,14 @@ describe "Transaction", ->
    
     createAndTest = (round, amount, total, next) ->
       transaction = new Transaction
-        competitor: competitor
+        investor: investor
         amount: amount
         round: round
         event: event
       transaction.save (err) ->
         throw err if err
-        Competitor.findById(competitor.id).exec (err, competitor) ->
-          competitor.getFundsForRoundNbr(round.number).should.eql total
+        Investor.findById(investor.id).exec (err, investor) ->
+          investor.getFundsForRoundNbr(round.number).should.eql total
           next()
 
     createAndTest round1, 105, 105, () ->
