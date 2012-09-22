@@ -2,6 +2,7 @@ Allocation        = require '../processors/allocation'
 AuthHelpers       = require '../helpers/auth_helpers'
 Investment        = require '../models/investment'
 EventsController  = require '../app/controllers/events_controller'
+InvestorsController  = require '../app/controllers/investors_controller'
 TeamsController   = require '../app/controllers/teams_controller'
 RoundsController  = require '../app/controllers/rounds_controller'
 ResultsController = require '../app/controllers/results_controller'
@@ -14,7 +15,8 @@ Round             = require '../models/round'
 RoundHelpers      = require '../helpers/round_helpers'
 EventHelpers      = require '../helpers/event_helpers'
 SystemHelpers     = require '../helpers/system_helpers'
-CompetitorHelper  = require '../helpers/competitor_helpers'
+CompetitorHelpers = require '../helpers/competitor_helpers'
+InvestorHelpers   = require '../helpers/investor_helpers'
 TeamHelpers       = require '../helpers/team_helpers'
 Transaction       = require '../models/transaction'
 UsersController   = require '../app/controllers/users_controller'
@@ -36,7 +38,7 @@ module.exports = (app) ->
   map = (Controller, route) ->
     action = route.action ? route.path.match(/[a-zA-Z0-9\-_]+(?=\/$|$)/)[0]
     middleware = if route.middleware instanceof Array then route.middleware else if route.middleware then [route.middleware] else []
-    middleware.splice(0, 0, EventHelpers.loadCurrentEvent, CompetitorHelper.loadCompetitor)
+    middleware.splice(0, 0, EventHelpers.loadCurrentEvent, CompetitorHelpers.loadCompetitor, InvestorHelpers.loadInvestor)
     args = [route.path].concat middleware, (request, response, next, id) ->
       new Controller()[action](request, response, next, id)
     app[route.method ? 'get'].apply app, args
@@ -212,6 +214,26 @@ module.exports = (app) ->
     method: 'post'
   ]
 
+  mapToController InvestorsController, 
+  [
+    path: '/investors.:format?'
+    action: 'index'
+  ,
+    path: '/investor/dash'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: 'inv_id'
+    method: 'param'
+    action: 'setParam'
+  ,
+    path: '/investor/:inv_id/show'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
+    path: '/investor/create'
+    middleware: [AuthHelpers.loggedIn]
+    method: 'post'
+  ]
+
   mapToController ResultsController,
   [
     path: '/results.:format?'
@@ -222,7 +244,7 @@ module.exports = (app) ->
   mapToController InvestmentsController, 
   [
     path: '/investment/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelper.isCompetitor] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor] 
   ,
     path: '/investments.:format?'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
