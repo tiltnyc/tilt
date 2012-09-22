@@ -1,11 +1,24 @@
 BaseController  = require './base_controller'
 Team            = require '../../models/team'
+User            = require '../../models/user'
 TeamHelpers     = require '../../helpers/team_helpers'
 
 class TeamsController extends BaseController
 
   setParam: (request, response, next, id) ->
     Team.findById(id).populate('competitors').exec (err, team) ->
+      #UserHelpers.find(...)
+
+      ###
+
+      User.find().select(["username"]).exec (err, users) ->
+    
+      for i in [0..team.competitors.length]  
+        found = users.filter (u) -> u._id is team.competitors[i].user
+        team.competitors[i] = team.competitors[i].toObject()
+        if found.length
+          team.competitors[i].user = found[0]
+      ###
       return next(err)  if err
       return next(new Error('Failed loading team ' + id)) unless team
       request.team = team

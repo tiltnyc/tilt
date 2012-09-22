@@ -12,7 +12,7 @@ p
     ul
       each competitor in team.competitors
         li 
-          a(href='/competitor/' + competitor.id, title='view competitor') #{competitor}
+          a(href='/competitor/' + competitor.id, title='view competitor') #{competitor.user.username}
   - else
     span#unassigned &nbsp none assigned
 
