@@ -50,7 +50,7 @@ $ ->
       resetValues()
       $("#total-invested").text Math.round(Math.min(totalInvested, 1) * 100) + "%"
 
-  loadListFor "user", "team", "name"
+  loadListFor "competitor", "team", "name"
   loadListFor "investment", "team", "name"
   loadListFor "investment", "competitor", ["user","username"]
   loadListFor "allocate", "user", "username"    
