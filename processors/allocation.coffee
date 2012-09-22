@@ -1,15 +1,15 @@
-Competitor = require "../models/competitor"
+Investor = require "../models/investor"
 Transaction = require "../models/transaction"
 
 process = (event, round, amount, done) ->
-  stream = Competitor.find({event: event.id}).stream()
+  stream = Investor.find({event: event.id}).stream()
   number = round.number
-  stream.on "data", (competitor) ->
+  stream.on "data", (investor) ->
     stream.pause()
     new Transaction(
       amount: amount
       round: round.id
-      competitor: competitor.id
+      investor: investor.id
       event: event.id
       label: "round " + number.toString() + " allocation."
     ).save (err, doc) ->
