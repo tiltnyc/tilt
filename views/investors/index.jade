@@ -3,17 +3,16 @@
 
 h2= title
 
-div#competitors
-  - if(competitors.length)
-    table.competitors_list
+div#investors
+  - if(investors.length)
+    table.investors_list
       tr
         th event
         th username
         if (is_admin)
           th funds
-        th team
         if (is_admin)
           th actions 
-      != partial('competitor_list', {collection: competitors, as: 'aCompetitor'})
+      != partial('investor_list', {collection: investors, as: 'aInvestor'})
   - else
-    #no-results No competitors found.
+    #no-results No investors found.

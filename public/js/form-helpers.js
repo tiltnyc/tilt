@@ -86,7 +86,7 @@
     });
     loadListFor("competitor", "team", "name");
     loadListFor("investment", "team", "name");
-    loadListFor("investment", "competitor", ["user", "username"]);
+    loadListFor("investment", "investor", ["user", "username"]);
     return loadListFor("allocate", "user", "username");
   });
 

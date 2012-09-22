@@ -1,7 +1,7 @@
 BaseController  = require './base_controller'
 Investment      = require '../../models/investment'
 User            = require '../../models/user'
-Competitor      = require '../../models/competitor'
+Investor      = require '../../models/investor'
 Process         = require '../../processors/investments'
 TeamHelpers     = require '../../helpers/team_helpers'
 
@@ -20,9 +20,9 @@ class InvestmentController extends BaseController
 
     return error('Not authorized') if request.body.investment.user and not request.user.is_admin
     
-    cid = if request.user.is_admin and request.body.investment.competitor then request.body.investment.competitor else request.currentCompetitor.id
+    iid = if request.user.is_admin and request.body.investment.investor then request.body.investment.investor else request.currentInvestor.id
 
-    Competitor.findById(cid).exec (err, competitor) =>
+    Investor.findById(iid).exec (err, investor) =>
 
       return error err if err
 
@@ -34,7 +34,7 @@ class InvestmentController extends BaseController
       return error 'cannot invest - no currently open round' unless request.currentRound
       return error 'cannot invest - round no longer open' unless request.currentRound.is_open
 
-      Process.investments competitor, request.body.investment.investments, request.currentRound, (err, investments) ->
+      Process.investments investor, request.body.investment.investments, request.currentRound, (err, investments) ->
         return error err if err
         if request.params.format is 'json'
           response.contentType 'application/json'
@@ -44,7 +44,7 @@ class InvestmentController extends BaseController
           if request.user.is_admin
             response.redirect '/investment/new'
           else
-            response.redirect '/user/dash'
+            response.redirect '/investor/dash'
 
 
 module.exports = InvestmentController

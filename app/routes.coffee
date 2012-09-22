@@ -255,7 +255,7 @@ module.exports = (app) ->
   mapToController InvestmentsController, 
   [
     path: '/investment/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, InvestorHelpers.isInvestor] 
   ,
     path: '/investments.:format?'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
