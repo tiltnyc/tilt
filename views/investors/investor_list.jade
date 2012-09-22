@@ -1,0 +1,14 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
+tr(class="investor")
+  td.investor_event= currentEvent.name
+  td.investor_username= aInvestor.user.username
+  if (is_admin)
+    td.investor_funds
+      each fund in aInvestor.funds
+        $
+        =Math.round(fund)
+        &nbsp
+  if (is_admin)
+    td
+      a(class='destroy', href="/investor/"+aInvestor.id, title="delete") Del

@@ -1,9 +1,8 @@
 Competitor = require("../models/competitor")
-Investment = require("../models/investment")
-Transaction = require("../models/transaction")
+
 exports.isCompetitor = (req, res, next) ->
   result = () ->
-    req.flash "error", new Error("Not in event.")
+    req.flash "error", new Error("Not competing in event.")
     res.redirect "/"
 
   return result() unless req.user
@@ -17,16 +16,6 @@ exports.loadCompetitor = (req, res, next) ->
   Competitor.findOne(event: req.currentEvent.id, user: req.user.id).populate("team").exec (err, competitor) ->
     return next(err) if err
     if competitor
-      req.competitor = competitor 
+      req.currentCompetitor = competitor 
       res.local('competingCurrent', competitor)
     next()
-
-exports.loadInvestments = (event, competitor, next) ->
-  Investment.find(competitor: competitor.id).populate("team").populate("round").sort("round", "ascending").sort("team.name", "ascending").exec (err, investments) ->
-    return next(err)  if err
-    next null, investments
-
-exports.loadTransactions = (event, competitor, next) ->
-  Transaction.find(competitor: competitor.id).populate("round").sort("round", "ascending").sort("created", "ascending").exec (err, transactions) ->
-    return next(err)  if err
-    next null, transactions

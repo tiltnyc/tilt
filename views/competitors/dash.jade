@@ -9,7 +9,7 @@ p
 
 if (typeof(competitor) == 'undefined')
   form(method="post", action="/competitor/create")
-    span you're not in this event 
+    span you're not competing in this event 
     button so join it now!
 else 
   p
@@ -24,30 +24,5 @@ else
     else
       span.closed-round closed
 
-  p
-    strong funds this round
-    if (currentRound && competitor.getFundsForRoundNbr(currentRound.number))
-      span &nbsp $#{competitor.getFundsForRoundNbr(currentRound.number).toFixed(2)}
-    else
-      span &nbsp $0
-
-  table#user-transactions.inner-table
-    tr
-      th.header(colspan=3)
-        &nbsp transactions
-    tr
-      th round
-      th label
-      th amount
-     != partial('../transactions/transaction_list', {collection: competitor.transactions, as: 'transaction'})
-
-  table#user-investments.inner-table
-    tr
-      th.header(colspan=3)
-        &nbsp investments
-    tr
-      th round
-      th team
-      th percentage
-
-     != partial('../investments/investment_list', {collection: competitor.investments, as: 'investment'})
+  p 
+    //todo: show result of team

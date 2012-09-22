@@ -7,14 +7,7 @@ tr(class="team")
     else
       | #{team.name}
  
-  td
-    if (!team.competitors.length)
-      span -
-    each aCompetitor in team.competitors
-      if (is_admin)
-        a(href='/user/' + aCompetitor.user.id, title='view user') #{aCompetitor.user.username} &nbsp
-      else
-        | #{aCompetitor.user.username} &nbsp      
+  td= team.competitors.length      
   
   td
     $#{team.last_price.toFixed(2)}

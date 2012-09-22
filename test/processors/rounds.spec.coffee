@@ -5,7 +5,7 @@ Allocation = require "../../processors/allocation"
 
 Investment = require "../../models/investment"
 Result = require "../../models/result"
-Competitor = require "../../models/competitor"
+Investor = require "../../models/investor"
 Team = require "../../models/team"
 Round = require "../../models/round"
 
@@ -13,9 +13,9 @@ describe "Round Process", ->
   userA = undefined
   userB = undefined
   userC = undefined
-  competitorA = undefined
-  competitorB = undefined
-  competitorC = undefined
+  investorA = undefined
+  investorB = undefined
+  investorC = undefined
   teamA = undefined
   teamB = undefined
   teamC = undefined
@@ -29,9 +29,9 @@ describe "Round Process", ->
       userA = result.users[0]
       userB = result.users[1]
       userC = result.users[2]
-      competitorA = result.competitors[0]
-      competitorB = result.competitors[1]
-      competitorC = result.competitors[2]
+      investorA = result.investors[0]
+      investorB = result.investors[1]
+      investorC = result.investors[2]
       teamA = result.teams[0]
       teamB = result.teams[1]
       teamC = result.teams[2]
@@ -43,9 +43,9 @@ describe "Round Process", ->
 
   afterEach (done) -> clean done
 
-  invest = (competitor, round, team, percentage, done) ->
+  invest = (investor, round, team, percentage, done) ->
     factory.create Investment,
-      competitor: competitor.id
+      investor: investor.id
       team: team.id
       round: round.id
       event: event.id
@@ -69,20 +69,20 @@ describe "Round Process", ->
       Math.roundToFixed(result.team.last_price, 3).should.eql after_price
       done()
 
-  checkReward = (competitor, round, expected, done) ->
-    Competitor.findById(competitor.id).exec (err, competitor) ->
+  checkReward = (investor, round, expected, done) ->
+    Investor.findById(investor.id).exec (err, investor) ->
       throw err if err
-      Math.roundToFixed(competitor.getFundsForRoundNbr(round.number + 1), 2).should.eql expected
+      Math.roundToFixed(investor.getFundsForRoundNbr(round.number + 1), 2).should.eql expected
       done()
 
   goRoundOne = (done) ->
     Allocation.process event, round1, 100, (err) ->
       throw err if err
-      invest competitorA, round1, teamA, 0.6, () ->
-        invest competitorA, round1, teamB, 0.4, () ->
-          invest competitorB, round1, teamA, 0.25, () ->
-            invest competitorB, round1, teamB, 0.25, () ->
-              invest competitorB, round1, teamC, 0.5, () ->
+      invest investorA, round1, teamA, 0.6, () ->
+        invest investorA, round1, teamB, 0.4, () ->
+          invest investorB, round1, teamA, 0.25, () ->
+            invest investorB, round1, teamB, 0.25, () ->
+              invest investorB, round1, teamC, 0.5, () ->
                 Rounds.process round1, (err) ->
                   throw err if err
                   done()
@@ -91,11 +91,11 @@ describe "Round Process", ->
   goRoundTwo = (done) ->
     Allocation.process event, round2, 250, (err) ->
       throw err if err
-      invest competitorA, round2, teamA, 1, () ->
-        invest competitorB, round2, teamA, 0.1, () ->
-          invest competitorB, round2, teamB, 0.9, () ->
-            invest competitorC, round2, teamD, 0.35, () ->
-              invest competitorC, round2, teamC, 0.65, () ->
+      invest investorA, round2, teamA, 1, () ->
+        invest investorB, round2, teamA, 0.1, () ->
+          invest investorB, round2, teamB, 0.9, () ->
+            invest investorC, round2, teamD, 0.35, () ->
+              invest investorC, round2, teamC, 0.65, () ->
                 Rounds.process round2, (err) ->
                   throw err if err
                   done()
@@ -116,9 +116,9 @@ describe "Round Process", ->
 
   it "must reward investors for round 1", (done) ->
     goRoundOne () ->
-      checkReward competitorA, round1, 113.5, () ->
-        checkReward competitorB, round1, 106.25, () ->
-          checkReward competitorC, round1, 0, () ->
+      checkReward investorA, round1, 113.5, () ->
+        checkReward investorB, round1, 106.25, () ->
+          checkReward investorC, round1, 0, () ->
             done()
 
   it "must valuate teams for round 2", (done) ->
@@ -138,7 +138,7 @@ describe "Round Process", ->
   it "must reward investors for round 2", (done) ->
     goRoundOne () ->
       goRoundTwo () ->
-        checkReward competitorA, round2, 711.89, () ->
-          checkReward competitorB, round2, 539.79, () ->
-            checkReward competitorC, round2, 200.75, () ->
+        checkReward investorA, round2, 711.89, () ->
+          checkReward investorB, round2, 539.79, () ->
+            checkReward investorC, round2, 200.75, () ->
               done()

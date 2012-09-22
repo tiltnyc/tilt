@@ -10,3 +10,16 @@ exports.loadTransactions = (event, user, next) ->
   Transaction.find(event: event.id, user: user.id).populate("round").asc("round", "created").run (err, transactions) ->
     return next(err)  if err
     next null, transactions
+
+exports.populate = (model, done) ->
+  input = if model instanceof Array then model else [model]
+  doProcess = (i, next) ->
+    return next() if i >= input.length
+    single = input[i].toObject()
+    User.findById(single.user).select(["username"]).exec (err, user) ->
+      single.user = user
+      input[i] = single
+      doProcess i+1, next
+  doProcess 0, () -> 
+    console.log input
+    done()

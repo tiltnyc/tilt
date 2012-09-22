@@ -12,14 +12,6 @@ form(method="post", action="/users/"+theUser._id)
     &nbsp;
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
-  p 
-    label(for='user[team]') Team
-    &nbsp;
-    - if (theUser.team)
-      select(id='user[team]', name='user[team]', data-team='#{theUser.team.id}')
-    - else 
-      select(id='user[team]', name='user[team]')  
-
   input(type="hidden", name="user[_id]", value=theUser._id)
 
   input(type="submit", value="Submit")

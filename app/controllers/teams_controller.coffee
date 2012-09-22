@@ -1,15 +1,19 @@
 BaseController  = require './base_controller'
 Team            = require '../../models/team'
+User            = require '../../models/user'
 TeamHelpers     = require '../../helpers/team_helpers'
+UserHelpers     = require '../../helpers/user_helpers'
+
 
 class TeamsController extends BaseController
 
   setParam: (request, response, next, id) ->
     Team.findById(id).populate('competitors').exec (err, team) ->
-      return next(err)  if err
-      return next(new Error('Failed loading team ' + id)) unless team
-      request.team = team
-      next()
+      UserHelpers.populate team.competitors, () ->
+        return next(err)  if err
+        return next(new Error('Failed loading team ' + id)) unless team
+        request.team = team
+        next()
 
   index: (request, response) ->
     if request.params.format is 'json'
@@ -18,7 +22,7 @@ class TeamsController extends BaseController
         response.contentType 'application/json'
         response.send JSON.stringify(teams)
     else
-      Team.find({event: request.currentEvent.id}).sort("name", "ascending").populate('competitors').populate('user').exec (err, teams) ->
+      Team.find(event: request.currentEvent.id).sort("name", "ascending").populate('competitors').exec (err, teams) ->
         throw err if err
         response.render 'teams/index',
           title: 'List of Teams'

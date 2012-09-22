@@ -1,0 +1,16 @@
+h2= title
+
+form(method="post", action="/competitors/"+theCompetitor._id)
+  input(name="_method", value='PUT', type='hidden')
+
+  p 
+    label(for='competitor[team]') Team
+    &nbsp;
+    - if (theCompetitor.team)
+      select(id='competitor[team]', name='competitor[team]', data-team='#{theCompetitor.team.id}')
+    - else 
+      select(id='competitor[team]', name='competitor[team]')  
+
+  input(type="hidden", name="competitor[_id]", value=theCompetitor._id)
+
+  input(type="submit", value="Submit")

@@ -10,7 +10,8 @@ if competitors.length
       li
         strong= competitor.event.name 
         if (competitor.team)
-          span member of 
+          &nbsp
+          span member of: 
             strong= competitor.team.name
 
         div.date

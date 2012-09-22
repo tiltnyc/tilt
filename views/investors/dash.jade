@@ -1,0 +1,51 @@
+!= messages()
+
+h2= title
+
+p
+  strong event &nbsp
+  span= event.name
+
+
+if (typeof(investor) == 'undefined')
+  span you cannot invest in this event - sorry! 
+else 
+  p
+    strong current round:
+    if (currentRound)
+      span #{currentRound.number}
+
+  p
+    strong status: &nbsp
+    if (currentRound && currentRound.is_open)
+      span.open-round  open
+    else
+      span.closed-round closed
+
+  p
+    strong funds this round
+    if (currentRound && investor.getFundsForRoundNbr(currentRound.number))
+      span &nbsp $#{investor.getFundsForRoundNbr(currentRound.number).toFixed(2)}
+    else
+      span &nbsp $0
+
+  table#investor-transactions.inner-table
+    tr
+      th.header(colspan=3)
+        &nbsp transactions
+    tr
+      th round
+      th label
+      th amount
+     != partial('../transactions/transaction_list', {collection: investor.transactions, as: 'transaction'})
+
+  table#investor-investments.inner-table
+    tr
+      th.header(colspan=3)
+        &nbsp investments
+    tr
+      th round
+      th team
+      th percentage
+
+     != partial('../investments/investment_list', {collection: investor.investments, as: 'investment'})

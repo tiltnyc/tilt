@@ -17,10 +17,6 @@ Competitor = new Schema(
     type: ObjectId
     ref: "Team"
 
-  funds:
-    type: [ Number ]
-    default: []
-
   created_at:
     type: Date
     default: Date.now
@@ -29,18 +25,6 @@ Competitor = new Schema(
     type: Date
     default: Date.now
 )
-
-
-Competitor.methods.getFundsForRoundNbr = (roundNbr) ->
-  @funds[roundNbr - 1] ? 0
-
-Competitor.methods.addFundsForRoundNbr = (roundNbr, funds) ->
-  i = roundNbr - 1
-  _funds = @funds.concat()
-  x = 0
-  _funds[x++] ?= 0 while x < roundNbr #ensure funds for previous rounds initialised
-  _funds[i] += funds
-  @funds = _funds
 
 Competitor.methods.addToTeam = (team) ->
   @oldTeam = @team

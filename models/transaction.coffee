@@ -1,6 +1,6 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
 
-Competitor = require("./competitor")
+Investor = require("./investor")
 Round = require("./round")
 
 Transaction = new Schema
@@ -8,9 +8,9 @@ Transaction = new Schema
     type: Number
     required: true
 
-  competitor:
+  investor:
     type: ObjectId
-    ref: "Competitor"
+    ref: "Investor"
     required: true
 
   event:
@@ -38,10 +38,10 @@ Transaction.pre "save", (next) ->
   transaction = @
   Round.findById(transaction.round).exec (err, round) ->
     return next(err) if err
-    Competitor.findById(transaction.competitor).exec (err, competitor) ->
+    Investor.findById(transaction.investor).exec (err, investor) ->
       return next(err) if err
-      competitor.addFundsForRoundNbr round.number, transaction.amount
-      competitor.save (err) ->
+      investor.addFundsForRoundNbr round.number, transaction.amount
+      investor.save (err) ->
         return next err if err
         next()
 
