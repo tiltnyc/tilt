@@ -47,11 +47,11 @@ process = (round, done) ->
     investment = undefined
     if investment = investments[index]
       if investment.percentage > 0
-        fundsInRound = investment.competitor.getFundsForRoundNbr(round.number)
+        fundsInRound = investment.investor.getFundsForRoundNbr(round.number)
         investedInTeam = investment.percentage * fundsInRound
         investmentReturnForTeam = investedInTeam * results[investment.team.id].team.last_price
         new Transaction(
-          competitor: investment.competitor.id
+          investor: investment.investor.id
           round: nextRound.id
           event: round.event
           label: "return for round " + round.number + " investment in team: " + investment.team.name
@@ -78,13 +78,13 @@ process = (round, done) ->
       RoundHelpers.getOrCreateNextRound round, (err, upcomingRound) ->
         return done err if err
         nextRound = upcomingRound
-        Investment.find(round: round.id).populate("competitor").populate("team").exec (err, investments) ->
+        Investment.find(round: round.id).populate("investor").populate("team").exec (err, investments) ->
           return done err if err
           investments.forEach (investment) ->
-            userInvested = investment.percentage * investment.competitor.getFundsForRoundNbr(round.number)
+            userInvested = investment.percentage * investment.investor.getFundsForRoundNbr(round.number)
             results[investment.team.id].result += userInvested
             total += userInvested
-            investerList.push investment.competitor.id unless investerList.indexOf(investment.competitor.id) >= 0
+            investerList.push investment.investor.id unless investerList.indexOf(investment.investor.id) >= 0
 
           average = total / teamCount
           averagePercentage = if total > 0 then average / total else 0

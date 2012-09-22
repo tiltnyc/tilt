@@ -1,6 +1,6 @@
 Investment = require("../models/investment")
 Transaction = require("../models/transaction")
-Competitor = require("../models/Competitor")
+Investor = require("../models/Investor")
 Team = require("../models/team")
 Round = require("../models/round")
 Result = require("../models/result")
@@ -13,7 +13,7 @@ reset = (event, done) ->
       return done err if err
       Result.find(event: event.id).remove (err) ->
         return done err if err
-        Competitor.update {},
+        Investor.update {},
           $set:
             funds: []
         , options, (err) ->
