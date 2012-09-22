@@ -5,9 +5,9 @@ Investment = new Schema(
     type: Number
     required: true
 
-  competitor:
+  investor:
     type: ObjectId
-    ref: "Competitor"
+    ref: "Investor"
 
   round:
     type: ObjectId
