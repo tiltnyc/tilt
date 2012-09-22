@@ -1,6 +1,6 @@
 Investment = require("../models/investment")
 Transaction = require("../models/transaction")
-Investor = require("../models/Investor")
+Investor = require("../models/investor")
 Team = require("../models/team")
 Round = require("../models/round")
 Result = require("../models/result")
