@@ -59,7 +59,7 @@ UserSchema.methods.joinAsInvestor = (event, done) ->
       return done err if err
       done null, investor
       @investing_in ?= []
-      @investing_in.push competitor
+      @investing_in.push investor
       @save()
 
 User = undefined
