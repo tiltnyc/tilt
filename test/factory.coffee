@@ -3,6 +3,7 @@ Team = require "../models/team"
 Event = require "../models/event"
 Round = require "../models/round"
 Competitor = require "../models/competitor"
+Investor = require "../models/investor"
 
 nouns = ["fox", "lion", "ball", "street", "tree", "cat", "bird"]
 verbs = ["jump", "talk", "look", "walk", "growl", "think", "swallow", "mentor"]
@@ -41,21 +42,26 @@ starter = (count, done) ->
       createLoop Competitor, count, 
         user: (i) -> users[i]
         event: event
-      , (competitors) ->   
-        createLoop Team, count, 
-          name: () -> randomWordPair()
+      , (competitors) -> 
+        createLoop Investor, count, 
+          user: (i) -> users[i]
           event: event
-        , (teams) ->  
-          createLoop Round, count,
-            number: () -> roundNbr++ 
+        , (investors) ->  
+          createLoop Team, count, 
+            name: () -> randomWordPair()
             event: event
-          , (rounds) ->
-            done
+          , (teams) ->  
+            createLoop Round, count,
+              number: () -> roundNbr++ 
               event: event
-              users: users
-              competitors: competitors
-              teams: teams
-              rounds: rounds
+            , (rounds) ->
+              done
+                event: event
+                users: users
+                competitors: competitors
+                investors: investors
+                teams: teams
+                rounds: rounds
 
 module.exports = 
   create: create
