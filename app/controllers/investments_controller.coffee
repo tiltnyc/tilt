@@ -20,7 +20,7 @@ class InvestmentController extends BaseController
 
     return error('Not authorized') if request.body.investment.user and not request.user.is_admin
     
-    cid = if request.user.is_admin and request.body.investment.competitor then request.body.investment.competitor else request.competitor.id
+    cid = if request.user.is_admin and request.body.investment.competitor then request.body.investment.competitor else request.currentCompetitor.id
 
     Competitor.findById(cid).exec (err, competitor) =>
 

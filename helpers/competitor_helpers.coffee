@@ -17,7 +17,7 @@ exports.loadCompetitor = (req, res, next) ->
   Competitor.findOne(event: req.currentEvent.id, user: req.user.id).populate("team").exec (err, competitor) ->
     return next(err) if err
     if competitor
-      req.competitor = competitor 
+      req.currentCompetitor = competitor 
       res.local('competingCurrent', competitor)
     next()
 
