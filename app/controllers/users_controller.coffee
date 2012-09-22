@@ -15,7 +15,7 @@ class UsersController extends BaseController
       next()
 
   index: (request, response) ->
-    User.find().populate('competing_in').asc('username').exec (error, users) ->
+    User.find().populate('competing_in').exclude(['hash','salt']).asc('username').exec (error, users) ->
       throw error if error
 
       if request.params.format is 'json'
@@ -72,11 +72,13 @@ class UsersController extends BaseController
       response.redirect '/users'
 
   profile: (request, response) ->
-    Competitor.find(user: request.user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
+    user = if request.theUser then request.theUser else request.user
+
+    Competitor.find(user: user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
       throw error if err
       response.render 'users/profile',
         title: 'Profile'
-        theUser: request.user
+        theUser: user
         competitors: competitors
         currentRound: request.currentRound
 module.exports = UsersController

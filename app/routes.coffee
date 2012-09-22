@@ -85,6 +85,9 @@ module.exports = (app) ->
     path: '/user/profile'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
   ,
+    path: '/user/:id/profile'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+  ,
     path: 'id'
     method: 'param'
     action: 'setParam'
