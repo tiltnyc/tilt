@@ -17,16 +17,6 @@ UserSchema = new Schema(
     type: Boolean
     default: false
 
-  competing_in: [
-    type: ObjectId
-    ref: "Competitor"
-  ]
-
-  investing_in: [
-    type: ObjectId
-    ref: "Investor"
-  ]
-
   created_at:
     type: Date
     default: Date.now
@@ -45,9 +35,6 @@ UserSchema.methods.joinAsCompetitor = (event, done) ->
     .save (err, competitor) =>
       return done err if err
       done null, competitor
-      @competing_in ?= []
-      @competing_in.push competitor
-      @save()
 
 UserSchema.methods.joinAsInvestor = (event, done) ->
   Investor.findOne(event: event.id, user: @id).exec (err, inv) =>
@@ -58,9 +45,16 @@ UserSchema.methods.joinAsInvestor = (event, done) ->
     .save (err, investor) =>
       return done err if err
       done null, investor
-      @investing_in ?= []
-      @investing_in.push investor
-      @save()
+
+UserSchema.methods.populateCompetingIn = (done) ->
+  Competitor.find(user: @id).populate('user').populate('event').populate('team').exec (err, competitors) =>
+    @competing_in = competitors
+    done()
+
+UserSchema.methods.populateInvestingIn = (done) ->
+  Investor.find(user: @id).populate('user').populate('event').exec (err, investors) =>
+    @investing_in = investors
+    done()
 
 User = undefined
 UserSchema.plugin mongooseAuth,

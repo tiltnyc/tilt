@@ -18,13 +18,14 @@ class InvestmentController extends BaseController
   create: (request, response) ->
     error = (msg) => @error(request, response, msg, '/investment/new') 
 
-    return error('Not authorized') if request.body.investment.user and not request.user.is_admin
-    
+    return error 'Not authorized' if request.body.investment.user and not request.user.is_admin
+    return error "Admin isn't setup to invest"  if request.user.is_admin and not request.body.investment.investor and not request.currentInvestor
+
     iid = if request.user.is_admin and request.body.investment.investor then request.body.investment.investor else request.currentInvestor.id
 
     Investor.findById(iid).exec (err, investor) =>
-
       return error err if err
+      return "cannot invest - not setup as investors" if !investor
 
       if !request.body.investment.investments
         request.body.investment.investments = []

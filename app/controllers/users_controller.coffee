@@ -6,7 +6,6 @@ Competitor     = require '../../models/competitor'
 
 
 class UsersController extends BaseController
-
   setParam: (request, response, next, id) ->
     User.findById(id).exec (err, user) ->
       return next(err) if err
@@ -15,16 +14,23 @@ class UsersController extends BaseController
       next()
 
   index: (request, response) ->
-    User.find().populate('competing_in').exclude(['hash','salt']).asc('username').exec (error, users) ->
+    User.find().exclude(['hash','salt']).asc('username').exec (error, users) ->
       throw error if error
 
-      if request.params.format is 'json'
-        response.contentType 'application/json'
-        response.send JSON.stringify(users)
-      else
-        response.render 'users/index',
-          title: 'List of Users'
-          users: users
+      populateRoles = (i, done) ->
+        return done() if i >= users.length
+        user = users[i]
+        user.populateCompetingIn () ->
+          user.populateInvestingIn () -> populateRoles i+1, done
+
+      populateRoles 0, () ->   
+        if request.params.format is 'json'
+          response.contentType 'application/json'
+          response.send JSON.stringify(users)
+        else
+          response.render 'users/index',
+            title: 'List of Users'
+            users: users
 
   new: (request, response) ->
     response.render 'users/new',
@@ -38,12 +44,8 @@ class UsersController extends BaseController
       response.redirect '/user/' + user._id
 
   show: (request, response) ->
-    Transaction.find(user: request.theUser.id).asc('round', 'created').exec (error, transactions) ->
-      throw error if error
-      request.theUser.transactions = transactions
-      Investment.find(user: request.theUser.id).populate('team').asc('round', 'team.name').exec (error, investments) ->
-        throw error if error
-        request.theUser.investments = investments
+    request.theUser.populateCompetingIn () ->
+      request.theUser.populateInvestingIn () ->
         if request.params.format is 'json'
           response.contentType 'application/json'
           response.send JSON.stringify(request.theUser)

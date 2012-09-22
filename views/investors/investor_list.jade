@@ -8,6 +8,7 @@ tr(class="investor")
       each fund in aInvestor.funds
         $
         =Math.round(fund)
+        &nbsp
   if (is_admin)
     td
       a(class='destroy', href="/investor/"+aInvestor.id, title="delete") Del
