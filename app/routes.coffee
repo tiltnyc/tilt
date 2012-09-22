@@ -142,12 +142,12 @@ module.exports = (app) ->
     action: 'show'
   ,
     path: '/team/:team_id/edit'
-    middleware: AuthHelpers.restricted
+    middleware: AuthHelpers.loggedIn
   ,
     path: '/teams/:team_id'
     method: 'put'
     action: 'update'
-    middleware: AuthHelpers.restricted
+    middleware: [AuthHelpers.loggedIn, SystemHelpers.uniquifyObjectNames, SystemHelpers.uploader]
   ,
     path: '/team/:team_id'
     method: 'del'

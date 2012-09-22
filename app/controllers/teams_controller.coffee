@@ -4,7 +4,6 @@ User            = require '../../models/user'
 TeamHelpers     = require '../../helpers/team_helpers'
 UserHelpers     = require '../../helpers/user_helpers'
 
-
 class TeamsController extends BaseController
 
   setParam: (request, response, next, id) ->
@@ -55,6 +54,10 @@ class TeamsController extends BaseController
 
   update: (request, response) ->
     team = request.team
+    return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team is team.id)
+    
+    console.log request.files
+
     @updateIfChanged ["name"], team, request.body.team
     team.save (err, team) ->
       throw err if err

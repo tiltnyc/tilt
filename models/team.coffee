@@ -14,6 +14,9 @@ Team = new Schema(
     ref: "Competitor"
   ]
 
+  picture: 
+    type: String
+    
   last_price:
     type: Number
     default: 1.00
