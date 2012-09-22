@@ -213,6 +213,9 @@ module.exports = (app) ->
     middleware: [AuthHelpers.loggedIn]
     method: 'post'
   , 
+    path: '/competitor/:comp_id/edit'
+    middleware: AuthHelpers.restricted
+  ,
     path: '/competitors/:comp_id'
     method: 'put'
     action: 'update'
