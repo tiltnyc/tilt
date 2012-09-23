@@ -109,12 +109,12 @@ module.exports = (app) ->
     action: 'show'
   ,
     path: '/user/:id/edit'
-    middleware: AuthHelpers.restricted
+    middleware: AuthHelpers.loggedIn
   ,
     path: '/users/:id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("users"), UploadHelpers.resizeImages(200), UploadHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("users"), UploadHelpers.resizeImages(200), UploadHelpers.uploader]
   ,
     path: '/user/:id'
     method: 'del'

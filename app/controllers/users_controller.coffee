@@ -55,11 +55,15 @@ class UsersController extends BaseController
             theUser: request.theUser
 
   edit: (request, response) ->
+    return @error(request, response, 'Unauthorized.', '/') unless request.user.is_admin or request.theUser.id is request.user.id
+
     response.render 'users/edit',
       title: 'Edit ' + request.theUser.username
       theUser: request.theUser
 
   update: (request, response) ->
+    return @error(request, response, 'Unauthorized.', '/') unless request.user.is_admin or request.theUser.id is request.user.id
+
     user = request.theUser
     URIs = UploadHelpers.getImageURIs request 
     user.picture = URIs[0] if URIs.length
@@ -67,7 +71,7 @@ class UsersController extends BaseController
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'
-      response.redirect '/user/' + user._id
+      response.redirect if request.user.is_admin then "/user/#{user._id}" else "/user/profile"
 
   delete: (request, response) ->
     user = request.theUser
