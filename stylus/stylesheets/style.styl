@@ -9,9 +9,7 @@ body
   color #444
   margin 0px
   text-transform lowercase
-  background url('/images/logo.png') bottom center no-repeat
   
-
 a img
   border none
 
@@ -150,6 +148,8 @@ ul#top-nav
     a
       color lime
 
+.helper-text
+  color #ccc
 .error-text
   color red
 
@@ -161,6 +161,17 @@ ul.no-bullets
     list-style-type none
   > li:nth-child(odd)
     background-color #eee
+
+.spacer
+  height 100px
+
+.bottom-logo
+  position fixed
+  bottom 63px
+  left 0
+  right 0
+  height 50px
+  background url('/images/logo.png') bottom center fixed no-repeat
 
 .footer
   position fixed

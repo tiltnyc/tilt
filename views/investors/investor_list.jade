@@ -1,7 +1,8 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
 tr(class="investor")
-  td.investor_event= currentEvent.name
+  td
+    img(src=aInvestor.user.picture, width=50)
   td.investor_username= aInvestor.user.username
   if (is_admin)
     td.investor_funds
