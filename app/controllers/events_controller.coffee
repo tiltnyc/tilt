@@ -1,5 +1,6 @@
 BaseController = require './base_controller'
 Event          = require '../../models/event'
+UploadHelpers  = require '../../helpers/upload_helpers'
 
 class EventsController extends BaseController
 
@@ -48,6 +49,8 @@ class EventsController extends BaseController
 
   update: (request, response) ->
     event = request.event
+    URIs = UploadHelpers.getImageURIs request 
+    event.picture = URIs[0] if URIs.length
     @updateIfChanged ["name", "date"], event, request.body.event
     event.save (err) ->
       throw err if err

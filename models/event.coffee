@@ -18,7 +18,8 @@ Event = new Schema
     ref: "Round"
   ]
 
-  #JM: users[] would be nice
+  picture: 
+    type: String
 
   created_at:
     type: Date

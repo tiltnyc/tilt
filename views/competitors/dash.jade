@@ -12,6 +12,8 @@ if (typeof(competitor) == 'undefined')
     span you're not competing in this event 
     button so join it now!
 else 
+  if (currentEvent.picture)
+    img(src=currentEvent.picture)
   p
     strong current round:
     if (currentRound)

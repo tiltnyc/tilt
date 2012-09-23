@@ -13,6 +13,9 @@ UserSchema = new Schema(
     type: String
     required: true
 
+  picture: 
+    type: String
+    
   is_admin:
     type: Boolean
     default: false

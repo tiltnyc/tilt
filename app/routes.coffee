@@ -15,6 +15,7 @@ Round             = require '../models/round'
 RoundHelpers      = require '../helpers/round_helpers'
 EventHelpers      = require '../helpers/event_helpers'
 SystemHelpers     = require '../helpers/system_helpers'
+UploadHelpers     = require '../helpers/upload_helpers'
 CompetitorHelpers = require '../helpers/competitor_helpers'
 InvestorHelpers   = require '../helpers/investor_helpers'
 TeamHelpers       = require '../helpers/team_helpers'
@@ -71,7 +72,7 @@ module.exports = (app) ->
     path: '/events/:event_id'
     method: 'put'
     action: 'update'
-    middleware: AuthHelpers.restricted
+    middleware: [AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("events"), UploadHelpers.uploader]
   ,
     path: '/event/:event_id'
     method: 'del'
@@ -147,7 +148,7 @@ module.exports = (app) ->
     path: '/teams/:team_id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.loggedIn, SystemHelpers.uniquifyObjectNames("teams"), SystemHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("teams"), UploadHelpers.resizeImages(100), UploadHelpers.uploader]
   ,
     path: '/team/:team_id'
     method: 'del'

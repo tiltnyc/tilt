@@ -21,5 +21,4 @@ exports.populate = (model, done) ->
       input[i] = single
       doProcess i+1, next
   doProcess 0, () -> 
-    console.log input
     done()
