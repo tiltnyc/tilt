@@ -3,7 +3,7 @@ User           = require '../../models/user'
 Transaction    = require '../../models/transaction'
 Investment     = require '../../models/investment'
 Competitor     = require '../../models/competitor'
-
+UploadHelpers     = require '../../helpers/upload_helpers'
 
 class UsersController extends BaseController
   setParam: (request, response, next, id) ->
@@ -61,6 +61,8 @@ class UsersController extends BaseController
 
   update: (request, response) ->
     user = request.theUser
+    URIs = UploadHelpers.getImageURIs request 
+    user.picture = URIs[0] if URIs.length
     @updateIfChanged ["username", "email"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
@@ -79,7 +81,7 @@ class UsersController extends BaseController
     Competitor.find(user: user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
       throw error if err
       response.render 'users/profile',
-        title: 'Profile'
+        title: user.username
         theUser: user
         competitors: competitors
         currentRound: request.currentRound

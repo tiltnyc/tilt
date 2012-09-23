@@ -114,7 +114,7 @@ module.exports = (app) ->
     path: '/users/:id'
     method: 'put'
     action: 'update'
-    middleware: AuthHelpers.restricted
+    middleware: [AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("users"), UploadHelpers.resizeImages(200), UploadHelpers.uploader]
   ,
     path: '/user/:id'
     method: 'del'
