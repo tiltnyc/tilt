@@ -1,7 +1,8 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
 tr(class="competitor")
-  td.competitor_event= currentEvent.name
+  td
+    img(src=aCompetitor.user.picture, width=50)
   td.competitor_username= aCompetitor.user.username
   td.competitor_team
     - if (aCompetitor.team)

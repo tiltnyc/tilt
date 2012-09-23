@@ -16,6 +16,7 @@ Team = new Schema(
 
   picture: 
     type: String
+    default: "https://s3.amazonaws.com/tiltnyc/teams/generic-team.jpg"
     
   last_price:
     type: Number

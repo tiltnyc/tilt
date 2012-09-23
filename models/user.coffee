@@ -15,6 +15,7 @@ UserSchema = new Schema(
 
   picture: 
     type: String
+    default: "https://s3.amazonaws.com/tiltnyc/users/GenericUser.png"
     
   is_admin:
     type: Boolean
