@@ -11,7 +11,7 @@ exports.error = (req, res, error, redirect) ->
 
 exports.uniquifyObjectNames = (req, res, next) ->
   for key, value of req.files
-    req.files[key].s3ObjectName = "teams/#{req.files[key].name}_#{new Date().getTime()}"
+    req.files[key].s3ObjectName = "teams/#{new Date().getTime()}_#{req.files[key].name}"
   next()
 
 exports.uploader = connectStreamS3
