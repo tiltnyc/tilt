@@ -8,4 +8,10 @@ p
   br
   input(type="text", id="event[date]", name="event[date]", class="datepicker", value=(event.date)?event.date.toDateString():"")
 
+p
+  if (event.picture)
+    img(src=event.picture)
+    &nbsp
+  input(type="file", id="event_picture", name="event_picture")
+
 input(type="submit", value="Submit")

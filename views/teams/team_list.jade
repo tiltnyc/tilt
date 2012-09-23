@@ -2,6 +2,8 @@
 
 tr(class="team") 
   td
+    img(src=team.picture, width=50)
+  td
     if (is_admin)
       a(href='/team/'+team._id, title=team.name) #{team.name}
     else

@@ -12,17 +12,28 @@ if (typeof(competitor) == 'undefined')
     span you're not competing in this event 
     button so join it now!
 else 
-  p
-    strong current round:
-    if (currentRound)
-      span #{currentRound.number}
+  if (currentEvent.picture)
+    img(src=currentEvent.picture)
 
+
+  h3 team
+  p
+    img(src=competitor.team.picture, width=100)
+    br
+    if (competitor.team)
+      strong name:  
+      = competitor.team.name
+
+  h3 score
   p
     strong status: &nbsp
     if (currentRound && currentRound.is_open)
       span.open-round  open
     else
       span.closed-round closed
-
+  p
+    strong current round:
+    if (currentRound)
+      span #{currentRound.number}
   p 
     //todo: show result of team

@@ -26,17 +26,11 @@ class CompetitorsController extends BaseController
           competitors: competitors
 
   show: (request, response) ->
-    CompetitorHelpers.loadInvestments request.currentEvent, request.competitor, (error, investments) ->
-      throw error if error
-      request.competitor.investments = investments
-      CompetitorHelpers.loadTransactions request.currentEvent, request.competitor, (error, transactions) ->
-        throw error if error
-        request.competitor.transactions = transactions
-        response.render 'competitors/dash',
-          title: 'Competitor Dashboard'
-          competitor: request.competitor
-          currentRound: request.currentRound
-          event: request.currentEvent
+    response.render 'competitors/dash',
+      title: 'Competitor Dashboard'
+      competitor: request.competitor
+      currentRound: request.currentRound
+      event: request.currentEvent
 
   dash: (request, response) ->
     #find if this user

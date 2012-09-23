@@ -10,6 +10,8 @@ p
 if (typeof(investor) == 'undefined')
   span you cannot invest in this event - sorry! 
 else 
+  if (currentEvent.picture)
+    img(src=currentEvent.picture)
   p
     strong current round:
     if (currentRound)

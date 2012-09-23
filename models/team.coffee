@@ -14,6 +14,10 @@ Team = new Schema(
     ref: "Competitor"
   ]
 
+  picture: 
+    type: String
+    default: "https://s3.amazonaws.com/tiltnyc/teams/generic-team.jpg"
+    
   last_price:
     type: Number
     default: 1.00

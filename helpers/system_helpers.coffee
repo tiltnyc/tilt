@@ -1,3 +1,4 @@
+
 exports.error = (req, res, error, redirect) ->
   if req.params.format is "json"
     res.contentType "application/json"

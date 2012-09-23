@@ -1,6 +1,6 @@
 h2= title
 
-form(method="post", action="/users/"+theUser._id)
+form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
   input(name="_method", value='PUT', type='hidden')
   p
     label(for='user[username]') Username
@@ -13,6 +13,12 @@ form(method="post", action="/users/"+theUser._id)
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
   input(type="hidden", name="user[_id]", value=theUser._id)
+
+  p
+    if (theUser.picture)
+      img(src=theUser.picture, width=100)
+      &nbsp
+    input(type="file", id="user_picture", name="user_picture")
 
   input(type="submit", value="Submit")
 
