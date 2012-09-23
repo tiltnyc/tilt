@@ -32,17 +32,6 @@ class UsersController extends BaseController
             title: 'List of Users'
             users: users
 
-  new: (request, response) ->
-    response.render 'users/new',
-      title: 'New User'
-
-  create: (request, response) ->
-    user = new User(request.body.user)
-    user.save (error) ->
-      throw error if error
-      request.flash 'notice', 'Created.'
-      response.redirect '/user/' + user._id
-
   show: (request, response) ->
     request.theUser.populateCompetingIn () ->
       request.theUser.populateInvestingIn () ->
@@ -67,7 +56,7 @@ class UsersController extends BaseController
     user = request.theUser
     URIs = UploadHelpers.getImageURIs request 
     user.picture = URIs[0] if URIs.length
-    @updateIfChanged ["username", "email"], user, request.body.user
+    @updateIfChanged ["username", "email", "fname", "lname"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'

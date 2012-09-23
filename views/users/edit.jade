@@ -6,6 +6,14 @@ form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
     label(for='user[username]') Username
     &nbsp;
     input(type='text', id='user[username]', name='user[username]', value=theUser.username)
+  p
+    label(for='user[fname]') First Name
+    &nbsp;
+    input(type='text', id='user[fname]', name='user[fname]', value=theUser.fname)
+  p
+    label(for='user[lname]') Surname
+    &nbsp;
+    input(type='text', id='user[lname]', name='user[lname]', value=theUser.lname)
 
   p
     label(for='user[email]') Email

@@ -17,6 +17,7 @@ exports.resizeImages = (width = 100) ->
     process = (i, done) ->
       return done() if i >= fileKeys.length 
       file = req.files[fileKeys[i]]
+      return process i+1, done unless file and file.size 
       im.resize 
         srcPath: file.path 
         dstPath: file.path+suffix 
@@ -42,4 +43,4 @@ exports.uploader = connectStreamS3
 
 exports.getImageURIs = (req) ->
   base = "https://s3.amazonaws.com/tiltnyc/"
-  (base + value.s3ObjectName for key, value of req.files)
+  (base + value.s3ObjectName for key, value of req.files when value.size)

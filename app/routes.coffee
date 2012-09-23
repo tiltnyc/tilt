@@ -93,16 +93,8 @@ module.exports = (app) ->
     method: 'param'
     action: 'setParam'
   ,
-    path: '/users/new'
-    middleware: AuthHelpers.restricted
-  ,
     path: '/users.:format?'
     action: 'index'
-    middleware: AuthHelpers.restricted
-  ,
-    path: '/users'
-    method: 'post'
-    action: 'create'
     middleware: AuthHelpers.restricted
   ,
     path: '/user/:id.:format?'
