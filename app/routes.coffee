@@ -147,7 +147,7 @@ module.exports = (app) ->
     path: '/teams/:team_id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.loggedIn, SystemHelpers.uniquifyObjectNames, SystemHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, SystemHelpers.uniquifyObjectNames("teams"), SystemHelpers.uploader]
   ,
     path: '/team/:team_id'
     method: 'del'

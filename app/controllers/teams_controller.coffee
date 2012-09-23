@@ -3,6 +3,7 @@ Team            = require '../../models/team'
 User            = require '../../models/user'
 TeamHelpers     = require '../../helpers/team_helpers'
 UserHelpers     = require '../../helpers/user_helpers'
+SystemHelpers     = require '../../helpers/system_helpers'
 
 class TeamsController extends BaseController
 
@@ -55,11 +56,8 @@ class TeamsController extends BaseController
   update: (request, response) ->
     team = request.team
     return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team is team.id)
-    
-    console.log request.files
-    #if request.files.length and request.files.team_picture
-      #todo
-
+    URIs = SystemHelpers.getImageURIs request 
+    team.picture = URIs[0] if URIs.length
     @updateIfChanged ["name"], team, request.body.team
     team.save (err, team) ->
       throw err if err

@@ -9,10 +9,12 @@ exports.error = (req, res, error, redirect) ->
     req.flash "error", error
     res.redirect redirect
 
-exports.uniquifyObjectNames = (req, res, next) ->
-  for key, value of req.files
-    req.files[key].s3ObjectName = "teams/#{new Date().getTime()}_#{req.files[key].name}"
-  next()
+exports.uniquifyObjectNames = (folder) ->
+  folder = if folder then folder + "/" else ""
+  (req, res, next) ->
+    for key, value of req.files
+      req.files[key].s3ObjectName = "#{folder}#{new Date().getTime()}_#{req.files[key].name}"
+    next()
 
 exports.uploader = connectStreamS3
     accessKeyId     : process.env.S3_KEY,
@@ -21,3 +23,7 @@ exports.uploader = connectStreamS3
     region          : amazon.US_EAST_1,
     bucketName      : 'tiltnyc',
     concurrency     : 2
+
+exports.getImageURIs = (req) ->
+  base = "https://s3.amazonaws.com/tiltnyc/"
+  (base + value.s3ObjectName for key, value of req.files)
