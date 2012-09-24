@@ -8,16 +8,6 @@ Event = new Schema
   date:
     type: Date
 
-  teams: [
-    type: ObjectId
-    ref: "Team"
-  ]
-
-  rounds: [
-    type: ObjectId
-    ref: "Round"
-  ]
-
   picture: 
     type: String
 

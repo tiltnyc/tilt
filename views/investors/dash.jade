@@ -31,23 +31,26 @@ else
     else
       span &nbsp $0
 
-  table#investor-transactions.inner-table
-    tr
-      th.header(colspan=3)
-        &nbsp transactions
-    tr
-      th round
-      th label
-      th amount
-     != partial('../transactions/transaction_list', {collection: investor.transactions, as: 'transaction'})
+  div
+    table#investor-transactions.inner-table
+      tr
+        th.header(colspan=3)
+          &nbsp transactions
+      tr
+        th round
+        th label
+        th amount
+       != partial('../transactions/transaction_list', {collection: investor.transactions, as: 'transaction'})
 
-  table#investor-investments.inner-table
-    tr
-      th.header(colspan=3)
-        &nbsp investments
-    tr
-      th round
-      th team
-      th percentage
+    table#investor-investments.inner-table
+      tr
+        th.header(colspan=3)
+          &nbsp investments
+      tr
+        th round
+        th team
+        th percentage
 
-     != partial('../investments/investment_list', {collection: investor.investments, as: 'investment'})
+       != partial('../investments/investment_list', {collection: investor.investments, as: 'investment'})
+
+  br(clear="all")

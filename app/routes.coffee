@@ -93,28 +93,20 @@ module.exports = (app) ->
     method: 'param'
     action: 'setParam'
   ,
-    path: '/users/new'
-    middleware: AuthHelpers.restricted
-  ,
     path: '/users.:format?'
     action: 'index'
-    middleware: AuthHelpers.restricted
-  ,
-    path: '/users'
-    method: 'post'
-    action: 'create'
     middleware: AuthHelpers.restricted
   ,
     path: '/user/:id.:format?'
     action: 'show'
   ,
     path: '/user/:id/edit'
-    middleware: AuthHelpers.restricted
+    middleware: AuthHelpers.loggedIn
   ,
     path: '/users/:id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("users"), UploadHelpers.resizeImages(200), UploadHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("users"), UploadHelpers.resizeImages(200), UploadHelpers.uploader]
   ,
     path: '/user/:id'
     method: 'del'

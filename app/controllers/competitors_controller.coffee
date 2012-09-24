@@ -1,7 +1,7 @@
 BaseController = require './base_controller'
-Competitor = require '../../models/Competitor'
+Competitor = require '../../models/competitor'
 CompetitorHelpers = require '../../helpers/competitor_helpers'
-User = require '../../models/User'
+User = require '../../models/user'
 
 class CompetitorsController extends BaseController
 
@@ -26,11 +26,11 @@ class CompetitorsController extends BaseController
           competitors: competitors
 
   show: (request, response) ->
+    console.log request.currentEvent
     response.render 'competitors/dash',
       title: 'Competitor Dashboard'
       competitor: request.competitor
       currentRound: request.currentRound
-      event: request.currentEvent
 
   dash: (request, response) ->
     #find if this user

@@ -5,7 +5,10 @@ h2= title
 if (theUser.picture)
   img(src=theUser.picture)
 
-h3 events competed in:
+br
+a(href='/user/'+theUser._id+'/edit', title="edit") Edit Your Profile
+
+h3 events competed in
 
 if competitors.length
   ul.event-list.no-bullets
