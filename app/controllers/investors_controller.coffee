@@ -1,5 +1,5 @@
 BaseController = require './base_controller'
-Investor = require '../../models/Investor'
+Investor = require '../../models/investor'
 InvestorHelpers = require '../../helpers/investor_helpers'
 User = require '../../models/User'
 
