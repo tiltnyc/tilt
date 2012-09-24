@@ -1,7 +1,7 @@
 BaseController = require './base_controller'
-Competitor = require '../../models/Competitor'
+Competitor = require '../../models/competitor'
 CompetitorHelpers = require '../../helpers/competitor_helpers'
-User = require '../../models/User'
+User = require '../../models/user'
 
 class CompetitorsController extends BaseController
 
