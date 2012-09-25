@@ -58,7 +58,7 @@ class TeamsController extends BaseController
     return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team is team.id)
     URIs = UploadHelpers.getImageURIs request 
     team.picture = URIs[0] if URIs.length
-    @updateIfChanged ["name"], team, request.body.team
+    @updateIfChanged ["name", "tagline", "desc"], team, request.body.team
     team.save (err, team) ->
       throw err if err
       request.flash 'notice', 'Updated successfully'

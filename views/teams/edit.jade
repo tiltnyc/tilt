@@ -7,6 +7,16 @@ form(method="post", action="/teams/"+team._id, enctype="multipart/form-data")
     br
     input(type="text", id="team[name]", name="team[name]", value=team.name)
   
+  p 
+    label(for='team[tagline]') Tagline
+    br
+    input(type="text", id="team[tagline]", name="team[tagline]", value=team.tagline)
+  
+  p 
+    label(for='team[desc]') Description
+    br
+    textarea(id="team[desc]", name="team[desc]", maxlength="1000")= team.desc
+  
   p
     if (team.picture)
       img(src=team.picture, width=100)

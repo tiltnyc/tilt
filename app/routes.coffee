@@ -141,7 +141,7 @@ module.exports = (app) ->
     path: '/teams/:team_id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("teams"), UploadHelpers.resizeImages(100), UploadHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("teams"), UploadHelpers.resizeImages(250), UploadHelpers.uploader]
   ,
     path: '/team/:team_id'
     method: 'del'
