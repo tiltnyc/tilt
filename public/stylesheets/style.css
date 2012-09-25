@@ -180,7 +180,23 @@ ul.no-bullets > li {
   padding: 1em;
   list-style-type: none;
 }
-ul.no-bullets > li:nth-child(odd) {
+.li-link {
+  display: block;
+}
+ul.items > li {
+  overflow: hidden;
+}
+ul.items > li h2 {
+  margin: 0;
+}
+ul.items > li > a > img,
+ul.items > li > div {
+  float: left;
+}
+ul.items > li > div {
+  margin-left: 1em;
+}
+ul.items > li:nth-child(odd) {
   background-color: #eee;
 }
 .people {

@@ -1,12 +1,32 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
-tr(class="event")
-  td.event_name 
-    a(href='/event/'+event._id, title=event.name) #{event.name}
-  td.event_date
-    = event.date
-  td
+li
+  if (event.picture)
+    a(class='li-link', href='/event/'+event._id, title=event.name)
+      img(src=event.picture, height=132)
+
+  div
+    h2= event.name
+    span.helper-text= event.date.toDateString()
+
+    br
+    br
+    strong= event.theme
+    
+    br
+    if (event.date > new Date())
+      |leading team: &nbsp
+    else
+      |winning team: &nbsp
+
+    if (event.teams.length)
+      strong= event.teams[0].name
+    else
+      |?
+      
     if (is_admin)
+      br
+      br
       a(href='/event/'+event._id+'/edit', title="edit") Edit
       &nbsp;
       a(class='destroy', href="/event/"+event._id, title="delete") Del

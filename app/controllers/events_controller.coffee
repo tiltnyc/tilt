@@ -1,6 +1,7 @@
 BaseController = require './base_controller'
 Event          = require '../../models/event'
 UploadHelpers  = require '../../helpers/upload_helpers'
+EventHelpers  = require '../../helpers/event_helpers'
 
 class EventsController extends BaseController
 
@@ -13,14 +14,14 @@ class EventsController extends BaseController
   index: (request, response) ->
     Event.find().sort("date", "ascending").exec (error, events) ->
       throw error if error
-
-      if request.params.format is 'json'
-        response.contentType 'application/json'
-        response.send JSON.stringify(events)
-      else
-        response.render 'events/index',
-          title: 'List of Events'
-          events: events
+      EventHelpers.populateTeams events, () ->
+        if request.params.format is 'json'
+          response.contentType 'application/json'
+          response.send JSON.stringify(events)
+        else
+          response.render 'events/index',
+            title: 'tilt events'
+            events: events
 
   new: (request, response) ->
     response.render 'events/new',
@@ -51,7 +52,7 @@ class EventsController extends BaseController
     event = request.event
     URIs = UploadHelpers.getImageURIs request 
     event.picture = URIs[0] if URIs.length
-    @updateIfChanged ["name", "date"], event, request.body.event
+    @updateIfChanged ["name", "date", "venue", "theme"], event, request.body.event
     event.save (err) ->
       throw err if err
       request.flash 'notice', 'Updated successfully'
