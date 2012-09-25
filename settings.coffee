@@ -1,32 +1,20 @@
 stylus       = require "stylus"
 express      = require "express"
 mongooseAuth = require "mongoose-auth"
-HerokuRedisStore = require('connect-heroku-redis')(express)
-
-###
-parse = require("url").parse
-
-ConnectHerokuRedis = (options) ->
-    redisToGo = if process.env.REDISTOGO_URL then parse(process.env.REDISTOGO_URL) else false 
-    console.log "redisToGoURL", redisToGo
-    options ?= {}
-
-    if (redisToGo) 
-      options.host = options.host || redisToGo.host
-      options.port = options.port || redisToGo.port
-      
-    if (!options.pass and redisToGo.auth) 
-      options.pass = options.pass or redisToGo.auth.split(":")[1];
-    
-    console.log("RedisStore options", options)
-    RedisStore.call(this, options)
-
- ConnectHerokuRedis.prototype = new RedisStore 
- ### 
+url          = require "url"
+RedisStore = require('connect-redis')(express)
 
 bootApplication = (app) ->
   compile = (str, path) ->
     stylus(str).set("filename", path).set("warn", true).set "compress", true
+
+  app.configure "production", () ->
+    redisUrl = url.parse(process.env.REDISTOGO_URL)
+    redisAuth = redisUrl.auth.split(':')  
+    app.set('redisHost', redisUrl.hostname)
+    app.set('redisPort', redisUrl.port)
+    app.set('redisDb', redisAuth[0])
+    app.set('redisPass', redisAuth[1])
 
   app.configure ->
     app.set "views", __dirname + "/views"
@@ -37,7 +25,13 @@ bootApplication = (app) ->
     app.use express.bodyParser()
     app.use express.methodOverride()
     app.use express.cookieParser()
-    app.use express.session(secret: process.env.TILT_SESSION_SECRET, store: new HerokuRedisStore)
+    app.use express.session
+      secret: process.env.TILT_SESSION_SECRET
+      store: new RedisStore
+        host: app.set('redisHost')
+        port: app.set('redisPort')
+        db: app.set('redisDb')
+        pass: app.set('redisPass')
 
     # To log requests, uncomment the following line
     #app.use express.logger(":method :url :status")
@@ -51,6 +45,8 @@ bootApplication = (app) ->
     app.set 'showStackError', false
     
     app.use express.static(__dirname + '/public', { maxAge: 31557600000 })
+
+
 
   app.dynamicHelpers
     request: (req) ->
