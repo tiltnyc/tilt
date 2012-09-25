@@ -3,7 +3,7 @@
 div(class="investor")
   img(src=aInvestor.user.picture, width=100)
   div
-    strong #{aInvestor.user.username} (#{aInvestor.user.fname} #{aInvestor.user.lname})
+    a(href='/user/'+aInvestor.user.id+'/profile') #{aInvestor.user.fname} #{aInvestor.user.lname}
     div #{aInvestor.user.company}
 
     if (is_admin)

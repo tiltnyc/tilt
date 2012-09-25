@@ -36,7 +36,7 @@ Competitor.pre "save", (next) ->
     return callback() unless competitor.oldTeam
     Team.findById competitor.oldTeam, (err, team) ->
       return callback(err)  if err
-      team.competitors.splice team.competitors.indexOf(competitor._id), 1
+      team.competitors.splice team.competitors.indexOf(competitor.id), 1
       team.save (err) ->
         competitor.oldTeam = null
         callback(err ? null)

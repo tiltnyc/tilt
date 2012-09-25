@@ -2,8 +2,9 @@ BaseController = require './base_controller'
 User           = require '../../models/user'
 Transaction    = require '../../models/transaction'
 Investment     = require '../../models/investment'
+Investor       = require '../../models/investor'
 Competitor     = require '../../models/competitor'
-UploadHelpers     = require '../../helpers/upload_helpers'
+UploadHelpers  = require '../../helpers/upload_helpers'
 
 class UsersController extends BaseController
   setParam: (request, response, next, id) ->
@@ -72,10 +73,11 @@ class UsersController extends BaseController
     user = if request.theUser then request.theUser else request.user
 
     Competitor.find(user: user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
-      throw error if err
-      response.render 'users/profile',
-        title: user.username
-        theUser: user
-        competitors: competitors
-        currentRound: request.currentRound
+      Investor.find(user: user.id).populate('user').populate('event').exec (err, investors) ->
+        response.render 'users/profile',
+          title: user.username
+          theUser: user
+          competitors: competitors
+          investors: investors
+          currentRound: request.currentRound
 module.exports = UsersController

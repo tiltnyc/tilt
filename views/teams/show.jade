@@ -1,3 +1,5 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
 != messages()
 
 h2 Team details
@@ -19,9 +21,10 @@ p
   - else
     span#unassigned &nbsp none assigned
 
-p
-  a(href='/team/'+team._id+'/edit', title="edit") Edit
-  &nbsp;
-  a(class='destroy', href='/team/'+team._id, title="delete") Delete
-  &nbsp;
-  a(href='/teams', title="back") Back
+if (is_admin)
+  p
+    a(href='/team/'+team._id+'/edit', title="edit") Edit
+    &nbsp;
+    a(class='destroy', href='/team/'+team._id, title="delete") Delete
+    &nbsp;
+    a(href='/teams', title="back") Back

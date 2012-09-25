@@ -5,12 +5,22 @@ h2= title
 if (theUser.picture)
   img(src=theUser.picture)
 
-br
-a(href='/user/'+theUser._id+'/edit', title="edit") Edit Your Profile
+if (everyauth.loggedIn && everyauth.user.id == theUser.id)
+  br
+  a(href='/user/'+theUser._id+'/edit', title="edit") Edit Your Profile
 
-h3 events competed in
+
+if investors.length
+  h3 events invested in
+  ul.event-list.no-bullets
+    each investor in investors
+      li
+        strong= investor.event.name 
+        div.date
+          = investor.event.date.toDateString() 
 
 if competitors.length
+  h3 events competed in
   ul.event-list.no-bullets
     each competitor in competitors
       li

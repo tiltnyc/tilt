@@ -1,3 +1,5 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
 != messages()
 
 h2 User details
@@ -9,9 +11,10 @@ p
   strong email
   &nbsp; #{theUser.email}
 
-p 
-  a(href='/user/'+theUser._id+'/edit', title="edit") Edit
-  &nbsp;
-  a(class='destroy', href='/user/'+theUser._id, title="delete") Delete
-  &nbsp;
-  a(href='/users', title="back") Back
+if (is_admin)
+  p 
+    a(href='/user/'+theUser._id+'/edit', title="edit") Edit
+    &nbsp;
+    a(class='destroy', href='/user/'+theUser._id, title="delete") Delete
+    &nbsp;
+    a(href='/users', title="back") Back

@@ -1,16 +1,19 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
-tr(class="competitor")
-  td
-    img(src=aCompetitor.user.picture, width=50)
-  td.competitor_username= aCompetitor.user.username
-  td.competitor_team
-    - if (aCompetitor.team)
-      a(href='/team/'+aCompetitor.team.id, title=aCompetitor.team.name) #{aCompetitor.team.name}
-    - else
-      &nbsp;
-  if (is_admin)
-    td
-      a(href='/competitor/'+aCompetitor._id+'/edit', title="edit") Edit
+div
+  img(src=aCompetitor.user.picture, width=100)
+  div
+    a(href='/user/'+aCompetitor.user.id+'/profile') #{aCompetitor.user.username} 
+    div #{aCompetitor.user.fname} #{aCompetitor.user.lname}
+    if (aCompetitor.team)
+      div 
+        a(href='/team/'+aCompetitor.team.id, title=aCompetitor.team.name) #{aCompetitor.team.name}
+
+    if (is_admin)
+      br 
+      br
+      strong actions
+      &nbsp
+      a(href='/competitor/'+aCompetitor._id+'/edit', title="edit") Edit User
       &nbsp
       a(class='destroy', href="/competitor/"+aCompetitor.id, title="delete") Del

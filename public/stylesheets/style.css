@@ -183,6 +183,9 @@ ul.no-bullets > li {
 ul.no-bullets > li:nth-child(odd) {
   background-color: #eee;
 }
+.people {
+  clear: all;
+}
 .people > div {
   float: left;
   width: 300px;
