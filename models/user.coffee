@@ -31,8 +31,10 @@ UserSchema = new Schema(
 
   role:
     type: String
-    #E D M S
-    #engineer | designer | marketer | strategy 
+    #engineer | designer | investor | marketer | strategy 
+  
+  twitter:
+    type: String
     
   is_admin:
     type: Boolean

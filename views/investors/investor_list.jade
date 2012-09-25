@@ -5,6 +5,8 @@ div(class="investor")
   div
     a(href='/user/'+aInvestor.user.id+'/profile') #{aInvestor.user.fname} #{aInvestor.user.lname}
     div #{aInvestor.user.company}
+    if (aInvestor.user.twitter)
+      a(href="https://twitter.com/"+aInvestor.user.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{aInvestor.user.twitter}
 
     if (is_admin)
       br 

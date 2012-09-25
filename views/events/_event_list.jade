@@ -14,15 +14,16 @@ li
     strong= event.theme
     
     br
-    if (event.date > new Date())
-      |leading team: &nbsp
-    else
-      |winning team: &nbsp
+    if (event.team)
+      if (event.date > new Date())
+        |leading team: &nbsp
+      else
+        |winning team: &nbsp
 
-    if (event.teams.length)
-      strong= event.teams[0].name
-    else
-      |?
+      if (event.teams.length)
+        strong= event.teams[0].name
+      else
+        |?
       
     if (is_admin)
       br

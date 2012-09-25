@@ -178,6 +178,7 @@ ul.no-bullets {
 }
 ul.no-bullets > li {
   padding: 1em;
+  padding-left: 0;
   list-style-type: none;
 }
 .li-link {

@@ -1,9 +1,14 @@
 != messages()
 
-h2= title
-
-if (theUser.picture)
+.single-item
   img(src=theUser.picture)
+  h2 #{theUser.fname} #{theUser.lname}
+  span.tagline= theUser.company
+  if (theUser.twitter)
+    br
+    a(href="https://twitter.com/"+theUser.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{theUser.twitter}
+
+  div.desc= theUser.bio
 
 if (everyauth.loggedIn && everyauth.user.id == theUser.id)
   br
@@ -12,12 +17,10 @@ if (everyauth.loggedIn && everyauth.user.id == theUser.id)
 
 if investors.length
   h3 events invested in
-  ul.event-list.no-bullets
+  ul.items.event-list.no-bullets
     each investor in investors
-      li
-        strong= investor.event.name 
-        div.date
-          = investor.event.date.toDateString() 
+      != partial('../events/_event_list', {event: investor.event})
+     
 
 if competitors.length
   h3 events competed in

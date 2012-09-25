@@ -4,6 +4,8 @@ h1= title
 p Welcome to #{title}
 
 if (everyauth.loggedIn)
-  a(href='/investment/new', title='new investment') invest in a team
+  if (typeof(theInvestor) != "undefined")
+    a(href='/investment/new', title='new investment') invest in a team
+
 else
-  a(href='/login', title='login') login to start
+  a(href='/login', title='login') login to your account

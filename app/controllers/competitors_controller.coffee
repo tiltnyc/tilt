@@ -24,7 +24,7 @@ class CompetitorsController extends BaseController
         response.send JSON.stringify(competitors)
       else
         response.render 'competitors/index',
-          title: 'List of Competitors'
+          title: 'Competitors'
           competitors: competitors
 
   show: (request, response) ->
