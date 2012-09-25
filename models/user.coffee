@@ -28,6 +28,11 @@ UserSchema = new Schema(
 
   bio:
     type: String
+
+  role:
+    type: String
+    #E D M S
+    #engineer | designer | marketer | strategy 
     
   is_admin:
     type: Boolean

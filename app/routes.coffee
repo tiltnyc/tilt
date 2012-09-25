@@ -113,6 +113,9 @@ module.exports = (app) ->
     method: 'del'
     action: 'delete'
     middleware: AuthHelpers.restricted
+  ,
+    path: '/roles.json'
+    action: 'roles'
   ]   
 
   mapToController TeamsController,

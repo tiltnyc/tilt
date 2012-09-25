@@ -44,6 +44,20 @@ class UsersController extends BaseController
             title: request.theUser.username
             theUser: request.theUser
 
+  roles: (request, response) ->
+    response.contentType 'application/json'
+    response.send JSON.stringify [
+      label:'designer'
+    ,  
+      label:'engineer'
+    ,  
+      label:'investor'
+    ,
+      label:'marketer'
+    ,  
+      label:'strategy'
+    ]
+
   edit: (request, response) ->
     return @error(request, response, 'Unauthorized.', '/') unless request.user.is_admin or request.theUser.id is request.user.id
 
@@ -57,7 +71,7 @@ class UsersController extends BaseController
     user = request.theUser
     URIs = UploadHelpers.getImageURIs request 
     user.picture = URIs[0] if URIs.length
-    @updateIfChanged ["username", "email", "fname", "lname", "company", "bio"], user, request.body.user
+    @updateIfChanged ["username", "email", "fname", "lname", "company", "bio", "role"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'

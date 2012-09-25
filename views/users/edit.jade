@@ -24,6 +24,14 @@ form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
     input(type='text', id='user[lname]', name='user[lname]', value=theUser.lname)
 
   p
+    label(for='user[role]') Primary Role
+    &nbsp
+    if (theUser.role)
+      select(id='user[role]', name='user[role]', data-role=theUser.role)
+    else
+      select(id='user[role]', name='user[role]')
+
+  p
     label(for='user[email]') Email
     &nbsp;
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
