@@ -4,22 +4,21 @@
 
 h2 Team details
 
-p
+.single-item
   img(src=team.picture, width=250)
-
-p 
-  strong name 
-  &nbsp; #{team.name}
+  h2= team.name
+  span.tagline #{team.tagline}
+  div.desc= team.desc
 
 p
   strong members
-  - if (team.competitors.length > 0)
-    ul
-      each competitor in team.competitors
-        li 
-          a(href='/user/' + competitor.user._id + '/profile', title='view competitor') #{competitor.user.username}
-  - else
-    span#unassigned &nbsp none assigned
+  div.people
+    if (team.competitors.length)
+      != partial('../competitors/competitor_list', {collection: team.competitors, as: 'aCompetitor'})
+    else
+      span#unassigned &nbsp none assigned
+
+br(clear="all")
 
 if (is_admin)
   p

@@ -199,6 +199,16 @@ ul.items > li > div {
 ul.items > li:nth-child(odd) {
   background-color: #eee;
 }
+.single-item {
+  overflow: hidden;
+}
+.single-item h2 {
+  margin: 0;
+}
+.single-item > img {
+  float: left;
+  margin-right: 1em;
+}
 .people {
   clear: all;
 }
