@@ -16,6 +16,8 @@ class CompetitorsController extends BaseController
 
   index: (request, response) ->
     Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
+      console.log competitors
+
       throw err if err
       if request.params.format is 'json'
         response.contentType 'application/json'

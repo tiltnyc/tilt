@@ -56,12 +56,17 @@ class EventsController extends BaseController
     event.save (err) ->
       throw err if err
       request.flash 'notice', 'Updated successfully'
-      response.redirect '/event/' + event._id
+      response.redirect '/event/' + event.id
 
   delete: (request, response) ->
     #todo - should not delete if any competitors
     request.event.remove (error) ->
       request.flash 'notice', 'Deleted'
       response.redirect '/events'
+
+  load: (request, response) ->
+    request.flash 'notice', "Now viewing event #{request.event.name}"
+    request.session.currentEvent = request.event
+    response.redirect '/event/' + request.event.id
 
 module.exports = EventsController

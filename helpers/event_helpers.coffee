@@ -2,11 +2,17 @@ Event = require "../models/event"
 Team = require "../models/team"
 
 exports.loadCurrentEvent = (req, res, next) ->
+  setCurrentEvent = (evt) ->
+    evt.id = evt._id if !evt.id
+    req.currentEvent = evt
+    res.local('currentEvent', evt)
+    next()
+
+  return setCurrentEvent(req.session.currentEvent) if req.session.currentEvent
+
   Event.find({date:{$gte: new Date(new Date().setHours(0,0,0,0))}}).sort("date","ascending").limit(1).exec (err, events) ->
     throw err if err
-    req.currentEvent = events[0]
-    res.local('currentEvent', events[0])
-    next()
+    setCurrentEvent(events[0])
 
 exports.populateTeams = (events, next) ->
 

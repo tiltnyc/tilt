@@ -66,6 +66,8 @@ module.exports = (app) ->
     path: '/event/:event_id.:format?'
     action: 'show'
   ,
+    path: '/event/:event_id/load'
+  ,
     path: '/event/:event_id/edit'
     middleware: AuthHelpers.restricted
   ,
