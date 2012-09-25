@@ -217,6 +217,11 @@ module.exports = (app) ->
     method: 'put'
     action: 'update'
     middleware: AuthHelpers.restricted
+  ,
+    path: '/competitor/:comp_id'
+    method: 'del'
+    action: 'delete'
+    middleware: AuthHelpers.restricted
   ]
 
   mapToController InvestorsController, 

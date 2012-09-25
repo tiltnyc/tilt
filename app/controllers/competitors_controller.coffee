@@ -67,4 +67,10 @@ class CompetitorsController extends BaseController
       request.flash 'notice', 'Updated successfully'
       response.redirect '/competitors'
 
+  delete: (request, response) ->
+    competitor = request.competitor
+    competitor.remove (error) ->
+      request.flash 'notice', 'competitor Deleted'
+      response.redirect '/competitors'
+
 module.exports = CompetitorsController
