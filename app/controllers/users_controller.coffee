@@ -56,7 +56,7 @@ class UsersController extends BaseController
     user = request.theUser
     URIs = UploadHelpers.getImageURIs request 
     user.picture = URIs[0] if URIs.length
-    @updateIfChanged ["username", "email", "fname", "lname"], user, request.body.user
+    @updateIfChanged ["username", "email", "fname", "lname", "company", "bio"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'

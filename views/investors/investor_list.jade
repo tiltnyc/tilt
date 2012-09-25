@@ -1,15 +1,23 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
-tr(class="investor")
-  td
-    img(src=aInvestor.user.picture, width=50)
-  td.investor_username= aInvestor.user.username
-  if (is_admin)
-    td.investor_funds
-      each fund in aInvestor.funds
-        $
-        =Math.round(fund)
+div(class="investor")
+  img(src=aInvestor.user.picture, width=100)
+  div
+    strong #{aInvestor.user.username} (#{aInvestor.user.fname} #{aInvestor.user.lname})
+    div #{aInvestor.user.company}
+
+    if (is_admin)
+      br 
+      br
+      div.investor_funds
+        strong funds 
+        each fund in aInvestor.funds
+          $
+          =Math.round(fund)
+          &nbsp
+      div
+        strong actions
         &nbsp
-  if (is_admin)
-    td
-      a(class='destroy', href="/investor/"+aInvestor.id, title="delete") Del
+        a(href='/user/'+aInvestor.user._id+'/edit', title="edit") Edit User
+        &nbsp|&nbsp
+        a(class='destroy', href="/investor/"+aInvestor.id, title="delete") Del

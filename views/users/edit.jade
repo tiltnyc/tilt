@@ -2,6 +2,14 @@ h2= title
 
 form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
   input(name="_method", value='PUT', type='hidden')
+  
+  p
+    label(for='user_picture') Picture
+    if (theUser.picture)
+      img(src=theUser.picture, width=100)
+      &nbsp
+    input(type="file", id="user_picture", name="user_picture")
+
   p
     label(for='user[username]') Username
     &nbsp;
@@ -20,14 +28,19 @@ form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
     &nbsp;
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
+  p
+    label(for='user[company]') Company
+    &nbsp;
+    input(type='text', id='user[company]', name='user[company]', value=theUser.company)
+
+  p 
+    label(for='user[bio]') Bio
+    &nbsp;
+    textarea(id='user[bio]', name='user[bio]')= theUser.bio
+
   input(type="hidden", name="user[_id]", value=theUser._id)
 
-  p
-    if (theUser.picture)
-      img(src=theUser.picture, width=100)
-      &nbsp
-    input(type="file", id="user_picture", name="user_picture")
-
+ 
   input(type="submit", value="Submit")
 
   hr

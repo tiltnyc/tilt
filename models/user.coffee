@@ -23,6 +23,12 @@ UserSchema = new Schema(
     type: String
     default: "https://s3.amazonaws.com/tiltnyc/users/GenericUser.png"
     
+  company:
+    type: String
+
+  bio:
+    type: String
+    
   is_admin:
     type: Boolean
     default: false

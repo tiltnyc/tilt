@@ -3,16 +3,8 @@
 
 h2= title
 
-div#investors
+div.people#investors
   - if(investors.length)
-    table.investors_list
-      tr
-        th event
-        th username
-        if (is_admin)
-          th funds
-        if (is_admin)
-          th actions 
       != partial('investor_list', {collection: investors, as: 'aInvestor'})
   - else
     #no-results No investors found.
