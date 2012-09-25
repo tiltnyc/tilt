@@ -2,6 +2,26 @@ stylus       = require "stylus"
 express      = require "express"
 mongooseAuth = require "mongoose-auth"
 RedisStore = require('connect-redis')(express)
+parse = require("url").parse
+
+
+ConnectHerokuRedis = (options) ->
+    redisToGo = if process.env.REDISTOGO_URL then parse(process.env.REDISTOGO_URL) else false 
+    console.log "redisToGoURL", redisToGo
+    options ?= {}
+
+    if (redisToGo) 
+      options.host = options.host || redisToGo.host
+      options.port = options.port || redisToGo.port
+      
+    if (!options.pass and redisToGo.auth) 
+      options.pass = options.pass or redisToGo.auth.split(":")[1];
+    
+    console.log("RedisStore options", options)
+    RedisStore.call(this, options)
+
+ ConnectHerokuRedis.prototype = new RedisStore 
+  
 
 bootApplication = (app) ->
   compile = (str, path) ->
@@ -16,7 +36,7 @@ bootApplication = (app) ->
     app.use express.bodyParser()
     app.use express.methodOverride()
     app.use express.cookieParser()
-    app.use express.session(secret: process.env.TILT_SESSION_SECRET, store: new RedisStore())
+    app.use express.session(secret: process.env.TILT_SESSION_SECRET, store: new ConnectHerokuRedis)
 
     # To log requests, uncomment the following line
     #app.use express.logger(":method :url :status")
