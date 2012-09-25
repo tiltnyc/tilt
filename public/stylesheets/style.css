@@ -242,5 +242,11 @@ ul.items > li:nth-child(odd) {
   bottom: 0;
   width: 100%;
   height: 63px;
+  text-align: right;
   background: #000 url("/images/logo.png") center -58px no-repeat;
+}
+.footer .social {
+  height: 100%;
+  text-align: right;
+  margin-top: 15px;
 }
