@@ -3,19 +3,10 @@
 h2= title
 
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
-div#teams
-  - if(teams.length)
-    table
-      tr
-        th
-        th name
-        th competitors
-        th price
-        th movement
-        if (is_admin)
-          th actions
-      != partial('team_list', {collection: teams, as: 'team'})
-  - else
+div.people#teams
+  if(teams.length)
+    != partial('team_list', {collection: teams, as: 'team'})
+  else
     #no-results No teams found. 
   
 hr

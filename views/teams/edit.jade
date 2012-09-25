@@ -12,6 +12,12 @@ form(method="post", action="/teams/"+team._id, enctype="multipart/form-data")
     br
     input(type="text", id="team[tagline]", name="team[tagline]", value=team.tagline)
   
+  p
+    label(for='team[twitter]') Twitter Handle
+    &nbsp;
+    &#64; 
+    input(type='text', id='team[twitter]', name='team[twitter]', value=team.twitter, maxlength=18, style="width: 8em")
+
   p 
     label(for='team[desc]') Description
     br

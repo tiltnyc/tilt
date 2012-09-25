@@ -8,6 +8,8 @@ h2 Team details
   img(src=team.picture, width=250)
   h2= team.name
   span.tagline #{team.tagline}
+  if (team.twitter)
+      a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
   div.desc= team.desc
 
 p

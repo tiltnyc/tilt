@@ -19,6 +19,9 @@ Team = new Schema(
 
   desc:
     type: String
+  
+  twitter:
+    type: String
     
   picture: 
     type: String

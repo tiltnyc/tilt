@@ -37,7 +37,7 @@ form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
   p
-    label(for='user[email]') Twitter Handle
+    label(for='user[twitter]') Twitter Handle
     &nbsp;
     &#64; 
     input(type='text', id='user[twitter]', name='user[twitter]', value=theUser.twitter, maxlength=18, style="width: 8em")

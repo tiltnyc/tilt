@@ -1,26 +1,31 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
-tr(class="team") 
-  td
-    img(src=team.picture, width=50)
-  td
-    a(href='/team/'+team._id, title=team.name) #{team.name}
-    
-  td= team.competitors.length      
-  
-  td
-    $#{team.last_price.toFixed(2)}
+
+div(class="team")
+  img(src=team.picture, width=100)
+  a.team-name(href='/team/'+team._id) #{team.name}
+  if (team.tagline)
+    br
+    span.tagline #{team.tagline}
+  if (team.twitter)
+    br
+    a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
+  br(clear="all")  
+  span members: #{team.competitors.length}      
+  br
+  span current price: $#{team.last_price.toFixed(2)} &nbsp
 
   - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
-  td(class=klazz)
+  span(class=klazz)
     if (team.movement > 0.00) 
-      span + 
+      + 
     else if (team.movement < 0.00)
-      span -
+      -
     =Math.abs(team.movement.toFixed(2))
   
-  if (is_admin)     
-    td 
-      a(href='/team/'+team._id+'/edit', title="edit") Edit
-      &nbsp
-      a(class='destroy', href="/team/"+team._id, title="delete") Del
+  if (is_admin)    
+    br
+    strong actions:  
+    a(href='/team/'+team._id+'/edit', title="edit") Edit
+    &nbsp
+    a(class='destroy', href="/team/"+team._id, title="delete") Del

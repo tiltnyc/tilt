@@ -1,5 +1,11 @@
-#teams table td {
-  padding: 0.5em;
+#teams .team {
+  font-size: 0.8em;
+}
+#teams .team img {
+  margin-right: 0.5em;
+}
+#teams .team .team-name {
+  font-size: 1.3em;
 }
 .tagline {
   color: #999;
