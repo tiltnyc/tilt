@@ -13,7 +13,9 @@ div
       br 
       br
       strong actions
-      &nbsp
-      a(href='/competitor/'+aCompetitor._id+'/edit', title="edit") Edit User
-      &nbsp
+      br
+      a(href='/competitor/'+aCompetitor.id+'/edit', title="edit") Edit Competitor
+      &nbsp|&nbsp
+      a(href='/user/'+aCompetitor.user.id+'/edit', title="edit") Edit User
+      &nbsp|&nbsp
       a(class='destroy', href="/competitor/"+aCompetitor.id, title="delete") Del

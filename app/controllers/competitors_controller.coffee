@@ -58,8 +58,8 @@ class CompetitorsController extends BaseController
 
   update: (request, response) ->
     competitor = request.competitor
-    @updateIfChanged ["team"], competitor, request.body.competitor
     if request.body.competitor.team isnt '' then competitor.addToTeam request.body.competitor.team
+    @updateIfChanged ["team"], competitor, request.body.competitor
     competitor.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'

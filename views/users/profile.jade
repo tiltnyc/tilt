@@ -32,5 +32,6 @@ if competitors.length
 
         div.date
           = competitor.event.date.toDateString() 
-else 
-  div no events yet      
+
+if (everyauth.loggedIn && everyauth.user.id == theUser.id && !investors.length &&!competitors.length)
+  div no events yet!      
