@@ -1,3 +1,8 @@
+stylus       = require "stylus"
+express      = require "express"
+mongooseAuth = require "mongoose-auth"
+RedisStore = require('connect-redis')(express)
+
 bootApplication = (app) ->
   compile = (str, path) ->
     stylus(str).set("filename", path).set("warn", true).set "compress", true
@@ -11,7 +16,7 @@ bootApplication = (app) ->
     app.use express.bodyParser()
     app.use express.methodOverride()
     app.use express.cookieParser()
-    app.use express.session(secret: "flkjgjoieolk")
+    app.use express.session(secret: process.env.TILT_SESSION_SECRET, store: new RedisStore())
 
     # To log requests, uncomment the following line
     #app.use express.logger(":method :url :status")
@@ -70,10 +75,6 @@ bootErrorConfig = (app) ->
         showStack: app.settings.showStackError
         title: "Oops! Something went wrong!"
 
-fs           = require "fs"
-stylus       = require "stylus"
-express      = require "express"
-mongooseAuth = require "mongoose-auth"
 
 # Todo Refactor, so the user model is not required here
 require("./models/user")
