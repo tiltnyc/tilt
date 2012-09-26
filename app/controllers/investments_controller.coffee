@@ -8,7 +8,7 @@ TeamHelpers     = require '../../helpers/team_helpers'
 class InvestmentController extends BaseController
 
   new: (request, response) ->
-    TeamHelpers.getTeamsExceptUsers request.currentEvent, request.user, (err, teams) =>
+    TeamHelpers.getTeamsExceptUsers request.currentEvent, request.user, request.currentCompetitor, (err, teams) =>
       return @error(request, response, err, '/') if err
       response.render 'investments/new',
         title: 'New Investment'

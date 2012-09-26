@@ -27,10 +27,10 @@ html(xmlns='http://www.w3.org/1999/xhtml', lang="en", xml:lang="en")
         if(everyauth.user.is_admin || typeof(theInvestor) != 'undefined')
           li
             a(href='/investment/new',title='new investment') new investment 
-        if(everyauth.user.is_admin || typeof(theCompetitor) != "undefined") 
+        if(everyauth.user.is_admin || typeof(currentCompetitor) != "undefined") 
           li
             a(href='/vote/new', title='new vote') new vote
-            
+
       if (everyauth.loggedIn && everyauth.user.is_admin)
         li
           a(href='/rounds', title='rounds') rounds
