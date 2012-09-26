@@ -1,18 +1,26 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
-
+- if (typeof(voting) == 'undefined') var voting = false
+- if (typeof(isOpen) == 'undefined') var isOpen = false
 
 div(class="team")
-  img(src=team.picture, width=100)
+  label(for="vote_for_#{team._id}") 
+    img(src=team.picture, width=100)
   a.team-name(href='/team/'+team._id) #{team.name}
   if (team.tagline)
     br
     span.tagline #{team.tagline}
-  if (team.twitter)
+  if (!voting && team.twitter)
     br
     a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
-  br(clear="all")  
-  span members: #{team.competitors.length}      
-  br
+  
+  if (!voting)
+    br(clear="all")
+  else
+    br
+  
+  if (!voting)  
+    span members: #{team.competitors.length}      
+    br
   span current price: $#{team.last_price.toFixed(2)} &nbsp
 
   - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
@@ -23,9 +31,17 @@ div(class="team")
       -
     =Math.abs(team.movement.toFixed(2))
   
-  if (is_admin)    
+  if (is_admin && !voting)    
     br
     strong actions:  
     a(href='/team/'+team._id+'/edit', title="edit") Edit
     &nbsp
     a(class='destroy', href="/team/"+team._id, title="delete") Del
+
+  if (voting && isOpen)
+    div.vote-input
+      input(type="checkbox", id="vote_for_#{team._id}", data-team-name=team.name, data-team-id=team._id) 
+      label(for="vote_for_#{team._id}") vote for  
+        strong #{team.name}
+      div.validation-errors.error-text(style="display:none")
+        |cannot vote any more times

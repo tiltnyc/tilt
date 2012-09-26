@@ -6,7 +6,7 @@ exports.loadTeamCount = (req, res, next) ->
     req.teamCount = count
     next()
 
-exports.getUserInvestable = (event, user, next) ->
+exports.getTeamsExceptUsers = (event, user, next) ->
   query = 
     event: event._id
   if user and not user.is_admin and user.team

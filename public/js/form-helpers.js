@@ -35,7 +35,7 @@
   };
 
   $(function() {
-    var appendInvestment, investments, resetValues, totalInvested;
+    var appendInvestment, investments, resetValues, totalInvested, voted;
     totalInvested = 0;
     investments = [];
     appendInvestment = function(index, amount) {
@@ -78,8 +78,35 @@
         return $("#total-invested").text(Math.round(Math.min(totalInvested, 1) * 100) + "%");
       }
     });
+    voted = [];
+    $("form.votes").on("click", "input[type=\"checkbox\"]", function(evt) {
+      var $form, $input, $team, checked, found, team;
+      $input = $(this);
+      $team = $input.parents(".team");
+      $form = $team.parents("form.votes");
+      checked = $input.attr("checked");
+      if (checked && voted.length >= 3) {
+        $team.find(".validation-errors").show("blind").delay(1000).hide("blind");
+        return evt.preventDefault();
+      }
+      team = $input.data("team-id");
+      $team.toggleClass("selected", checked);
+      if (checked) {
+        voted.push(team);
+      } else {
+        found = $.inArray(team, voted);
+        if (found >= 0) voted.splice(found, 1);
+      }
+      $form.find(".vote-selection").html("" + voted.length);
+      $form.find("input#vote_teams").val(voted.join(","));
+      return console.log($form.find("input#vote_teams").val());
+    });
+    $("form.votes input[type=\"checkbox\"]").each(function() {
+      return $(this).removeAttr("checked");
+    });
     loadListFor("competitor", "team", "name");
     loadListFor("investment", "team", "name");
+    loadListFor("vote", "competitor", ["user", "username"]);
     loadListFor("investment", "investor", ["user", "username"]);
     loadListFor("allocate", "user", "username");
     return loadListFor("user", "role", "label");

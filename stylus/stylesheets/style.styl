@@ -192,6 +192,12 @@ ul.items
     float left
     margin-right 1em
 
+button
+  font-size 100%
+  padding 0.3em
+  cursor pointer
+  &:hover
+    opacity 0.8
 
 .people
   clear all
@@ -203,7 +209,7 @@ ul.items
       float left
       font-size 0.85em
       margin-left 1em
-    > img
+    > img, > label
       float left
 
 .spacer
@@ -225,9 +231,12 @@ ul.items
   height 63px
   text-align right
 
-  
+  vertical-align top
   background black url('/images/logo.png') center -58px no-repeat
   .social
+    position relative
     height 100%
     text-align right
-    margin-top 15px
+    iframe
+      float right
+      margin-top 15px
