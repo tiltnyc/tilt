@@ -48,6 +48,14 @@ div.dashboard
         else
           span.closed-round closed
 
+    div.item
+      h3 votes
+      table#user-votes.inner-table
+        tr
+          th round
+          th team
+        != partial('../votes/vote_list', {collection: votes, as: 'vote'})
+
       
       
       
