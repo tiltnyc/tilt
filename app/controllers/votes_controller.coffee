@@ -17,7 +17,6 @@ class VotesController extends BaseController
         currentRound: request.currentRound
   
   create: (request, response) ->
-    #ensure user not voting for team they are on
 
     error = (msg) => @error(request, response, msg, '/vote/new') 
     return error 'Not authorized' if request.body.vote.competitor and not request.user.is_admin
@@ -39,10 +38,12 @@ class VotesController extends BaseController
         processVote = (i, done) ->
           return done() if i >= teams.length 
           team = teams[i].replace(/\"/g, "")
+          return processVote i+1, done if competitor.team and competitor.team.toString() is team
           vote = new Vote
             team: team
             competitor: competitor.id
             round: request.currentRound.id
+            event: request.currentEvent.id
           vote.save (err, v) -> 
             throw err if err
             votes.push v
@@ -59,36 +60,6 @@ class VotesController extends BaseController
               response.redirect '/vote/new'
             else
               response.redirect '/competitor/dash' 
-      
-    ###
-    
-    
-    Investor.findById(iid).exec (err, investor) =>
-      return error err if err
-      return "cannot invest - not setup as investors" if !investor
-
-      if !request.body.investment.investments
-        request.body.investment.investments = []
-        for prop of request.body.investment
-          request.body.investment.investments[prop.split('_')[1]] = request.body.investment[prop]  if prop.substring(0, 5) is 'team_'
-
-      
-
-      Process.investments investor, request.body.investment.investments, request.currentRound, (err, investments) ->
-        return error err if err
-        if request.params.format is 'json'
-          response.contentType 'application/json'
-          response.send JSON.stringify(investments)
-        else
-          request.flash 'notice', 'invested successfully.'
-          if request.user.is_admin
-            response.redirect '/investment/new'
-          else
-            response.redirect '/investor/dash' 
-      ###
-
-  delete: (request, response) ->
-    #ensure either admin or competitor who created deletes
 
 
 module.exports = VotesController

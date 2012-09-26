@@ -17,7 +17,7 @@ class TeamsController extends BaseController
 
   index: (request, response) ->
     if request.params.format is 'json'
-      TeamHelpers.getTeamsExceptUsers request.currentEvent, request.user, req.currentCompetitor, (err, teams) ->
+      TeamHelpers.getTeamsExceptUsers request.currentEvent, request.user, request.currentCompetitor, (err, teams) ->
         throw err if err
         response.contentType 'application/json'
         response.send JSON.stringify(teams)

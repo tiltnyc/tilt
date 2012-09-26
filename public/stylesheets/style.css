@@ -235,6 +235,10 @@ button:hover {
 .people > div > label {
   float: left;
 }
+.dashboard .item {
+  float: left;
+  margin-right: 1em;
+}
 .spacer {
   height: 100px;
 }

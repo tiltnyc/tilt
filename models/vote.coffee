@@ -15,4 +15,9 @@ Vote = new Schema
     ref: "Round"
     required: true
 
+  event:
+    type: ObjectId 
+    ref:  "Event"
+    required: true
+
 exports = module.exports = mongoose.model("Vote", Vote)
