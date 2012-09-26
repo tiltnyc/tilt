@@ -1,8 +1,16 @@
 .spacer
 .bottom-logo 
 .footer
-  
+  .social
+    a(href="https://twitter.com/tiltnyc", class="twitter-follow-button",data-show-count="false") Follow &#64;tiltnyc
 
+    iframe(src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Ftiltnyc&amp;send=false&amp;layout=standard&amp;width=185&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font&amp;height=24"
+      ,scrolling="no", frameborder="0", style="border:none; overflow:hidden; width:185px; height:24px;", allowTransparency="true")
+
+//twitter follow buttons
+script(type="text/javascript") 
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    
 script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
 script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js')
 script(type='text/javascript', src='/js/3rd/highcharts.js')

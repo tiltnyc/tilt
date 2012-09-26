@@ -39,8 +39,10 @@ describe "Competitor", ->
       throw err if err
       Competitor.findById(competitor.id).populate('team').exec (err, u) ->
         u.team.name.should.eql teamA.name
-        u.team.competitors.should.include(competitor.id)   
-        done()
+        u.team.competitors.should.include(competitor.id)  
+        Team.findById(u.team.id).exec (err, t) ->
+          t.competitors.indexOf(c.id).should.be.above(-1) 
+          done()
 
   it "replacing the team should remove the competitor from old team and add to new", (done) ->
     competitor.addToTeam teamA
@@ -66,5 +68,7 @@ describe "Competitor", ->
         throw err if err
         Competitor.findById(competitor.id).populate('team').exec (err, c) ->
           c.team.competitors.should.include(competitor.id)   
-          c.team.competitors.should.include(c.id)
-          done()
+          c.team.competitors.should.include(competitorB.id)
+          Team.findById(teamA.id).populate("competutors").exec (err, t) ->
+            t.competitors.length.should.eql 2  
+            done()

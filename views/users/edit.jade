@@ -2,6 +2,14 @@ h2= title
 
 form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
   input(name="_method", value='PUT', type='hidden')
+  
+  p
+    label(for='user_picture') Picture
+    if (theUser.picture)
+      img(src=theUser.picture, width=100)
+      &nbsp
+    input(type="file", id="user_picture", name="user_picture")
+
   p
     label(for='user[username]') Username
     &nbsp;
@@ -16,18 +24,37 @@ form(method="post", action="/users/"+theUser._id, enctype="multipart/form-data")
     input(type='text', id='user[lname]', name='user[lname]', value=theUser.lname)
 
   p
+    label(for='user[role]') Primary Role
+    &nbsp
+    if (theUser.role)
+      select(id='user[role]', name='user[role]', data-role=theUser.role)
+    else
+      select(id='user[role]', name='user[role]')
+
+  p
     label(for='user[email]') Email
     &nbsp;
     input(type='text', id='user[email]', name='user[email]', value=theUser.email)
 
-  input(type="hidden", name="user[_id]", value=theUser._id)
+  p
+    label(for='user[twitter]') Twitter Handle
+    &nbsp;
+    &#64; 
+    input(type='text', id='user[twitter]', name='user[twitter]', value=theUser.twitter, maxlength=18, style="width: 8em")
 
   p
-    if (theUser.picture)
-      img(src=theUser.picture, width=100)
-      &nbsp
-    input(type="file", id="user_picture", name="user_picture")
+    label(for='user[company]') Company
+    &nbsp;
+    input(type='text', id='user[company]', name='user[company]', value=theUser.company)
 
+  p 
+    label(for='user[bio]') Bio
+    &nbsp;
+    textarea(id='user[bio]', name='user[bio]')= theUser.bio
+
+  input(type="hidden", name="user[_id]", value=theUser._id)
+
+ 
   input(type="submit", value="Submit")
 
   hr

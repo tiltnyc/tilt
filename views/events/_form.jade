@@ -8,6 +8,17 @@ p
   br
   input(type="text", id="event[date]", name="event[date]", class="datepicker", value=(event.date)?event.date.toDateString():"")
 
+p 
+  label(for='event[theme]') Theme
+  br
+  input(type="text", id="event[theme]", name="event[theme]", value=event.theme)
+
+p 
+  label(for='event[venue]') Venue
+  br
+  input(type="text", id="event[venue]", name="event[venue]", value=event.venue)
+
+
 p
   if (event.picture)
     img(src=event.picture)

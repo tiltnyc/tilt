@@ -2,8 +2,9 @@ BaseController = require './base_controller'
 User           = require '../../models/user'
 Transaction    = require '../../models/transaction'
 Investment     = require '../../models/investment'
+Investor       = require '../../models/investor'
 Competitor     = require '../../models/competitor'
-UploadHelpers     = require '../../helpers/upload_helpers'
+UploadHelpers  = require '../../helpers/upload_helpers'
 
 class UsersController extends BaseController
   setParam: (request, response, next, id) ->
@@ -43,6 +44,20 @@ class UsersController extends BaseController
             title: request.theUser.username
             theUser: request.theUser
 
+  roles: (request, response) ->
+    response.contentType 'application/json'
+    response.send JSON.stringify [
+      label:'designer'
+    ,  
+      label:'engineer'
+    ,  
+      label:'investor'
+    ,
+      label:'marketer'
+    ,  
+      label:'strategy'
+    ]
+
   edit: (request, response) ->
     return @error(request, response, 'Unauthorized.', '/') unless request.user.is_admin or request.theUser.id is request.user.id
 
@@ -56,7 +71,7 @@ class UsersController extends BaseController
     user = request.theUser
     URIs = UploadHelpers.getImageURIs request 
     user.picture = URIs[0] if URIs.length
-    @updateIfChanged ["username", "email", "fname", "lname"], user, request.body.user
+    @updateIfChanged ["username", "email", "fname", "lname", "company", "bio", "role", "twitter"], user, request.body.user
     user.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'
@@ -72,10 +87,11 @@ class UsersController extends BaseController
     user = if request.theUser then request.theUser else request.user
 
     Competitor.find(user: user.id).populate('user').populate('event').populate('team').exec (err, competitors) ->
-      throw error if err
-      response.render 'users/profile',
-        title: user.username
-        theUser: user
-        competitors: competitors
-        currentRound: request.currentRound
+      Investor.find(user: user.id).populate('user').populate('event').exec (err, investors) ->
+        response.render 'users/profile',
+          title: user.username
+          theUser: user
+          competitors: competitors
+          investors: investors
+          currentRound: request.currentRound
 module.exports = UsersController

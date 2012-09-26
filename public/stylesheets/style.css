@@ -126,8 +126,16 @@ textarea {
 #content {
   padding: 1em;
 }
-#content label {
+#content form label {
+  display: inline-block;
+  vertical-align: top;
+  width: 12em;
   font-weight: bold;
+}
+#content form textarea {
+  min-height: 4em;
+  min-width: 40em;
+  font-size: 0.8em;
 }
 #logo {
   position: absolute;
@@ -170,10 +178,53 @@ ul.no-bullets {
 }
 ul.no-bullets > li {
   padding: 1em;
+  padding-left: 0;
   list-style-type: none;
 }
-ul.no-bullets > li:nth-child(odd) {
+.li-link {
+  display: block;
+}
+ul.items > li {
+  overflow: hidden;
+}
+ul.items > li h2 {
+  margin: 0;
+}
+ul.items > li > a > img,
+ul.items > li > div {
+  float: left;
+}
+ul.items > li > div {
+  margin-left: 1em;
+}
+ul.items > li:nth-child(odd) {
   background-color: #eee;
+}
+.single-item {
+  overflow: hidden;
+}
+.single-item h2 {
+  margin: 0;
+}
+.single-item > img {
+  float: left;
+  margin-right: 1em;
+}
+.people {
+  clear: all;
+}
+.people > div {
+  float: left;
+  width: 300px;
+  min-height: 200px;
+}
+.people > div > div {
+  float: left;
+  font-size: 0.85em;
+  margin-left: 1em;
+}
+.people > div > img {
+  float: left;
 }
 .spacer {
   height: 100px;
@@ -181,9 +232,10 @@ ul.no-bullets > li:nth-child(odd) {
 .bottom-logo {
   position: fixed;
   bottom: 63px;
-  left: 0;
-  right: 0;
+  left: 50%;
   height: 50px;
+  width: 200px;
+  margin-left: -100px;
   background: url("/images/logo.png") bottom center fixed no-repeat;
 }
 .footer {
@@ -191,5 +243,11 @@ ul.no-bullets > li:nth-child(odd) {
   bottom: 0;
   width: 100%;
   height: 63px;
+  text-align: right;
   background: #000 url("/images/logo.png") center -58px no-repeat;
+}
+.footer .social {
+  height: 100%;
+  text-align: right;
+  margin-top: 15px;
 }

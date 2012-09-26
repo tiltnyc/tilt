@@ -66,6 +66,8 @@ module.exports = (app) ->
     path: '/event/:event_id.:format?'
     action: 'show'
   ,
+    path: '/event/:event_id/load'
+  ,
     path: '/event/:event_id/edit'
     middleware: AuthHelpers.restricted
   ,
@@ -87,7 +89,6 @@ module.exports = (app) ->
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
   ,
     path: '/user/:id/profile'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
   ,
     path: 'id'
     method: 'param'
@@ -112,6 +113,9 @@ module.exports = (app) ->
     method: 'del'
     action: 'delete'
     middleware: AuthHelpers.restricted
+  ,
+    path: '/roles.json'
+    action: 'roles'
   ]   
 
   mapToController TeamsController,
@@ -140,7 +144,7 @@ module.exports = (app) ->
     path: '/teams/:team_id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("teams"), UploadHelpers.resizeImages(100), UploadHelpers.uploader]
+    middleware: [AuthHelpers.loggedIn, UploadHelpers.uniquifyObjectNames("teams"), UploadHelpers.resizeImages(250), UploadHelpers.uploader]
   ,
     path: '/team/:team_id'
     method: 'del'
@@ -215,6 +219,11 @@ module.exports = (app) ->
     path: '/competitors/:comp_id'
     method: 'put'
     action: 'update'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/competitor/:comp_id'
+    method: 'del'
+    action: 'delete'
     middleware: AuthHelpers.restricted
   ]
 

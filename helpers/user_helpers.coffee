@@ -16,7 +16,7 @@ exports.populate = (model, done) ->
   doProcess = (i, next) ->
     return next() if i >= input.length
     single = input[i].toObject()
-    User.findById(single.user).select(["username"]).exec (err, user) ->
+    User.findById(single.user).select(["username", "picture", "fname", "lname"]).exec (err, user) ->
       single.user = user
       input[i] = single
       doProcess i+1, next

@@ -1,16 +1,29 @@
 != messages()
 
-h2= title
-
-if (theUser.picture)
+.single-item
   img(src=theUser.picture)
+  h2 #{theUser.fname} #{theUser.lname}
+  span.tagline= theUser.company
+  if (theUser.twitter)
+    br
+    a(href="https://twitter.com/"+theUser.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{theUser.twitter}
 
-br
-a(href='/user/'+theUser._id+'/edit', title="edit") Edit Your Profile
+  div.desc= theUser.bio
 
-h3 events competed in
+if (everyauth.loggedIn && everyauth.user.id == theUser.id)
+  br
+  a(href='/user/'+theUser._id+'/edit', title="edit") Edit Your Profile
+
+
+if investors.length
+  h3 events invested in
+  ul.items.event-list.no-bullets
+    each investor in investors
+      != partial('../events/_event_list', {event: investor.event})
+     
 
 if competitors.length
+  h3 events competed in
   ul.event-list.no-bullets
     each competitor in competitors
       li
@@ -22,5 +35,6 @@ if competitors.length
 
         div.date
           = competitor.event.date.toDateString() 
-else 
-  div no events yet      
+
+if (everyauth.loggedIn && everyauth.user.id == theUser.id && !investors.length &&!competitors.length)
+  div no events yet!      

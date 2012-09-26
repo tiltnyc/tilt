@@ -8,12 +8,21 @@ Team = new Schema(
     type: ObjectId
     ref: "Event"
     required: true
-     
+       
   competitors: [
     type: ObjectId
     ref: "Competitor"
   ]
 
+  tagline:
+    type: String
+
+  desc:
+    type: String
+  
+  twitter:
+    type: String
+    
   picture: 
     type: String
     default: "https://s3.amazonaws.com/tiltnyc/teams/generic-team.jpg"

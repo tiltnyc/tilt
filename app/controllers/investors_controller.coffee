@@ -23,7 +23,7 @@ class InvestorsController extends BaseController
         response.send JSON.stringify(investors)
       else
         response.render 'investors/index',
-          title: 'List of Investors'
+          title: 'investors and judges'
           investors: investors
 
   show: (request, response) ->

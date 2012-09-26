@@ -3,15 +3,10 @@
 
 h2= title
 
-div#events
-  - if(events.length)
-    table.events_list
-      tr
-        th name
-        th date
-        th actions
-      != partial('_event_list', {collection: events, as: 'event'})
-  - else
+ul.no-bullets.items#events
+  if(events.length)
+    != partial('_event_list', {collection: events, as: 'event'})
+  else
     #no-results No events found. 
   
   if (is_admin)

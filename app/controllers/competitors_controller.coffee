@@ -16,13 +16,15 @@ class CompetitorsController extends BaseController
 
   index: (request, response) ->
     Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
+      console.log competitors
+
       throw err if err
       if request.params.format is 'json'
         response.contentType 'application/json'
         response.send JSON.stringify(competitors)
       else
         response.render 'competitors/index',
-          title: 'List of Competitors'
+          title: 'Competitors'
           competitors: competitors
 
   show: (request, response) ->
@@ -58,11 +60,17 @@ class CompetitorsController extends BaseController
 
   update: (request, response) ->
     competitor = request.competitor
-    @updateIfChanged ["team"], competitor, request.body.competitor
     if request.body.competitor.team isnt '' then competitor.addToTeam request.body.competitor.team
-
+    @updateIfChanged ["team"], competitor, request.body.competitor
     competitor.save (error, doc) ->
       throw error if error
       request.flash 'notice', 'Updated successfully'
       response.redirect '/competitors'
+
+  delete: (request, response) ->
+    competitor = request.competitor
+    competitor.remove (error) ->
+      request.flash 'notice', 'competitor Deleted'
+      response.redirect '/competitors'
+
 module.exports = CompetitorsController

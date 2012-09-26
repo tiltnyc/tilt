@@ -116,8 +116,16 @@ textarea
 
 #content
   padding 1em
-  label
-    font-weight bold
+  form
+    label
+      display inline-block
+      vertical-align top
+      width 12em
+      font-weight bold
+    textarea  
+      min-height 4em
+      min-width 40em
+      font-size 0.8em
 
 #logo
   position absolute
@@ -158,9 +166,45 @@ ul.no-bullets
   padding 0
   > li
     padding 1em
+    padding-left 0
     list-style-type none
+ 
+.li-link
+  display block
+
+ul.items
+  > li 
+    overflow hidden
+    h2
+      margin 0
+    > a > img, > div 
+      float left
+    > div
+      margin-left 1em
   > li:nth-child(odd)
     background-color #eee
+
+.single-item
+  overflow hidden
+  h2
+    margin 0
+  > img
+    float left
+    margin-right 1em
+
+
+.people
+  clear all
+  > div
+    float left 
+    width 300px
+    min-height 200px
+    > div
+      float left
+      font-size 0.85em
+      margin-left 1em
+    > img
+      float left
 
 .spacer
   height 100px
@@ -168,9 +212,10 @@ ul.no-bullets
 .bottom-logo
   position fixed
   bottom 63px
-  left 0
-  right 0
+  left 50%
   height 50px
+  width 200px
+  margin-left: -100px
   background url('/images/logo.png') bottom center fixed no-repeat
 
 .footer
@@ -178,4 +223,11 @@ ul.no-bullets
   bottom 0
   width 100%
   height 63px
+  text-align right
+
+  
   background black url('/images/logo.png') center -58px no-repeat
+  .social
+    height 100%
+    text-align right
+    margin-top 15px

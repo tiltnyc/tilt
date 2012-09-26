@@ -8,6 +8,12 @@ Event = new Schema
   date:
     type: Date
 
+  venue:
+    type: String
+
+  theme:
+    type: String 
+      
   picture: 
     type: String
 

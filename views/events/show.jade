@@ -3,6 +3,9 @@
 
 h2 Event details
 
+if (event.picture)
+  img(src=event.picture)
+
 p 
   strong name 
   span &nbsp #{event.name}
@@ -12,9 +15,22 @@ p
   span &nbsp #{event.date.toDateString()}
 
 p
+  strong theme
+  span &nbsp #{event.theme}
+
+p
+  strong venue
+  span &nbsp #{event.venue}
+
+p
+  a(href="/event/#{event.id}/load", title="load") Load Event 
+  &nbsp|&nbsp
+  a(href='/events', title="back") All Events
+
+p
   if (is_admin)
     a(href="/event/#{event._id}/edit", title="edit") Edit
     &nbsp;
     a(class='destroy', href="/event/#{event._id}", title="delete") Delete
     &nbsp;
-  a(href='/events', title="back") List of Events
+

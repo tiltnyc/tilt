@@ -1,27 +1,31 @@
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
 != messages()
 
 h2 Team details
 
-p
-  img(src=team.picture, width=150)
-
-p 
-  strong name 
-  &nbsp; #{team.name}
+.single-item
+  img(src=team.picture, width=250)
+  h2= team.name
+  span.tagline #{team.tagline}
+  if (team.twitter)
+      a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
+  div.desc= team.desc
 
 p
   strong members
-  - if (team.competitors.length > 0)
-    ul
-      each competitor in team.competitors
-        li 
-          a(href='/user/' + competitor.user._id + '/profile', title='view competitor') #{competitor.user.username}
-  - else
-    span#unassigned &nbsp none assigned
+  div.people
+    if (team.competitors.length)
+      != partial('../competitors/competitor_list', {collection: team.competitors, as: 'aCompetitor'})
+    else
+      span#unassigned &nbsp none assigned
 
-p
-  a(href='/team/'+team._id+'/edit', title="edit") Edit
-  &nbsp;
-  a(class='destroy', href='/team/'+team._id, title="delete") Delete
-  &nbsp;
-  a(href='/teams', title="back") Back
+br(clear="all")
+
+if (is_admin)
+  p
+    a(href='/team/'+team._id+'/edit', title="edit") Edit
+    &nbsp;
+    a(class='destroy', href='/team/'+team._id, title="delete") Delete
+    &nbsp;
+    a(href='/teams', title="back") Back

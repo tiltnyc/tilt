@@ -14,9 +14,10 @@ loadListFor = (model, type, display) ->
           return item unless chain.length
           recurse item[chain.shift()], chain
         $.each msg, (index, item) ->
-          selected = item._id is selector.data("team")
+          valueParam = item._id ? item[display]
+          selected = valueParam is selector.data type
           label = if display instanceof Array then recurse(item, display.concat()) else item[display] 
-          $(new Option(label, item._id, false, selected)).appendTo selector
+          $(new Option(label, valueParam, false, selected)).appendTo selector
 
       error: ->
         alert "Failed to load " + type + "s"
@@ -54,3 +55,4 @@ $ ->
   loadListFor "investment", "team", "name"
   loadListFor "investment", "investor", ["user","username"]
   loadListFor "allocate", "user", "username"    
+  loadListFor "user", "role", "label"
