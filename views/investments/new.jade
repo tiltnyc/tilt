@@ -3,7 +3,7 @@
 h2= title
 p Invest in a team
 
-form(method="post",action="/investments")
+form.new-investment(method="post",action="/investments")
   //input(type="hidden", name="csrf", value=csrf)
 
   p 
@@ -16,21 +16,16 @@ form(method="post",action="/investments")
   p 
     != partial('../rounds/current_round')
     
-
-  ul#team-list
-    each team, i in teams
-      li Team: &nbsp
-        input(type="hidden", name="investment[team_#{i}][team]", value=team._id)
-        span.team-name=team.name     
-        ul.percentage-slider-container
-          li.percentage-slider(data-index=i)
-          li(id='percentage-slider-amount-#{i}', class='percentage-slider-amount') 
-            span 0%
-            input(type="hidden", id="investment[#{i}][percentage]", name="investment[team_#{i}][percentage]", value=0)
-  
   div#invested Total Invested &nbsp
-    span#total-invested 
+    span#total-invested 0%
         
-  input(type="submit", value="Submit")
-  &nbsp;
-  a(href="/", title="[back]") [back]
+  button.submit submit
+
+  br(clear="all")
+
+  div.people
+    if(teams.length)
+      each team, i in teams
+        != partial('../teams/team_list', {team: team, investing: true, iterator: i})
+
+  br(clear="all")

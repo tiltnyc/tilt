@@ -1,6 +1,8 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 - if (typeof(voting) == 'undefined') var voting = false
 - if (typeof(isOpen) == 'undefined') var isOpen = false
+- if (typeof(investing) == 'undefined') var investing = false
+- if (typeof(iterator) == 'undefined') var iterator = 0
 
 div(class="team")
   label(for="vote_for_#{team._id}") 
@@ -31,12 +33,20 @@ div(class="team")
       -
     =Math.abs(team.movement.toFixed(2))
   
-  if (is_admin && !voting)    
+  if (is_admin && !voting && !investing)    
     br
     strong actions:  
     a(href='/team/'+team._id+'/edit', title="edit") Edit
     &nbsp
     a(class='destroy', href="/team/"+team._id, title="delete") Del
+
+  if (investing)
+    input(type="hidden", name="investment[team_#{iterator}][team]", value=team._id)  
+    ul.percentage-slider-container
+      li.percentage-slider(data-index=iterator)
+      li(id='percentage-slider-amount-#{iterator}', class='percentage-slider-amount') 
+        span 0%
+        input(type="hidden", id="investment[#{iterator}][percentage]", name="investment[team_#{iterator}][percentage]", value=0)
 
   if (voting && isOpen)
     div.vote-input
