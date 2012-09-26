@@ -9,6 +9,7 @@ ResultsController = require '../app/controllers/results_controller'
 InvestmentsController = require '../app/controllers/investments_controller'
 CompetitorsController = require '../app/controllers/competitors_controller'
 HomeController    = require '../app/controllers/home_controller'
+VotesController    = require '../app/controllers/votes_controller'
 Process           = require '../processors/investments'
 Result            = require '../models/result'
 Round             = require '../models/round'
@@ -261,6 +262,17 @@ module.exports = (app) ->
   ,
     path: '/investments.:format?'
     middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
+    method: 'post'  
+    action: 'create'
+  ]
+
+  mapToController VotesController, 
+  [
+    path: '/vote/new'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor] 
+  ,
+    path: '/votes.:format?'
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor] 
     method: 'post'  
     action: 'create'
   ]

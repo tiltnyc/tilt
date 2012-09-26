@@ -1,0 +1,31 @@
+!= messages()
+
+h2= title
+
+- var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+
+
+
+form.votes(method="post", action="/votes")
+  input(type="hidden",name="vote[teams]",id="vote_teams")
+  p 
+    label(for='vote[competitor]') Competitor
+    &nbsp;
+    - if (everyauth.loggedIn && everyauth.user.is_admin)
+      select(id='vote[competitor]', name='vote[competitor]')
+    -else
+      span #{everyauth.user.username}      
+  p 
+    != partial('../rounds/current_round')
+
+  if (currentRound.is_open)
+    p
+      strong selected: 
+        label.vote-selection 0
+
+    button submit these votes
+    br
+    br
+  div.people
+    if(teams.length)
+      != partial('../teams/team_list', {collection: teams, as: 'team', voting: true, isOpen: currentRound.is_open})

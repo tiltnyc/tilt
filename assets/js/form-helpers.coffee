@@ -51,8 +51,32 @@ $ ->
       resetValues()
       $("#total-invested").text Math.round(Math.min(totalInvested, 1) * 100) + "%"
 
+  voted = []
+  $("form.votes").on "click", "input[type=\"checkbox\"]", (evt) ->
+    $input = $(@)
+    $team = $input.parents(".team")
+    $form = $team.parents("form.votes")
+    checked = $input.attr("checked")
+    if checked and voted.length >= 3
+      $team.find(".validation-errors").show("blind").delay(1000).hide("blind")
+      return evt.preventDefault()
+    team = $input.data "team-id"
+    $team.toggleClass "selected", checked
+    if checked
+      voted.push team
+    else
+      found = $.inArray(team, voted)
+      voted.splice found, 1 if found >= 0
+    $form.find(".vote-selection").html "#{voted.length}"
+    $form.find("input#vote_teams").val voted.join(",")
+    console.log $form.find("input#vote_teams").val()
+
+  $("form.votes input[type=\"checkbox\"]").each () ->
+    $(@).removeAttr "checked"
+
   loadListFor "competitor", "team", "name"
   loadListFor "investment", "team", "name"
+  loadListFor "vote", "competitor", ["user","username"]
   loadListFor "investment", "investor", ["user","username"]
   loadListFor "allocate", "user", "username"    
   loadListFor "user", "role", "label"

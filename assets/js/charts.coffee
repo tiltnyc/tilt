@@ -31,13 +31,13 @@ $ ->
           "" + @x + ": " + @y + " %"
 
       plotOptions:
-        column:
+        bar:
           pointPadding: 0.2
           borderWidth: 0
           colorByPoint: true
 
       series: [
-        type: "column"
+        type: "bar"
         data: $(container).data("results")
       ]
     )
@@ -72,18 +72,18 @@ $ ->
           "" + @x + ": $" + @y
 
       plotOptions:
-        column:
+        bar:
           pointPadding: 0.2
           borderWidth: 0
 
       series: [
         name: "old price"
-        type: "column"
+        type: "bar"
         color: "#BBBBBB"
         data: $(container).data("old_prices")
       ,
         name: "new price"
-        type: "column"
+        type: "bar"
         data: new_data
       ]
     )

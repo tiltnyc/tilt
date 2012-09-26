@@ -24,17 +24,9 @@ if investors.length
 
 if competitors.length
   h3 events competed in
-  ul.event-list.no-bullets
+  ul.items.event-list.no-bullets
     each competitor in competitors
-      li
-        strong= competitor.event.name 
-        if (competitor.team)
-          &nbsp
-          span member of: 
-            strong= competitor.team.name
-
-        div.date
-          = competitor.event.date.toDateString() 
+      != partial('../events/_event_list', {event: competitor.event, team: competitor.team})
 
 if (everyauth.loggedIn && everyauth.user.id == theUser.id && !investors.length &&!competitors.length)
   div no events yet!      

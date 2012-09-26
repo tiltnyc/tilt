@@ -2,6 +2,7 @@ BaseController = require './base_controller'
 Competitor = require '../../models/competitor'
 CompetitorHelpers = require '../../helpers/competitor_helpers'
 User = require '../../models/user'
+Vote = require '../../models/vote'
 
 class CompetitorsController extends BaseController
 
@@ -16,8 +17,6 @@ class CompetitorsController extends BaseController
 
   index: (request, response) ->
     Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
-      console.log competitors
-
       throw err if err
       if request.params.format is 'json'
         response.contentType 'application/json'
@@ -28,11 +27,13 @@ class CompetitorsController extends BaseController
           competitors: competitors
 
   show: (request, response) ->
-    console.log request.currentEvent
-    response.render 'competitors/dash',
-      title: 'Competitor Dashboard'
-      competitor: request.competitor
-      currentRound: request.currentRound
+    Vote.find(competitor: request.competitor.id).populate("team").populate("round").sort("round.number","ascending").exec (err, votes) ->
+      console.log votes
+      response.render 'competitors/dash',
+        title: 'Competitor Dashboard'
+        competitor: request.competitor
+        currentRound: request.currentRound
+        votes: votes
 
   dash: (request, response) ->
     #find if this user
