@@ -1,3 +1,5 @@
+mongoose = require("mongoose")
+
 BaseController = require './base_controller'
 User = require '../../models/user'
 Vote = require '../../models/vote'
@@ -36,17 +38,18 @@ class VotesController extends BaseController
         votes = []  
         processVote = (i, done) ->
           return done() if i >= teams.length 
-          team = teams[i]
-          
+          team = teams[i].replace(/\"/g, "")
           vote = new Vote
             team: team
             competitor: competitor.id
             round: request.currentRound.id
           vote.save (err, v) -> 
+            throw err if err
             votes.push v
             processVote i+1, done
+            console.log "here", i  
 
-        processVote 1, () ->
+        processVote 0, () ->
           if request.params.format is 'json'
             response.contentType 'application/json'
             response.send JSON.stringify(votes)
