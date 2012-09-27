@@ -26,10 +26,16 @@ process = (round, done) ->
     return callback() if Object.keys(data).length is index
     teamId = Object.keys(data)[index]
     team = data[teamId].team
+    voteMovement = data[teamId].voteMovement
+    votePercent = data[teamId].votePercent
+    votes = data[teamId].votes
     teamPercentage = if total > 0 then data[teamId].result / total else 0
-    teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
+    teamPriceMovement = ((teamPercentage - averagePercentage + voteMovement) * factor)
+    invPriceMovement = ((teamPercentage - averagePercentage + voteMovement) * factor)
+
     before_price = team.last_price
-    teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
+    teamPriceMovement = (teamPercentage - averagePercentage + voteMovement) if teamPriceMovement < 0
+    invPriceMovement = ((teamPercentage - averagePercentage + voteMovement)) if invPriceMovement < 0
     cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage)
     team.last_price += teamPriceMovement
     team.movement = teamPriceMovement
@@ -45,9 +51,9 @@ process = (round, done) ->
         movement: team.movement
         movement_percentage: team.movement_percentage
         percentage_score: teamPercentage
-        vote_movement: data[teamId].voteMovement
-        vote_percentage: data[teamId].votePercent
-        vote_count: data[teamId].votes
+        vote_movement: voteMovement
+        vote_percentage: votePercent
+        vote_count: votes
       ).save (err, result) ->
         return callback(err)  if err
         saveResults data, index + 1, callback
@@ -81,6 +87,8 @@ process = (round, done) ->
         team: team
         result: 0
         votes: 0
+        voteMovement: 0
+        votePercent: 0
 
     Round.findOne(event: round.event, number: 1).exec (err, firstRound) -> #load first round
       return done err if err
@@ -116,14 +124,6 @@ process = (round, done) ->
               r.votePercent = r.votes / bestVoteScore
               r.voteMovement = r.votePercent - averageVotePercent
 
-            if votes.length
-              console.log results 
-              console.log "totalVotes", totalVotes  
-              console.log "teamCount", teamCount
-              console.log "bestVoteScore", bestVoteScore
-              console.log "averageVotes", averageVotes
-              console.log "averageVotePercent", averageVotePercent
-            
             saveResults results, 0, (err) ->
               return done err if err
               round.standard_deviation = cumulativeDistanceFromAverage / teamCount

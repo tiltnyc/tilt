@@ -199,7 +199,7 @@ describe "Round Process", ->
         Math.roundToFixed(result.vote_movement, 3).should.eql voteMovement
         done()
 
-    it "must calculate votes for round 1", (done) ->
+    goVoteRoundOne = (done) ->
       voteSet round1, [
         [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamC]
       , [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamC]
@@ -209,7 +209,10 @@ describe "Round Process", ->
       , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamA, teamE]
       , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamF, teamE]
       , [teamD, teamB, teamE], [teamD, teamB, teamE], [teamA, teamB, teamE]
-      ], () ->         
+      ], () -> done()
+
+    it "must calculate votes for round 1", (done) ->
+      goVoteRoundOne () ->         
         Rounds.process round1, (err) ->
           checkVoteResult teamA, round1, 14, 0.7, 0.1, () ->
             checkVoteResult teamB, round1, 15, 0.75, 0.15, () ->
@@ -222,3 +225,13 @@ describe "Round Process", ->
                         round.vote_count.should.eql 72
                         round.average_team_votes.should.eql 12
                         done()
+
+    it "must calculate votes and investments together", (done) ->
+      goVoteRoundOne () ->
+        goRoundOne () ->
+          ###checkResult teamA, round1, 1, 0.425, 0.175, 0.175, 1.175, () ->
+            checkResult teamB, round1, 1, 0.325, 0.075, 0.075, 1.075, () ->
+              checkResult teamC, round1, 1, 0.25, 0, 0, 1, () ->
+                checkResult teamD, round1, 1, 0, -0.25, -0.25, 0.75, () ->
+                  done()###
+          done()
