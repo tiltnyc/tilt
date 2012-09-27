@@ -187,7 +187,7 @@ describe "Round Process", ->
         vote all.competitors[i], round, row, () -> doSet i+1, complete
       doSet 0, () -> done()
 
-    checkResult = (team, round, votes, votePercent, voteMovement, done) ->
+    checkVoteResult = (team, round, votes, votePercent, voteMovement, done) ->
       Result.findOne
         team: team
         round: round
@@ -195,8 +195,8 @@ describe "Round Process", ->
       .exec (err, result) ->
         throw err if err
         result.vote_count.should.eql votes
-        Math.roundToFixed(result.votePercent, 3).should.eql votePercent
-        Math.roundToFixed(result.voteMovement, 3).should.eql voteMovement
+        Math.roundToFixed(result.vote_percentage, 3).should.eql votePercent
+        Math.roundToFixed(result.vote_movement, 3).should.eql voteMovement
         done()
 
     it "must calculate votes for round 1", (done) ->
@@ -211,6 +211,14 @@ describe "Round Process", ->
       , [teamD, teamB, teamE], [teamD, teamB, teamE], [teamA, teamB, teamE]
       ], () ->         
         Rounds.process round1, (err) ->
-          checkResult teamA, round1, 14, 0.7, 0.1, () ->
-
-            done()
+          checkVoteResult teamA, round1, 14, 0.7, 0.1, () ->
+            checkVoteResult teamB, round1, 15, 0.75, 0.15, () ->
+              checkVoteResult teamC, round1, 8, 0.4, -0.2, () ->
+                checkVoteResult teamD, round1, 11, 0.55, -0.05, () ->
+                  checkVoteResult teamE, round1, 16, 0.8, 0.2, () ->
+                    checkVoteResult teamF, round1, 8, 0.4, -0.2, () ->
+                      Round.findById(round1.id).exec (err, round) ->
+                        throw err if err
+                        round.vote_count.should.eql 72
+                        round.average_team_votes.should.eql 12
+                        done()
