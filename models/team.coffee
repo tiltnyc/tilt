@@ -1,5 +1,5 @@
 {mongoose, Schema, ObjectId} = require("./db_connect")
-Team = new Schema(
+Team = new Schema
   name:
     type: String
     required: true
@@ -13,6 +13,10 @@ Team = new Schema(
     type: ObjectId
     ref: "Competitor"
   ]
+
+  out_since:
+    type: Number
+    default: 0
 
   tagline:
     type: String
@@ -46,5 +50,7 @@ Team = new Schema(
   updated_at:
     type: Date
     default: Date.now
-)
+
+Team.virtual("is_out").get -> @out_since > 0
+
 exports = module.exports = mongoose.model("Team", Team)
