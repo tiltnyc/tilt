@@ -78,7 +78,7 @@ process = (round, done) ->
         rewardUsersForInvestments investments, index + 1, callback
     else callback()
 
-  Team.find(event: round.event).exec (err, teams) ->
+  Team.find(event: round.event, out_since: 0).exec (err, teams) ->
     return done err if err
     teamCount = teams.length
 
