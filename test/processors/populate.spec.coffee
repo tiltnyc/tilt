@@ -6,7 +6,11 @@ Event = require "../../models/event"
 
 describe "Event Population", () ->
   event = undefined
+  userlist = """
+  justinmoses\tjustinjmoses@gmail.com\te\tjustinjmoses
+  paul\tsmith\tps@gmail.com\td 
 
+  """
   beforeEach (done) ->
     factory.create Event,
       name: "test"
@@ -21,6 +25,10 @@ describe "Event Population", () ->
       event: event.id
       name: "test123"
     team.save () ->
-      populator "", event, (results) ->
+      populator userlist, event, (results) ->
         results.should.be.a('string')
         done()
+
+  it "must break", (done) ->
+    populator userlist, event, (results) ->
+      done()
