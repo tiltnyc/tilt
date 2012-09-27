@@ -253,6 +253,10 @@ module.exports = (app) ->
     path: '/results.:format?'
     action: 'index'
     middleware: RoundHelpers.loadCurrentRound
+  ,
+    path: '/result/:round_nbr'
+    action: 'index'
+    middleware: RoundHelpers.loadCurrentRound
   ]
 
   mapToController InvestmentsController, 

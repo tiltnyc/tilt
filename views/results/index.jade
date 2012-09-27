@@ -1,17 +1,23 @@
 != messages()
 
-
-if(results.length)
+if(rounds.length)
   h2 past rounds
   ul.inline.no-bullets
-    each result in results.slice(1)
+    - rounds = rounds.slice(1)
+    each rnd in rounds
+      if (rnd.is_current && !rnd.is_open) 
+        -continue
       li
-        a(href="/result/"+result[0]._id) round #{result[0].round.number} &nbsp
+        if (round && round.number.toString() == rnd.number.toString())
+          span round #{rnd.number} &nbsp
+        else
+          a(href="/result/"+rnd.number) round #{rnd.number} &nbsp
 
 h2= title
 
-div 
-  != partial('../rounds/current_round')
+if (isCurrent)
+  div 
+    != partial('../rounds/current_round')
 
 if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
   p.error-text 
