@@ -1,11 +1,54 @@
 $ ->
+  $(".vote-chart").each (i, container) ->
+    chart = new Highcharts.Chart(
+      chart:
+        renderTo: $(container).attr("id")
+
+      title:
+        text: "Round " + $(container).data("round") + " User Votes"
+
+      xAxis:
+        categories: $(container).data("teams")
+
+      yAxis:
+        min: 0
+        title:
+          text: "Number of Votes"
+
+        plotLines: [
+          id: "limit-min"
+          color: "#FF0000"
+          dashStyle: "ShortDash"
+          label: "Average"
+          width: 2
+          value: $(container).data("average")
+          zIndex: 1
+        ]
+
+      legend: false
+      tooltip:
+        formatter: ->
+          "" + @x + ": " + @y
+
+      plotOptions:
+        bar:
+          pointPadding: 0.2
+          borderWidth: 0
+          colorByPoint: true
+
+      series: [
+        type: "bar"
+        data: $(container).data("votes")
+      ]
+    )
+
   $(".dist-chart").each (i, container) ->
     chart = new Highcharts.Chart(
       chart:
         renderTo: $(container).attr("id")
 
       title:
-        text: "Round " + $(container).data("round") + " distribution"
+        text: "Round " + $(container).data("round") + " Investment"
 
       xAxis:
         categories: $(container).data("teams")
@@ -56,7 +99,7 @@ $ ->
         renderTo: $(container).attr("id")
 
       title:
-        text: "Round " + $(container).data("round") + " prices"
+        text: "Round " + $(container).data("round") + " calculated prices"
 
       xAxis:
         categories: $(container).data("teams")

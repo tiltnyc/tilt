@@ -1,5 +1,13 @@
 != messages()
 
+
+if(results.length)
+  h2 past rounds
+  ul.inline.no-bullets
+    each result in results.slice(1)
+      li
+        a(href="/result/"+result[0]._id) round #{result[0].round.number} &nbsp
+
 h2= title
 
 div 
@@ -10,11 +18,6 @@ if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
     strong note: 
     span initial round not yet processed
 else if (results[0])
-  ul.results
+  .results
     != partial('result_list', {roundResults: results[0]})
 
-h2 past rounds
-- if(results.length)
-    ul.results
-      - results.shift()
-      != partial('result_list', {collection: results, as: 'roundResults'})
