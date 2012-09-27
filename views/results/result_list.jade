@@ -1,7 +1,7 @@
 - round = roundResults[0].round.number
 - teams = [], results = [], prices = [], old_prices = [], votes = []
 - average = (roundResults[0].round.average*100).toFixed(2)
-- averageVotes = (roundResults[0].round.average_team_votess)
+- averageVotes = (roundResults[0].round.average_team_votes)
 - each teamResult in roundResults
   - teams.push(teamResult.team.name)
   - results.push(Math.roundToFixed(teamResult.percentage_score*100, 2))
