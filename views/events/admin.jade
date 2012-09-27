@@ -1,0 +1,13 @@
+form(method="post", action="/event/#{event._id}/populate")
+  
+  p
+    strong event 
+    span= event.name
+  p
+    strong user input
+    br
+    span.helper-text (tab-delimited fname lname email role twitter)
+    br
+    textarea(name="userlist", id="userlist")
+
+  button submit

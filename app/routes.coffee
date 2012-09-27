@@ -81,6 +81,13 @@ module.exports = (app) ->
     method: 'del'
     action: 'delete'
     middleware: AuthHelpers.restricted
+  ,
+    path: '/event/:event_id/admin'
+    middleware: AuthHelpers.restricted
+  ,
+    path: '/event/:event_id/populate'
+    middleware: AuthHelpers.restricted
+    method: 'post'
   ]   
 
 

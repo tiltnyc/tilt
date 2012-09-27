@@ -2,6 +2,7 @@ BaseController = require './base_controller'
 Event          = require '../../models/event'
 UploadHelpers  = require '../../helpers/upload_helpers'
 EventHelpers  = require '../../helpers/event_helpers'
+populater = require '../../processors/populate'
 
 class EventsController extends BaseController
 
@@ -68,5 +69,19 @@ class EventsController extends BaseController
     request.flash 'notice', "Now viewing event #{request.event.name}"
     request.session.currentEvent = request.event
     response.redirect '/event/' + request.event.id
+
+  admin: (request, response) ->
+    response.render 'events/admin',
+      title: "Administer #{request.event.name}"
+      event: request.event
+
+
+  populate: (request, response) ->
+    populater request.body.userlist, request.event, (results) ->
+      if typeof results is 'string'
+        request.flash 'error', results
+      else
+        request.flash 'notice', "Populated"
+      response.redirect '/events'
 
 module.exports = EventsController
