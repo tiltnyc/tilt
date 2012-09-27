@@ -35,7 +35,9 @@ div(class="team")
       else if (team.movement < 0.00)
         -
       =Math.abs(team.movement.toFixed(2))
-  
+    br 
+    strong rank #{team.rank}
+    
   if (is_admin && !voting && !investing)    
     br
     strong actions:  

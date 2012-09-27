@@ -126,19 +126,33 @@ process = (round, done) ->
 
             saveResults results, 0, (err) ->
               return done err if err
-              round.standard_deviation = cumulativeDistanceFromAverage / teamCount
-              round.total_funds = total
-              round.investor_count = investerList.length
-              round.average = averagePercentage
-              round.factor = factor
-              round.vote_count = totalVotes
-              round.average_team_votes = averageVotes 
-              round.is_open = false
-              round.save (err) ->
+
+              #set ranks
+              Team.find(event: round.event, out_since: 0).sort("last_price", "descending").exec (err, teams) ->
                 return done err if err
-                rewardUsersForInvestments investments, 0, (err) ->
-                  return done err if err
-                  done()
+                lastScore = 0
+                rank = 1
+                updateRank = (i, complete) ->
+                  return complete() if i >= teams.length
+                  team = teams[i]
+                  rank++ if team.last_price < lastScore 
+                  team.rank = rank 
+                  lastScore = team.last_price
+                  team.save (err) -> updateRank i+1, complete
+                updateRank 0, () ->
+                  round.standard_deviation = cumulativeDistanceFromAverage / teamCount
+                  round.total_funds = total
+                  round.investor_count = investerList.length
+                  round.average = averagePercentage
+                  round.factor = factor
+                  round.vote_count = totalVotes
+                  round.average_team_votes = averageVotes 
+                  round.is_open = false
+                  round.save (err) ->
+                    return done err if err
+                    rewardUsersForInvestments investments, 0, (err) ->
+                      return done err if err
+                      done()
 
 module.exports =
   process: process

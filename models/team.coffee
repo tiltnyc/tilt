@@ -35,6 +35,10 @@ Team = new Schema
     type: Number
     default: 1.00
 
+  rank: 
+    type: Number
+    default: 0
+    
   movement:
     type: Number
     default: 0
