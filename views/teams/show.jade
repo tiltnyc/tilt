@@ -12,6 +12,9 @@ h2 Team details
       a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
   div.desc= team.desc
 
+if (typeof(currentCompetitor) != 'undefined' && currentCompetitor.team._id.toString() == team._id.toString())
+  a(href='/team/'+team._id+'/edit', title="edit") Edit Your Team
+
 p
   strong members
   div.people
@@ -19,6 +22,11 @@ p
       != partial('../competitors/competitor_list', {collection: team.competitors, as: 'aCompetitor'})
     else
       span#unassigned &nbsp none assigned
+
+if (team.out_since > 0)
+  p  
+    strong update: 
+    |knocked out following round #{team.out_since}
 
 br(clear="all")
 

@@ -23,15 +23,18 @@ div(class="team")
   if (!voting)  
     span members: #{team.competitors.length}      
     br
-  span current price: $#{team.last_price.toFixed(2)} &nbsp
-
-  - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
-  span(class=klazz)
-    if (team.movement > 0.00) 
-      + 
-    else if (team.movement < 0.00)
-      -
-    =Math.abs(team.movement.toFixed(2))
+  
+  if (team.out_since > 0)
+    span.helper-text knocked out following round #{team.out_since}
+  else
+    strong current price: $#{team.last_price.toFixed(2)} &nbsp
+    - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+    span(class=klazz)
+      if (team.movement > 0.00) 
+        + 
+      else if (team.movement < 0.00)
+        -
+      =Math.abs(team.movement.toFixed(2))
   
   if (is_admin && !voting && !investing)    
     br

@@ -55,10 +55,11 @@ class TeamsController extends BaseController
 
   update: (request, response) ->
     team = request.team
-    return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team is team.id)
+    return @error(request, response, 'cannot modify', '/') unless request.user.is_admin or (request.currentCompetitor and request.currentCompetitor.team.id is team.id)
+    return @error(request, response, 'cannot edit out prop', '/team/' + team.id + '/edit') if not request.user.is_admin and request.body.team.out_since
     URIs = UploadHelpers.getImageURIs request 
     team.picture = URIs[0] if URIs.length
-    @updateIfChanged ["name", "tagline", "desc", "twitter"], team, request.body.team
+    @updateIfChanged ["name", "tagline", "desc", "twitter", "out_since"], team, request.body.team
     team.save (err, team) ->
       throw err if err
       request.flash 'notice', 'Updated successfully'
