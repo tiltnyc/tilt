@@ -5,7 +5,7 @@ Round = require "../models/round"
 Competitor = require "../models/competitor"
 Investor = require "../models/investor"
 
-nouns = ["fox", "lion", "ball", "street", "tree", "cat", "bird"]
+nouns = ["fox", "lion", "ball", "street", "tree", "cat", "bird", "pimple", "drug"]
 verbs = ["jump", "talk", "look", "walk", "growl", "think", "swallow", "mentor"]
 
 randomWordPair = (seperator = " ") ->
@@ -33,25 +33,31 @@ createLoop = (Model, count, props, done) ->
       done(created) if doneCount++ is count 
 
 starter = (count, done) ->
+  counts = 
+    users: count?.users ? count
+    competitors: count?.competitors ? count
+    investors: count?.investors ? count
+    teams: count?.teams ? count
+    rounds: count?.rounds ? count    
   roundNbr = 1
   create Event, {name: randomWordPair(), date: new Date()}, (event) ->
-    createLoop User, count,  
+    createLoop User, counts.users,  
       name: () -> randomWordPair()
-      email: () -> randomWordPair("_")+"@example.com" 
+      email: () -> randomWordPair("_")+"#{Math.random()}@example.com" 
     , (users) ->
-      createLoop Competitor, count, 
+      createLoop Competitor, counts.competitors, 
         user: (i) -> users[i]
         event: event
       , (competitors) -> 
-        createLoop Investor, count, 
+        createLoop Investor, counts.investors, 
           user: (i) -> users[i]
           event: event
         , (investors) ->  
-          createLoop Team, count, 
+          createLoop Team, counts.teams, 
             name: () -> randomWordPair()
             event: event
           , (teams) ->  
-            createLoop Round, count,
+            createLoop Round, counts.rounds,
               number: () -> roundNbr++ 
               event: event
             , (rounds) ->

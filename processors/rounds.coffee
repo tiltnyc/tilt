@@ -45,6 +45,9 @@ process = (round, done) ->
         movement: team.movement
         movement_percentage: team.movement_percentage
         percentage_score: teamPercentage
+        vote_movement: data[teamId].voteMovement
+        vote_percentage: data[teamId].votePercent
+        vote_count: data[teamId].votes
       ).save (err, result) ->
         return callback(err)  if err
         saveResults data, index + 1, callback
@@ -113,6 +116,14 @@ process = (round, done) ->
               r.votePercent = r.votes / bestVoteScore
               r.voteMovement = r.votePercent - averageVotePercent
 
+            if votes.length
+              console.log results 
+              console.log "totalVotes", totalVotes  
+              console.log "teamCount", teamCount
+              console.log "bestVoteScore", bestVoteScore
+              console.log "averageVotes", averageVotes
+              console.log "averageVotePercent", averageVotePercent
+            
             saveResults results, 0, (err) ->
               return done err if err
               round.standard_deviation = cumulativeDistanceFromAverage / teamCount
@@ -120,6 +131,8 @@ process = (round, done) ->
               round.investor_count = investerList.length
               round.average = averagePercentage
               round.factor = factor
+              round.vote_count = totalVotes
+              round.average_team_votes = averageVotes 
               round.is_open = false
               round.save (err) ->
                 return done err if err

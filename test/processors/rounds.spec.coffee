@@ -8,8 +8,10 @@ Result = require "../../models/result"
 Investor = require "../../models/investor"
 Team = require "../../models/team"
 Round = require "../../models/round"
+Vote = require "../../models/vote"
 
 describe "Round Process", ->
+  all = undefined
   userA = undefined
   userB = undefined
   userC = undefined
@@ -25,7 +27,14 @@ describe "Round Process", ->
   event = undefined
 
   beforeEach (done) ->
-    factory.starter 4, (result) ->
+    factory.starter 
+      users: 24
+      competitors: 24
+      teams: 4
+      rounds: 3
+      investors: 4
+    , (result) ->
+      all = result
       userA = result.users[0]
       userB = result.users[1]
       userC = result.users[2]
@@ -142,3 +151,51 @@ describe "Round Process", ->
           checkReward investorB, round2, 539.79, () ->
             checkReward investorC, round2, 200.75, () ->
               done()
+
+  describe "Votes", () ->
+    teamE = undefined
+    teamF = undefined
+    beforeEach (done) ->
+      factory.create Team,
+        name: "team E"
+        event: event.id
+      , (team) ->
+        teamE = team
+        factory.create Team,
+          name: "team F"
+          event: event.id
+        , (team) ->
+          teamF = team
+          done()
+
+    vote = (competitor, round, teams, done) ->
+      doVote = (i, complete) ->
+        return complete() if i >= teams.length
+        team = teams[i]
+        factory.create Vote,
+          competitor: competitor.id
+          team: team.id
+          round: round.id
+          event: event.id
+        , () -> doVote i+1, complete
+      doVote 0, () -> done() 
+
+    voteSet = (round, matrix, done) ->
+      doSet = (i, complete) ->
+        return complete() if i >= matrix.length
+        row = matrix[i]
+        vote all.competitors[i], round, row, () -> doSet i+1, complete
+      doSet 0, () -> done()
+
+    it "must calculate votes for round 1", (done) ->
+      voteSet round1, [
+        [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamC]
+      , [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamC]
+      , [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamE]
+      , [teamA, teamB, teamE], [teamA, teamB, teamE], [teamA, teamB, teamE]
+      , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamF, teamE]
+      , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamA, teamE]
+      , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamF, teamE]
+      , [teamD, teamB, teamE], [teamD, teamB, teamE], [teamA, teamB, teamE]
+      ], () ->         
+        Rounds.process round1, (err) ->done()

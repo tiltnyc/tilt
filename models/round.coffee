@@ -33,6 +33,14 @@ Round = new Schema(
     type: Number
     default: 0
 
+  vote_count:
+    type: Number
+    default: 0
+
+  average_team_votes:
+    type: Number
+    default: 0
+    
   factor:
     type: Number
     default: 1
