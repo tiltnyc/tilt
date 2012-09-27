@@ -1,29 +1,62 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
+- if (typeof(voting) == 'undefined') var voting = false
+- if (typeof(isOpen) == 'undefined') var isOpen = false
+- if (typeof(investing) == 'undefined') var investing = false
+- if (typeof(iterator) == 'undefined') var iterator = 0
 
-tr(class="team") 
-  td
-    img(src=team.picture, width=50)
-  td
-    if (is_admin)
-      a(href='/team/'+team._id, title=team.name) #{team.name}
-    else
-      | #{team.name}
- 
-  td= team.competitors.length      
+div(class="team")
+  label(for="vote_for_#{team._id}") 
+    img(src=team.picture, width=100)
+  a.team-name(href='/team/'+team._id) #{team.name}
+  if (team.tagline)
+    br
+    span.tagline #{team.tagline}
+  if (!voting && team.twitter)
+    br
+    a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
   
-  td
-    $#{team.last_price.toFixed(2)}
+  if (!voting)
+    br(clear="all")
+  else
+    br
+  
+  if (!voting)  
+    span members: #{team.competitors.length}      
+    br
+  
+  if (team.out_since > 0)
+    span.helper-text knocked out following round #{team.out_since}
+  else
+    strong current price: $#{team.last_price.toFixed(2)} &nbsp
+    - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+    span(class=klazz)
+      if (team.movement > 0.00) 
+        + 
+      else if (team.movement < 0.00)
+        -
+      =Math.abs(team.movement.toFixed(2))
+    br 
+    strong rank #{team.rank}
+    
+  if (is_admin && !voting && !investing)    
+    br
+    strong actions:  
+    a(href='/team/'+team._id+'/edit', title="edit") Edit
+    &nbsp
+    a(class='destroy', href="/team/"+team._id, title="delete") Del
 
-  - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
-  td(class=klazz)
-    if (team.movement > 0.00) 
-      span + 
-    else if (team.movement < 0.00)
-      span -
-    =Math.abs(team.movement.toFixed(2))
-  
-  if (is_admin)     
-    td 
-      a(href='/team/'+team._id+'/edit', title="edit") Edit
-      &nbsp
-      a(class='destroy', href="/team/"+team._id, title="delete") Del
+  if (investing)
+    input(type="hidden", name="investment[team_#{iterator}][team]", value=team._id)  
+    ul.percentage-slider-container
+      li.percentage-slider(data-index=iterator)
+      li(id='percentage-slider-amount-#{iterator}', class='percentage-slider-amount') 
+        span 0%
+        input(type="hidden", id="investment[#{iterator}][percentage]", name="investment[team_#{iterator}][percentage]", value=0)
+
+  if (voting && isOpen)
+    div.vote-input
+      input(type="checkbox", id="vote_for_#{team._id}", data-team-name=team.name, data-team-id=team._id) 
+      label(for="vote_for_#{team._id}") vote for  
+        strong #{team.name}
+      div.validation-errors.error-text(style="display:none")
+        |cannot vote any more times

@@ -1,20 +1,29 @@
 != messages()
 
+if(rounds.length)
+  h2 past rounds
+  ul.inline.no-bullets
+    - rounds = rounds.slice(1)
+    each rnd in rounds
+      if (rnd.is_current && !rnd.is_open) 
+        -continue
+      li
+        if (round && round.number.toString() == rnd.number.toString())
+          span round #{rnd.number} &nbsp
+        else
+          a(href="/result/"+rnd.number) round #{rnd.number} &nbsp
+
 h2= title
 
-div 
-  != partial('../rounds/current_round')
+if (isCurrent)
+  div 
+    != partial('../rounds/current_round')
 
 if (!currentRound || (currentRound.number == 1 && !currentRound.processed))
   p.error-text 
     strong note: 
     span initial round not yet processed
 else if (results[0])
-  ul.results
+  .results
     != partial('result_list', {roundResults: results[0]})
 
-h2 past rounds
-- if(results.length)
-    ul.results
-      - results.shift()
-      != partial('result_list', {collection: results, as: 'roundResults'})

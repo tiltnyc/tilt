@@ -1,39 +1,63 @@
 != messages()
 
-h2= title
-
 p
   strong current event &nbsp
   span= currentEvent.name
 
 
-if (typeof(competitor) == 'undefined')
-  span you're not competing in this event 
-else 
-  if (currentEvent.picture)
-    img(src=currentEvent.picture)
+div.dashboard
+  if (typeof(competitor) == 'undefined')
+    span you're not competing in this event 
+  else 
+    if (currentEvent.picture)
+      img(src=currentEvent.picture)
+      br(clear="all")
 
-  h3 team
-  p
-    if (competitor.team)
-      img(src=competitor.team.picture, width=100)
-      br
-      strong name:  
-      = competitor.team.name
-    else
-      .helper-text no team assigned
+    div.item
+      h3 team
+      p
+        if (competitor.team)
 
-  h3 currently
-  if (currentRound)
-    p
-      strong round &nbsp
-        span #{currentRound.number}
-  p
-    strong status: &nbsp
-    if (currentRound && currentRound.is_open)
-      span.open-round  open
-    else
-      span.closed-round closed
-  
-  p 
-    //todo: show result of team
+          a(href="/team/#{competitor.team._id}")
+            img(src=competitor.team.picture, width=100)
+          br
+          strong name:  
+          = competitor.team.name
+          br
+          strong current price: 
+          span $#{competitor.team.last_price.toFixed(2)} &nbsp
+
+          - var klazz = (competitor.team.movement >= 0.00) ? 'positive' : 'negative'
+          span(class=klazz)
+            if (competitor.team.movement > 0.00) 
+              + 
+            else if (competitor.team.movement < 0.00)
+              -
+            =Math.abs(competitor.team.movement.toFixed(2))
+        else
+          .helper-text no team assigned
+
+    div.item
+      h3 rounds
+      if (currentRound)
+        p
+          strong round &nbsp
+            span #{currentRound.number}
+      p
+        strong status: &nbsp
+        if (currentRound && currentRound.is_open)
+          span.open-round  open
+        else
+          span.closed-round closed
+
+    div.item
+      h3 votes
+      table#user-votes.inner-table
+        tr
+          th round
+          th team
+        != partial('../votes/vote_list', {collection: votes, as: 'vote'})
+
+      
+      
+      

@@ -1,5 +1,11 @@
-#teams table td {
-  padding: 0.5em;
+#teams .team {
+  font-size: 0.8em;
+}
+#teams .team img {
+  margin-right: 0.5em;
+}
+#teams .team .team-name {
+  font-size: 1.3em;
 }
 .tagline {
   color: #999;
@@ -8,4 +14,27 @@
   margin-top: 1em;
   width: 100%;
   font-size: 0.8em;
+}
+.team img {
+  margin-right: 0.5em;
+}
+.votes .team.selected {
+  background-color: #ddd;
+}
+.votes .team > label {
+  display: block;
+  width: 120px !important;
+  cursor: pointer;
+}
+.votes .vote-input {
+  clear: both;
+  text-align: left;
+  margin: 0 !important;
+}
+.votes .vote-input label {
+  font-size: 130%;
+  cursor: pointer;
+}
+.votes .vote-input input[type="checkbox"] {
+  font-size: 200%;
 }

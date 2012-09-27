@@ -17,5 +17,5 @@ exports.loadCompetitor = (req, res, next) ->
     return next(err) if err
     if competitor
       req.currentCompetitor = competitor 
-      res.local('competingCurrent', competitor)
+      res.local('currentCompetitor', competitor)
     next()

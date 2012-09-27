@@ -1,7 +1,10 @@
 #teams 
-  table
-    td 
-      padding 0.5em
+  .team 
+    font-size 0.8em
+    img
+      margin-right 0.5em
+    .team-name
+      font-size 1.3em
 
 .tagline
   color #999
@@ -10,3 +13,26 @@
   margin-top 1em
   width 100%
   font-size 0.8em
+
+.team
+  img 
+    margin-right 0.5em
+.votes
+  .team 
+    &.selected
+      background-color #ddd
+    > label
+      display block
+      width 120px !important
+      cursor pointer
+
+  .vote-input
+    clear both
+    text-align left
+    margin 0 !important
+    label
+      font-size 130%
+      cursor pointer
+    input[type="checkbox"] 
+      font-size 200%
+  

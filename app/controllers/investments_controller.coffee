@@ -8,7 +8,7 @@ TeamHelpers     = require '../../helpers/team_helpers'
 class InvestmentController extends BaseController
 
   new: (request, response) ->
-    TeamHelpers.getUserInvestable request.currentEvent, request.user, (err, teams) =>
+    TeamHelpers.getTeamsExceptUsers request.currentEvent, request.user, request.currentCompetitor, (err, teams) =>
       return @error(request, response, err, '/') if err
       response.render 'investments/new',
         title: 'New Investment'
@@ -18,7 +18,7 @@ class InvestmentController extends BaseController
   create: (request, response) ->
     error = (msg) => @error(request, response, msg, '/investment/new') 
 
-    return error 'Not authorized' if request.body.investment.user and not request.user.is_admin
+    return error 'Not authorized' if request.body.investment.investor and not request.user.is_admin
     return error "Admin isn't setup to invest"  if request.user.is_admin and not request.body.investment.investor and not request.currentInvestor
 
     iid = if request.user.is_admin and request.body.investment.investor then request.body.investment.investor else request.currentInvestor.id

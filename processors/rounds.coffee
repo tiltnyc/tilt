@@ -5,6 +5,7 @@ Team = require("../models/team")
 Round = require("../models/round")
 RoundHelpers = require("../helpers/round_helpers")
 Result = require("../models/result")
+Vote = require("../models/vote")
 
 process = (round, done) ->
   results = {}
@@ -15,15 +16,26 @@ process = (round, done) ->
   cumulativeDistanceFromAverage = 0
   factor = 0
   nextRound = undefined
+  totalVotes = 0
+  competitorsPerTeam = 4
+  voterList = []
+  averageVotes = 0
+  averageVotePercent = 0
 
   saveResults = (data, index, callback) ->
     return callback() if Object.keys(data).length is index
     teamId = Object.keys(data)[index]
     team = data[teamId].team
+    voteMovement = data[teamId].voteMovement
+    votePercent = data[teamId].votePercent
+    votes = data[teamId].votes
     teamPercentage = if total > 0 then data[teamId].result / total else 0
-    teamPriceMovement = ((teamPercentage - averagePercentage) * factor)
+    teamPriceMovement = ((teamPercentage - averagePercentage + voteMovement) * factor)
+    invPriceMovement = ((teamPercentage - averagePercentage + voteMovement) * factor)
+
     before_price = team.last_price
-    teamPriceMovement = (teamPercentage - averagePercentage)  if teamPriceMovement < 0
+    teamPriceMovement = (teamPercentage - averagePercentage + voteMovement) if teamPriceMovement < 0
+    invPriceMovement = ((teamPercentage - averagePercentage + voteMovement)) if invPriceMovement < 0
     cumulativeDistanceFromAverage += Math.abs(teamPercentage - averagePercentage)
     team.last_price += teamPriceMovement
     team.movement = teamPriceMovement
@@ -39,6 +51,9 @@ process = (round, done) ->
         movement: team.movement
         movement_percentage: team.movement_percentage
         percentage_score: teamPercentage
+        vote_movement: voteMovement
+        vote_percentage: votePercent
+        vote_count: votes
       ).save (err, result) ->
         return callback(err)  if err
         saveResults data, index + 1, callback
@@ -63,7 +78,7 @@ process = (round, done) ->
         rewardUsersForInvestments investments, index + 1, callback
     else callback()
 
-  Team.find(event: round.event).exec (err, teams) ->
+  Team.find(event: round.event, out_since: 0).exec (err, teams) ->
     return done err if err
     teamCount = teams.length
 
@@ -71,6 +86,9 @@ process = (round, done) ->
       results[team.id] =
         team: team
         result: 0
+        votes: 0
+        voteMovement: 0
+        votePercent: 0
 
     Round.findOne(event: round.event, number: 1).exec (err, firstRound) -> #load first round
       return done err if err
@@ -90,19 +108,51 @@ process = (round, done) ->
           averagePercentage = if total > 0 then average / total else 0
           factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
 
-          saveResults results, 0, (err) ->
+          #process votes
+          Vote.find(round: round.id).populate("competitor").populate("team").exec (err, votes) ->
             return done err if err
-            round.standard_deviation = cumulativeDistanceFromAverage / teamCount
-            round.total_funds = total
-            round.investor_count = investerList.length
-            round.average = averagePercentage
-            round.factor = factor
-            round.is_open = false
-            round.save (err) ->
+            bestVoteScore = (teamCount - 1) * competitorsPerTeam #JM: this is rough - not always 4 team members
+            votes.forEach (vote) ->
+              results[vote.team.id].votes++
+              totalVotes++
+              voterList.push vote.competitor.id unless voterList.indexOf(vote.competitor.id) >= 0
+
+            averageVotes = totalVotes / teamCount
+            averageVotePercent = averageVotes / bestVoteScore
+
+            for key, r of results
+              r.votePercent = r.votes / bestVoteScore
+              r.voteMovement = r.votePercent - averageVotePercent
+
+            saveResults results, 0, (err) ->
               return done err if err
-              rewardUsersForInvestments investments, 0, (err) ->
+
+              #set ranks
+              Team.find(event: round.event, out_since: 0).sort("last_price", "descending").exec (err, teams) ->
                 return done err if err
-                done()
+                lastScore = 0
+                rank = 1
+                updateRank = (i, complete) ->
+                  return complete() if i >= teams.length
+                  team = teams[i]
+                  rank++ if team.last_price < lastScore 
+                  team.rank = rank 
+                  lastScore = team.last_price
+                  team.save (err) -> updateRank i+1, complete
+                updateRank 0, () ->
+                  round.standard_deviation = cumulativeDistanceFromAverage / teamCount
+                  round.total_funds = total
+                  round.investor_count = investerList.length
+                  round.average = averagePercentage
+                  round.factor = factor
+                  round.vote_count = totalVotes
+                  round.average_team_votes = averageVotes 
+                  round.is_open = false
+                  round.save (err) ->
+                    return done err if err
+                    rewardUsersForInvestments investments, 0, (err) ->
+                      return done err if err
+                      done()
 
 module.exports =
   process: process

@@ -1,59 +1,69 @@
 - round = roundResults[0].round.number
-- teams = [], results = [], prices = [], old_prices = []
+- teams = [], results = [], prices = [], old_prices = [], votes = []
 - average = (roundResults[0].round.average*100).toFixed(2)
+- averageVotes = (roundResults[0].round.average_team_votes)
 - each teamResult in roundResults
   - teams.push(teamResult.team.name)
   - results.push(Math.roundToFixed(teamResult.percentage_score*100, 2))
+  - votes.push(teamResult.vote_count)
   - prices.push(Math.roundToFixed(teamResult.after_price, 2))
   - old_prices.push(Math.roundToFixed(teamResult.before_price, 2))
 - roundResults.sort(function(a,b){ return b.after_price > a.after_price; })
-li  
-  table.round-results
-    tr.heading
-      th(colspan="6") round #{round}
-    tr
-      th
-      th team
-      th before
-      th percentage
-      th movement
-      th after
-    each teamResult, i in roundResults
-      - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
-      tr.results-row
-        td= i+1
-        td= teamResult.team.name
-        td $#{teamResult.before_price.toFixed(2)}
-        - klazz = (teamResult.movement > 0) ? "positive" : "negative"
-        td= teamResultPercentage
-          span % 
-        td(class=klazz)
-          if (teamResult.movement > 0.00) 
-            + 
-          else if (teamResult.movement < 0.00)
-            -
-          | #{Math.abs(Math.roundToFixed(teamResult.movement, 2))} (#{Math.roundToFixed(teamResult.movement_percentage, 2)}%)
-        td 
-          strong $#{teamResult.after_price.toFixed(2)}
-    tr.footer
-      th(colspan="6")
-        u
-          li
-            strong total funds: 
-            span $#{roundResults[0].round.total_funds.toFixed(0)}
-          li
-            strong investors: 
-            span #{roundResults[0].round.investor_count}
-          li
-            strong average:
-            span #{(roundResults[0].round.average*100).toFixed(2)}
-          li
-            strong sd: 
-            span #{(roundResults[0].round.standard_deviation*100).toFixed(2)}%
-          li
-            strong factor:
-            span #{roundResults[0].round.factor.toFixed(2)}
-  div.round-chart.dist-chart(id="r" + round + "chart",data-round=round,data-teams=teams,data-results=results,data-average=average)
-  div.round-chart.price-chart(id="rp" + round + "chart",data-round=round,data-teams=teams,data-prices=prices, data-old_prices=old_prices)
-                    
+
+
+div.round-chart.vote-chart(id="vc" + round + "chart",data-round=round,data-teams=teams,data-votes=votes,data-average=averageVotes)
+br
+div.round-chart.dist-chart(id="r" + round + "chart",data-round=round,data-teams=teams,data-results=results,data-average=average)
+br
+div.round-chart.price-chart(id="rp" + round + "chart",data-round=round,data-teams=teams,data-prices=prices, data-old_prices=old_prices)
+br 
+
+table.round-results
+  tr.heading
+    th(colspan="7") round #{round}
+  tr
+    th
+    th team
+    th before
+    th investment
+    th votes
+    th movement
+    th after
+  each teamResult, i in roundResults
+    - teamResultPercentage = (teamResult.percentage_score*100).toFixed(2) 
+    tr.results-row
+      td= teamResult.team.rank
+      td= teamResult.team.name
+      td $#{teamResult.before_price.toFixed(2)}
+      - klazz = (teamResult.movement > 0) ? "positive" : "negative"
+      td= teamResultPercentage
+        span % 
+      td= teamResult.vote_count
+      td(class=klazz)
+        if (teamResult.movement > 0.00) 
+          + 
+        else if (teamResult.movement < 0.00)
+          -
+        | #{Math.abs(Math.roundToFixed(teamResult.movement, 2))} (#{Math.roundToFixed(teamResult.movement_percentage, 2)}%)
+      td 
+        strong $#{teamResult.after_price.toFixed(2)}
+  tr.footer
+    th(colspan="6")
+      u
+        li
+          strong total funds: 
+          span $#{roundResults[0].round.total_funds.toFixed(0)}
+        li
+          strong investors: 
+          span #{roundResults[0].round.investor_count}
+        li
+          strong average:
+          span #{(roundResults[0].round.average*100).toFixed(2)}
+        li
+          strong sd: 
+          span #{(roundResults[0].round.standard_deviation*100).toFixed(2)}%
+        li
+          strong factor:
+          span #{roundResults[0].round.factor.toFixed(2)}
+                 
     

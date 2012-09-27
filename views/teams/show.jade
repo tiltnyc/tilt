@@ -8,7 +8,12 @@ h2 Team details
   img(src=team.picture, width=250)
   h2= team.name
   span.tagline #{team.tagline}
+  if (team.twitter)
+      a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
   div.desc= team.desc
+
+if (typeof(currentCompetitor) != 'undefined' && currentCompetitor.team._id.toString() == team._id.toString())
+  a(href='/team/'+team._id+'/edit', title="edit") Edit Your Team
 
 p
   strong members
@@ -18,6 +23,22 @@ p
     else
       span#unassigned &nbsp none assigned
 
+p
+  if (team.out_since > 0)
+    strong update: 
+    |knocked out following round #{team.out_since}
+  else
+    strong current price: $#{team.last_price.toFixed(2)} &nbsp
+    - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+    span(class=klazz)
+      if (team.movement > 0.00) 
+        + 
+      else if (team.movement < 0.00)
+        -
+      =Math.abs(team.movement.toFixed(2))
+    br 
+    strong rank #{team.rank}
+    
 br(clear="all")
 
 if (is_admin)

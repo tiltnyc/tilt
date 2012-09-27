@@ -32,6 +32,18 @@ Result = new Schema(
     type: Number
     default: 0
 
+  vote_percentage:
+    type: Number
+    default: 0
+
+  vote_count:
+    type: Number
+    default: 0
+
+  vote_movement:
+    type: Number
+    default: 0
+
   percentage_score:
     type: Number
     required: true
