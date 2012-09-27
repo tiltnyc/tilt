@@ -20,6 +20,11 @@ p
     else
       span#unassigned &nbsp none assigned
 
+if (team.out_since > 0)
+  p  
+    strong update: 
+    |knocked out following round #{team.out_since}
+
 br(clear="all")
 
 if (is_admin)
