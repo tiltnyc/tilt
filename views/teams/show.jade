@@ -23,11 +23,22 @@ p
     else
       span#unassigned &nbsp none assigned
 
-if (team.out_since > 0)
-  p  
+p
+  if (team.out_since > 0)
     strong update: 
     |knocked out following round #{team.out_since}
-
+  else
+    strong current price: $#{team.last_price.toFixed(2)} &nbsp
+    - var klazz = (team.movement >= 0.00) ? 'positive' : 'negative'
+    span(class=klazz)
+      if (team.movement > 0.00) 
+        + 
+      else if (team.movement < 0.00)
+        -
+      =Math.abs(team.movement.toFixed(2))
+    br 
+    strong rank #{team.rank}
+    
 br(clear="all")
 
 if (is_admin)
