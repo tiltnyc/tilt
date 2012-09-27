@@ -181,6 +181,14 @@ ul.no-bullets > li {
   padding-left: 0;
   list-style-type: none;
 }
+ul.inline {
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+ul.inline > li {
+  padding: 0;
+  display: inline-block;
+}
 .li-link {
   display: block;
 }
