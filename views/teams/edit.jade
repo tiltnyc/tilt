@@ -14,11 +14,11 @@ form(method="post", action="/teams/"+team._id, enctype="multipart/form-data")
     br
     input(type="text", id="team[tagline]", name="team[tagline]", value=team.tagline)
   
- 
-  p
-    label(for='team[out_since]') Knocked Out Since
-    &nbsp;
-    input(type='text', id="team[out_since]", name="team[out_since]", value=team.out_since, style="width: 1em")
+  if (is_admin)
+    p
+      label(for='team[out_since]') Knocked Out Since
+      &nbsp;
+      input(type='text', id="team[out_since]", name="team[out_since]", value=team.out_since, style="width: 1em")
 
   p
     label(for='team[twitter]') Twitter Handle

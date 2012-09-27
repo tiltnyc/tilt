@@ -17,7 +17,9 @@ div.dashboard
       h3 team
       p
         if (competitor.team)
-          img(src=competitor.team.picture, width=100)
+
+          a(href="/team/#{competitor.team._id}")
+            img(src=competitor.team.picture, width=100)
           br
           strong name:  
           = competitor.team.name
