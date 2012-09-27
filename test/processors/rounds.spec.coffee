@@ -187,6 +187,18 @@ describe "Round Process", ->
         vote all.competitors[i], round, row, () -> doSet i+1, complete
       doSet 0, () -> done()
 
+    checkResult = (team, round, votes, votePercent, voteMovement, done) ->
+      Result.findOne
+        team: team
+        round: round
+      .populate("team")
+      .exec (err, result) ->
+        throw err if err
+        result.vote_count.should.eql votes
+        Math.roundToFixed(result.votePercent, 3).should.eql votePercent
+        Math.roundToFixed(result.voteMovement, 3).should.eql voteMovement
+        done()
+
     it "must calculate votes for round 1", (done) ->
       voteSet round1, [
         [teamA, teamB, teamC], [teamA, teamB, teamC], [teamA, teamB, teamC]
@@ -198,4 +210,7 @@ describe "Round Process", ->
       , [teamD, teamF, teamE], [teamD, teamF, teamE], [teamD, teamF, teamE]
       , [teamD, teamB, teamE], [teamD, teamB, teamE], [teamA, teamB, teamE]
       ], () ->         
-        Rounds.process round1, (err) ->done()
+        Rounds.process round1, (err) ->
+          checkResult teamA, round1, 14, 0.7, 0.1, () ->
+
+            done()
