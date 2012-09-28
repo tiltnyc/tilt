@@ -16,6 +16,7 @@ bootApplication = (app) ->
     app.set('redisDb', redisAuth[0])
     app.set('redisPass', redisAuth[1])
 
+  oneday = 3600000 * 24
   app.configure ->
     app.set "views", __dirname + "/views"
     app.set "view engine", "jade"
@@ -27,6 +28,8 @@ bootApplication = (app) ->
     app.use express.cookieParser()
     app.use express.session
       secret: process.env.TILT_SESSION_SECRET
+      cookie:
+        maxAge: oneday * 5
       store: new RedisStore
         host: app.set('redisHost')
         port: app.set('redisPort')
