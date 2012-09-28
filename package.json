@@ -41,6 +41,7 @@
     , "awssum"            : "0.5.1"
     , "imagemagick"       : "0.1.3"
     , "connect-redis"     : "1.4.4"
+    , "bcrypt"            : "0.7.2"
   }
   , "scripts": {
       "test": "cake mocha"

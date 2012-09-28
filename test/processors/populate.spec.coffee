@@ -2,16 +2,16 @@
 
 populator = require "../../processors/populate"
 Team = require "../../models/team"
+User = require "../../models/user"
 Event = require "../../models/event"
 
 describe "Event Population", () ->
   event = undefined
   userlist = """
-  justinmoses\tjustinjmoses@gmail.com\te\tjustinjmoses
-  paul\tsmith\tps@gmail.com\td 
-
+  paul\tsmith\tps@g.com\td 
+  john\ttame\tj@g.com\te
   """
-  beforeEach (done) ->
+  beforeEach (done) ->  
     factory.create Event,
       name: "test"
       date: new Date()
@@ -19,6 +19,7 @@ describe "Event Population", () ->
       event = evt
       done()
 
+  afterEach (done) -> clean done
 
   it "must not populate if event has teams", (done) ->
     team = new Team
@@ -29,6 +30,20 @@ describe "Event Population", () ->
         results.should.be.a('string')
         done()
 
-  it "must break", (done) ->
+  it "must not recreate an existing user", (done) ->
+    factory.create User,
+      email: "ps@g.com"
+      fname: 'first'
+      lname: 'last'
+      role: 'x'
+      twitter: ''
+    , (user) ->
+      populator userlist, event, (results) ->
+        User.findById(user.id).exec (err, u) ->
+          u.fname.should.eql "paul"
+          u.lname.should.eql "smith"
+          done()
+
+  it "must do something", (done) ->
     populator userlist, event, (results) ->
       done()
