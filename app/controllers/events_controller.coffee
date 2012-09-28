@@ -77,7 +77,7 @@ class EventsController extends BaseController
 
 
   populate: (request, response) ->
-    populater request.body.userlist, request.event, request.body.numTeams, (results) ->
+    populater request.body.userlist, request.event, 4, (results) ->
       if typeof results is 'string'
         request.flash 'error', results
       else

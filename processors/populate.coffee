@@ -1,9 +1,14 @@
 User = require("../models/user")
 Team = require("../models/team")
+Competitor = require("../models/competitor")
 bcrypt = require('bcrypt')
 
-module.exports = (userlist, event, numTeams, done) ->
+module.exports = (userlist, event, usersInTeam, done) ->
   data = require '../data/us_cities'
+
+  popRandomData = () ->
+    i = Math.floor(Math.random() * data.length)
+    data.splice(i, 1)[0]
 
   Team.find(event: event.id).exec (err, teams) ->
 
@@ -11,6 +16,7 @@ module.exports = (userlist, event, numTeams, done) ->
 
     rows = userlist.split('\n')
     usersByRole = {}
+    totalUsers = 0 
 
     processUsers = (r, rowsDone) ->
       next = () -> processUsers r+1, rowsDone
@@ -38,14 +44,50 @@ module.exports = (userlist, event, numTeams, done) ->
         user.save (err, u) ->
           usersByRole[u.role]?= []
           usersByRole[u.role].push(u)
+          totalUsers++
           next()
 
     processUsers 0, () ->
+      nextRoleIndex = 0
+      roles = Object.keys(usersByRole)
+      popUser = (r = nextRoleIndex) ->
+        return if totalUsers is 0
+        return popUser(0) if r >= roles.length
+        if usersByRole[roles[r]].length
+          nextRoleIndex = r+1
+          totalUsers--
+          return usersByRole[roles[r]].shift()
+        else
+          return popUser(r+1)
 
-      #createAndPopulateTeam = (t, teamsDone) ->
+      numTeams = Math.ceil(totalUsers / usersInTeam)
+      teams = []
+      processTeams = (i, teamsDone) ->
+        return teamsDone() if i >= numTeams
+        team = new Team
+          event: event.id
+          name: popRandomData().city
+        team.save (err, team) ->
+          console.log "created team: " + team.name if usersInTeam > 1
+          processCompetitor = (c, competitorDone) ->
+            return competitorDone() if c >= usersInTeam
+            user = popUser() 
+            return competitorDone() if !user #ran out of users
+            competitor = new Competitor
+              user: user.id
+              event: event.id
+              team: team.id
+            competitor.save (err, competitor) ->
+              processCompetitor c+1, competitorDone
+              console.log "added competitor #{user.email} to #{team.name}" if usersInTeam > 1
+          processCompetitor 0, () ->
+            processTeams i+1, teamsDone  
+            
 
+      processTeams 0, () -> 
+        Team.find(event: event.id).exec (err, teams) -> 
+          done teams
 
-      done()
   #teamNames = ["architects", "bently", "cyclops", "deltas", "extreme.", "feels like felt", "genesis", "hawking", "impromptu", "juniper", "kelvins", "luminous", "moscow", ""]
     
       #return unless currentEvent has no teams
