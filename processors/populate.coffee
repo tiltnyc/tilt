@@ -2,7 +2,7 @@ User = require("../models/user")
 Team = require("../models/team")
 bcrypt = require('bcrypt')
 
-module.exports = (userlist, event, done) ->
+module.exports = (userlist, event, numTeams, done) ->
   data = require '../data/us_cities'
 
   Team.find(event: event.id).exec (err, teams) ->
@@ -10,9 +10,10 @@ module.exports = (userlist, event, done) ->
     return done "cannot populate, teams exist" if teams.length
 
     rows = userlist.split('\n')
+    usersByRole = {}
 
-    processRow = (r, rowsDone) ->
-      next = () -> processRow r+1, rowsDone
+    processUsers = (r, rowsDone) ->
+      next = () -> processUsers r+1, rowsDone
       return rowsDone() if r >= rows.length
       row = rows[r]
       [fname, lname, email, role, twitter] = row.split('\t')
@@ -31,13 +32,19 @@ module.exports = (userlist, event, done) ->
             email: email?.trim() ? ""
             role: role?.trim() ? ""
             twitter: twitter?.trim() ? ""
+            username: twitter?.trim() ? "#{fname}.#{lname}" 
             salt: salt
             hash: bcrypt.hashSync("something", salt)
         user.save (err, u) ->
+          usersByRole[u.role]?= []
+          usersByRole[u.role].push(u)
           next()
 
-        
-    processRow 0, () ->
+    processUsers 0, () ->
+
+      #createAndPopulateTeam = (t, teamsDone) ->
+
+
       done()
   #teamNames = ["architects", "bently", "cyclops", "deltas", "extreme.", "feels like felt", "genesis", "hawking", "impromptu", "juniper", "kelvins", "luminous", "moscow", ""]
     

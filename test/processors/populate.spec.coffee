@@ -8,8 +8,10 @@ Event = require "../../models/event"
 describe "Event Population", () ->
   event = undefined
   userlist = """
-  paul\tsmith\tps@g.com\td 
-  john\ttame\tj@g.com\te
+  paul\tsmith\tps@g.com\tdesigner 
+  john\ttame\tj@g.com\tengineer
+  ian\t\tc@x.com\tdesigner 
+  john\ttame\tj@g.com\tengineer
   """
   beforeEach (done) ->  
     factory.create Event,
@@ -26,7 +28,7 @@ describe "Event Population", () ->
       event: event.id
       name: "test123"
     team.save () ->
-      populator userlist, event, (results) ->
+      populator userlist, event, 1, (results) ->
         results.should.be.a('string')
         done()
 
@@ -38,12 +40,12 @@ describe "Event Population", () ->
       role: 'x'
       twitter: ''
     , (user) ->
-      populator userlist, event, (results) ->
+      populator userlist, event, 1, (results) ->
         User.findById(user.id).exec (err, u) ->
           u.fname.should.eql "paul"
           u.lname.should.eql "smith"
           done()
 
   it "must do something", (done) ->
-    populator userlist, event, (results) ->
+    populator userlist, event, 1, (results) ->
       done()
