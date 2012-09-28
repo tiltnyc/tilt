@@ -1,3 +1,5 @@
+h2 populate
+
 form(method="post", action="/event/#{event._id}/populate")
   
   p
@@ -9,5 +11,24 @@ form(method="post", action="/event/#{event._id}/populate")
     span.helper-text (tab-delimited fname lname email role twitter)
     br
     textarea(name="userlist", id="userlist")
+
+  button submit
+
+h4
+
+h2 email
+
+form(method="post", action="/event/#{event._id}/mail")
+  p
+    strong event 
+    span= event.name
+  p
+    strong body
+    br
+    span.helper-text this will email all investors and competitors within the event. use 
+      strong :signin-link: 
+      |for link
+    br
+    textarea(name="email", id="email")
 
   button submit

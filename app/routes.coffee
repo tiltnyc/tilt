@@ -88,6 +88,10 @@ module.exports = (app) ->
     path: '/event/:event_id/populate'
     middleware: AuthHelpers.restricted
     method: 'post'
+  ,
+    path: '/event/:event_id/mail'
+    middleware: AuthHelpers.restricted
+    method: 'post'
   ]   
 
 

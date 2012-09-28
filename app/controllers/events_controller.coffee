@@ -2,6 +2,9 @@ BaseController = require './base_controller'
 Event          = require '../../models/event'
 UploadHelpers  = require '../../helpers/upload_helpers'
 EventHelpers  = require '../../helpers/event_helpers'
+Investor      = require '../../models/investor'
+Competitor   = require '../../models/competitor'
+
 populater = require '../../processors/populate'
 
 class EventsController extends BaseController
@@ -75,6 +78,13 @@ class EventsController extends BaseController
       title: "Administer #{request.event.name}"
       event: request.event
 
+  mail: (request, response) ->
+    Investor.find(event: request.event.id).populate("user").exec (err, investors) ->
+      Competitor.find(event: request.event.id).populate("user").exec (err, competitors) ->
+        recipients = investors.concat competitors
+        #todo....
+        request.flash 'notice', "Emailed X Recipients"
+        response.redirect '/events'
 
   populate: (request, response) ->
     populater request.body.userlist, request.event, 4, (results) ->
