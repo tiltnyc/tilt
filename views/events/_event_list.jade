@@ -20,7 +20,7 @@ li
       else
         |winning team: &nbsp
 
-      if (event.teams.length)
+      if (event.teams.length && event.teams.rank)
         strong= event.teams[0].name
       else
         |?
