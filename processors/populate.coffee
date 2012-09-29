@@ -11,99 +11,100 @@ module.exports = (userlist, event, usersInTeam, done) ->
     i = Math.floor(Math.random() * data.length)
     data.splice(i, 1)[0]
 
-  Team.find(event: event.id).exec (err, teams) ->
+  Competitor.find(event: event.id).remove (err) ->
+    Team.find(event: event.id).exec (err, teams) ->
 
-    return done "cannot populate, teams exist" if teams.length
+      return done "cannot populate, teams exist" if teams.length
 
-    rows = userlist.split('\n')
-    usersByRole = {}
-    totalUsers = 0 
+      rows = userlist.split('\n')
+      usersByRole = {}
+      totalUsers = 0 
 
-    cleanStr = (str) -> if str and str.trim() then str.trim() else ""
-    processUsers = (r, rowsDone) ->
-      next = () -> processUsers r+1, rowsDone
-      return rowsDone() if r >= rows.length
-      row = rows[r]
-      [fname, lname, email, role, twitter] = row.split('\t')
-      return next() unless email
-      fname = cleanStr fname
-      lname = cleanStr lname 
-      email = email.trim()
-      role = cleanStr role
-      twitter = cleanStr twitter
-      User.findOne(email: email.trim()).exec (err, user) ->
-        salt = bcrypt.genSaltSync(10)
-        passcode = popRandomData().city.replace(/\s+/g, "").toLowerCase() + Math.round(Math.random() * 100)
-        hash = bcrypt.hashSync(passcode, salt)
-        passcodes[email.trim()] = passcode
-        if user
-          console.log "found user #{email}, updating"
-          user.fname = fname
-          user.lname = lname
-          user.role = role
-          user.twitter = twitter
-          user.username = if twitter.length then twitter else "#{fname}.#{lname}"  
-          user.salt = salt
-          user.hash = hash
-        else
-          console.log "creating user #{email}"
-          user = new User
-            fname: fname
-            lname: lname
-            email: email
-            role: role
-            twitter: twitter
-            username: if twitter.length then twitter else "#{fname}.#{lname}"
-            salt: salt
-            hash: hash
-        user.save (err, u) ->
-          usersByRole[u.role]?= []
-          usersByRole[u.role].push(u)
-          totalUsers++
-          next()
+      cleanStr = (str) -> if str and str.trim() then str.trim() else ""
+      processUsers = (r, rowsDone) ->
+        next = () -> processUsers r+1, rowsDone
+        return rowsDone() if r >= rows.length
+        row = rows[r]
+        [fname, lname, email, role, twitter] = row.split('\t')
+        return next() unless email
+        fname = cleanStr fname
+        lname = cleanStr lname 
+        email = email.trim()
+        role = cleanStr role
+        twitter = cleanStr twitter
+        User.findOne(email: email.trim()).exec (err, user) ->
+          salt = bcrypt.genSaltSync(10)
+          passcode = popRandomData().city.replace(/\s+/g, "").toLowerCase() + Math.round(Math.random() * 100)
+          hash = bcrypt.hashSync(passcode, salt)
+          passcodes[email.trim()] = passcode
+          if user
+            console.log "found user #{email}, updating"
+            user.fname = fname
+            user.lname = lname
+            user.role = role
+            user.twitter = twitter
+            user.username = if twitter.length then twitter else "#{fname}.#{lname}"  
+            user.salt = salt
+            user.hash = hash
+          else
+            console.log "creating user #{email}"
+            user = new User
+              fname: fname
+              lname: lname
+              email: email
+              role: role
+              twitter: twitter
+              username: if twitter.length then twitter else "#{fname}.#{lname}"
+              salt: salt
+              hash: hash
+          user.save (err, u) ->
+            usersByRole[u.role]?= []
+            usersByRole[u.role].push(u)
+            totalUsers++
+            next()
 
-    processUsers 0, () ->
-      nextRoleIndex = 0
-      roles = Object.keys(usersByRole)
-      popUser = (r = nextRoleIndex) ->
-        return if totalUsers is 0
-        return popUser(0) if r >= roles.length
-        if usersByRole[roles[r]].length
-          nextRoleIndex = r+1
-          totalUsers--
-          return usersByRole[roles[r]].shift()
-        else
-          return popUser(r+1)
+      processUsers 0, () ->
+        nextRoleIndex = 0
+        roles = Object.keys(usersByRole)
+        popUser = (r = nextRoleIndex) ->
+          return if totalUsers is 0
+          return popUser(0) if r >= roles.length
+          if usersByRole[roles[r]].length
+            nextRoleIndex = r+1
+            totalUsers--
+            return usersByRole[roles[r]].shift()
+          else
+            return popUser(r+1)
 
-      numTeams = Math.ceil(totalUsers / usersInTeam)
-      teams = []
-      processTeams = (i, teamsDone) ->
-        return teamsDone() if i >= numTeams
-        team = new Team
-          event: event.id
-          name: popRandomData().city
-        team.save (err, team) ->
-          console.log "created team: " + team.name if usersInTeam > 1
-          processCompetitor = (c, competitorDone) ->
-            return competitorDone() if c >= usersInTeam
-            user = popUser() 
-            return competitorDone() if !user #ran out of users
-            competitor = new Competitor
-              user: user.id
-              event: event.id
-              team: team.id
-            competitor.save (err, competitor) ->
-              processCompetitor c+1, competitorDone
-              console.log "added competitor #{user.email} to #{team.name}" if usersInTeam > 1
-          processCompetitor 0, () ->
-            processTeams i+1, teamsDone  
-            
+        numTeams = Math.ceil(totalUsers / usersInTeam)
+        teams = []
+        processTeams = (i, teamsDone) ->
+          return teamsDone() if i >= numTeams
+          team = new Team
+            event: event.id
+            name: popRandomData().city
+          team.save (err, team) ->
+            console.log "created team: " + team.name if usersInTeam > 1
+            processCompetitor = (c, competitorDone) ->
+              return competitorDone() if c >= usersInTeam
+              user = popUser() 
+              return competitorDone() if !user #ran out of users
+              competitor = new Competitor
+                user: user.id
+                event: event.id
+                team: team.id
+              competitor.save (err, competitor) ->
+                processCompetitor c+1, competitorDone
+                console.log "added competitor #{user.email} to #{team.name}" if usersInTeam > 1
+            processCompetitor 0, () ->
+              processTeams i+1, teamsDone  
+              
 
-      processTeams 0, () -> 
-        Team.find(event: event.id).exec (err, teams) -> 
-          done 
-            teams: teams
-            passcodes: passcodes
+        processTeams 0, () -> 
+          Team.find(event: event.id).exec (err, teams) -> 
+            done 
+              teams: teams
+              passcodes: passcodes
 
   #teamNames = ["architects", "bently", "cyclops", "deltas", "extreme.", "feels like felt", "genesis", "hawking", "impromptu", "juniper", "kelvins", "luminous", "moscow", ""]
     
