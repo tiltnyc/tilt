@@ -8,7 +8,7 @@
   - votes.push(teamResult.vote_count)
   - prices.push(Math.roundToFixed(teamResult.after_price, 2))
   - old_prices.push(Math.roundToFixed(teamResult.before_price, 2))
-- roundResults.sort(function(a,b){ return b.after_price > a.after_price; })
+- roundResults.sort(function(a,b){ return a.team.rank - b.team.rank; })
 
 
 div.round-chart.vote-chart(id="vc" + round + "chart",data-round=round,data-teams=teams,data-votes=votes,data-average=averageVotes)
@@ -47,9 +47,9 @@ table.round-results
         | #{Math.abs(Math.roundToFixed(teamResult.movement, 2))} (#{Math.roundToFixed(teamResult.movement_percentage, 2)}%)
       td 
         strong $#{teamResult.after_price.toFixed(2)}
-  tr.footer
-    th(colspan="6")
-      u
+  tr.foot
+    th(colspan="7")
+      ul.no-bullets
         li
           strong total funds: 
           span $#{roundResults[0].round.total_funds.toFixed(0)}
@@ -65,5 +65,8 @@ table.round-results
         li
           strong factor:
           span #{roundResults[0].round.factor.toFixed(2)}
+        li
+          strong total votes:
+          span #{roundResults[0].round.vote_count}
                  
     
