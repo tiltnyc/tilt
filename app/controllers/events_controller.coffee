@@ -4,7 +4,7 @@ UploadHelpers  = require '../../helpers/upload_helpers'
 EventHelpers  = require '../../helpers/event_helpers'
 Investor      = require '../../models/investor'
 Competitor   = require '../../models/competitor'
-
+MailHelpers  = require '../../helpers/mail_helpers'
 populater = require '../../processors/populate'
 
 class EventsController extends BaseController
@@ -73,24 +73,52 @@ class EventsController extends BaseController
     request.session.currentEvent = request.event
     response.redirect '/event/' + request.event.id
 
-  admin: (request, response) ->
+  admin: (request, response) ->  
     response.render 'events/admin',
       title: "Administer #{request.event.name}"
       event: request.event
+      numPasscodes: Object.keys(request.session.passcodes).length
 
   mail: (request, response) ->
-    Investor.find(event: request.event.id).populate("user").exec (err, investors) ->
-      Competitor.find(event: request.event.id).populate("user").exec (err, competitors) ->
-        recipients = investors.concat competitors
-        #todo....
-        request.flash 'notice', "Emailed X Recipients"
-        response.redirect '/events'
+    Competitor.find(event: request.event.id).populate("user").exec (err, competitors) ->
+      recipients = competitors
+      from = "justin j. moses"
+      fromEmail = "tilt.challenge@gmail.com"
+      msg = """
+      hey :fname:,
+
+
+      your tilt account has been created and you've been assigned a team!
+
+      please login via http://live.tiltnyc.net/login to see what's
+
+      use this email (:email:) as login as your passcode is:
+
+      *:password:*
+
+
+      thanks!
+      the tilt team"""
+      for recip in recipients
+        email = recip.user.email
+        if !request.session.passcodes[email]
+          console.log "no passcode for <#{email}>. skipped."
+          continue
+        fullname = if recip.user.fname and recip.user.fname then "\"#{recip.user.fname} #{recip.user.lname}\"" else "" 
+        password = request.session.passcodes[email]
+        body = msg.replace(":password:", password).replace(":fname:", recip.user.fname).replace(":lname:", recip.user.lname).replace(":email:", email)
+        MailHelpers.send [fullname,email], [fromEmail, from], "your TILT login", body, [fromEmail]
+        console.log "sending to #{fullname} <#{email}>"
+      request.flash 'notice', "Emailed #{recipients.length} Recipients"
+      response.redirect '/events'
 
   populate: (request, response) ->
     populater request.body.userlist, request.event, 4, (results) ->
       if typeof results is 'string'
         request.flash 'error', results
       else
+        console.log results.passcodes
+        request.session.passcodes = results.passcodes
         request.flash 'notice', "Populated"
       response.redirect '/events'
 

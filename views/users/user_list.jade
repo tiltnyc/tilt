@@ -5,7 +5,10 @@ tr(class="user")
     =aUser.email
   td.user_competing
     each competitor in aUser.competing_in
-      =competitor.event.name
+      if (competitor.event)
+        =competitor.event.name
+      else
+        |(deleted)
   td.user_investing
     each investor in aUser.investing_in
       =investor.event.name

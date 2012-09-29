@@ -5,6 +5,7 @@ bcrypt = require('bcrypt')
 
 module.exports = (userlist, event, usersInTeam, done) ->
   data = require '../data/us_cities'
+  passcodes = {}
 
   popRandomData = () ->
     i = Math.floor(Math.random() * data.length)
@@ -25,13 +26,20 @@ module.exports = (userlist, event, usersInTeam, done) ->
       [fname, lname, email, role, twitter] = row.split('\t')
       return next() unless email
       User.findOne(email: email.trim()).exec (err, user) ->
+        salt = bcrypt.genSaltSync(10)
+        passcode = popRandomData().city.replace(/\s+/g, "").toLowerCase() + Math.round(Math.random() * 100)
+        hash = bcrypt.hashSync(passcode, salt)
+        passcodes[email.trim()] = passcode
         if user
+          console.log "found user #{email}, updating"
           user.fname = fname.trim() if fname?.trim()
           user.lname = lname.trim() if lname?.trim()
           user.role = role.trim() if role?.trim()
           user.twitter = twitter.trim() if twitter?.trim()
+          user.salt = salt
+          user.hash = hash
         else
-          salt = bcrypt.genSaltSync(10)
+          console.log "creating user #{email}"
           user = new User
             fname: fname?.trim() ? ""
             lname: lname?.trim() ? ""
@@ -40,7 +48,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
             twitter: twitter?.trim() ? ""
             username: twitter?.trim() ? "#{fname}.#{lname}" 
             salt: salt
-            hash: bcrypt.hashSync("something", salt)
+            hash: hash
         user.save (err, u) ->
           usersByRole[u.role]?= []
           usersByRole[u.role].push(u)
@@ -86,7 +94,9 @@ module.exports = (userlist, event, usersInTeam, done) ->
 
       processTeams 0, () -> 
         Team.find(event: event.id).exec (err, teams) -> 
-          done teams
+          done 
+            teams: teams
+            passcodes: passcodes
 
   #teamNames = ["architects", "bently", "cyclops", "deltas", "extreme.", "feels like felt", "genesis", "hawking", "impromptu", "juniper", "kelvins", "luminous", "moscow", ""]
     

@@ -22,13 +22,10 @@ form(method="post", action="/event/#{event._id}/mail")
   p
     strong event 
     span= event.name
-  p
-    strong body
-    br
-    span.helper-text this will email all investors and competitors within the event. use 
-      strong :signin-link: 
-      |for link
-    br
-    textarea(name="email", id="email")
 
-  button submit
+  p
+    strong codes in memory: 
+    &nbsp
+    span= numPasscodes
+
+  button send out emails
