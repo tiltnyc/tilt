@@ -25,6 +25,7 @@ reset = (event, done) ->
                 movement: 0
                 last_price: 1.00
                 movement_percentage: 0
+                rank: 0
             , options, (err) ->
               return done err if err
               Round.update {event: event.id},
@@ -36,6 +37,8 @@ reset = (event, done) ->
                   factor: 1
                   investor_count: 0
                   average: 0
+                  vote_count: 0
+                  average_team_votes: 0
                 $unset:
                   standard_deviation: 1
               , options, (err) ->
