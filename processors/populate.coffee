@@ -19,13 +19,18 @@ module.exports = (userlist, event, usersInTeam, done) ->
     usersByRole = {}
     totalUsers = 0 
 
+    cleanStr = (str) -> if str and str.trim() then str.trim() else ""
     processUsers = (r, rowsDone) ->
       next = () -> processUsers r+1, rowsDone
       return rowsDone() if r >= rows.length
       row = rows[r]
       [fname, lname, email, role, twitter] = row.split('\t')
       return next() unless email
-      role = role.toLowerCase()
+      fname = cleanStr fname
+      lname = cleanStr lname 
+      email = email.trim()
+      role = cleanStr role
+      twitter = cleanStr twitter
       User.findOne(email: email.trim()).exec (err, user) ->
         salt = bcrypt.genSaltSync(10)
         passcode = popRandomData().city.replace(/\s+/g, "").toLowerCase() + Math.round(Math.random() * 100)
@@ -33,21 +38,22 @@ module.exports = (userlist, event, usersInTeam, done) ->
         passcodes[email.trim()] = passcode
         if user
           console.log "found user #{email}, updating"
-          user.fname = fname.trim() if fname?.trim()
-          user.lname = lname.trim() if lname?.trim()
-          user.role = role.trim() if role?.trim()
-          user.twitter = twitter.trim() if twitter?.trim()
+          user.fname = fname
+          user.lname = lname
+          user.role = role
+          user.twitter = twitter
+          user.username = if twitter.length then twitter else "#{fname}.#{lname}"  
           user.salt = salt
           user.hash = hash
         else
           console.log "creating user #{email}"
           user = new User
-            fname: fname?.trim() ? ""
-            lname: lname?.trim() ? ""
-            email: email?.trim() ? ""
-            role: role?.trim() ? ""
-            twitter: twitter?.trim() ? ""
-            username: twitter?.trim() ? "#{fname}.#{lname}" 
+            fname: fname
+            lname: lname
+            email: email
+            role: role
+            twitter: twitter
+            username: if twitter.length then twitter else "#{fname}.#{lname}"
             salt: salt
             hash: hash
         user.save (err, u) ->
