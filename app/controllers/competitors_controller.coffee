@@ -16,7 +16,7 @@ class CompetitorsController extends BaseController
     if request.user.is_admin then '/users' else '/competitor/dash'
 
   index: (request, response) ->
-    Competitor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, competitors) ->
+    Competitor.find(event: request.currentEvent.id).populate("user","fname lname username picture twitter company").populate("team").exec (err, competitors) ->
       throw err if err
       if request.params.format is 'json'
         response.contentType 'application/json'

@@ -1,7 +1,8 @@
 - var is_admin = (everyauth.loggedIn && everyauth.user.is_admin)
 
 div(class="investor")
-  img(src=aInvestor.user.picture, width=100)
+  a(href='/user/'+aInvestor.user.id+'/profile')
+    img(src=aInvestor.user.picture, width=100)
   div
     a(href='/user/'+aInvestor.user.id+'/profile') #{aInvestor.user.fname} #{aInvestor.user.lname}
     div #{aInvestor.user.company}
