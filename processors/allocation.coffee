@@ -1,8 +1,13 @@
 Investor = require "../models/investor"
 Transaction = require "../models/transaction"
 
-process = (event, round, amount, done) ->
-  stream = Investor.find({event: event.id}).stream()
+process = (event, round, amount, investor, done) ->
+  done = investor if investor instanceof Function
+  query = 
+    event: event.id
+  query._id = investor if typeof(investor) is 'string' and investor
+
+  stream = Investor.find(query).stream()
   number = round.number
   stream.on "data", (investor) ->
     stream.pause()

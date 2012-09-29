@@ -25,6 +25,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
       row = rows[r]
       [fname, lname, email, role, twitter] = row.split('\t')
       return next() unless email
+      role = role.toLowerCase()
       User.findOne(email: email.trim()).exec (err, user) ->
         salt = bcrypt.genSaltSync(10)
         passcode = popRandomData().city.replace(/\s+/g, "").toLowerCase() + Math.round(Math.random() * 100)

@@ -56,6 +56,8 @@ class UsersController extends BaseController
       label:'marketer'
     ,  
       label:'strategy'
+    ,
+      label:'other'
     ]
 
   edit: (request, response) ->

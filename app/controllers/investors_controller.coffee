@@ -15,7 +15,7 @@ class InvestorsController extends BaseController
     if request.user.is_admin then '/users' else '/investor/dash'
 
   index: (request, response) ->
-    Investor.find(event: request.currentEvent.id).populate("user").populate("team").exec (err, investors) ->
+    Investor.find(event: request.currentEvent.id).populate("user","fname lname username").populate("team").exec (err, investors) ->
       throw err if err
 
       if request.params.format is 'json'
