@@ -107,7 +107,7 @@ class EventsController extends BaseController
         fullname = if recip.user.fname and recip.user.fname then "\"#{recip.user.fname} #{recip.user.lname}\"" else "" 
         password = request.session.passcodes[email]
         body = msg.replace(":password:", password).replace(":fname:", recip.user.fname).replace(":lname:", recip.user.lname).replace(":email:", email)
-        MailHelpers.send [fullname,email], [fromEmail, from], "your TILT login", body, [fromEmail]
+        MailHelpers.send [email, fullname], [fromEmail, from], "your TILT login", body, [fromEmail]
         console.log "sending to #{fullname} <#{email}>"
       request.flash 'notice', "Emailed #{recipients.length} Recipients"
       response.redirect '/events'
