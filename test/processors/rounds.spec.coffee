@@ -216,12 +216,12 @@ describe "Round Process", ->
     it "must calculate votes for round 1", (done) ->
       goVoteRoundOne () ->         
         Rounds.process round1, (err) ->
-          checkVoteResult teamA, round1, 3, 14, 0.7, 0.1, () ->
-            checkVoteResult teamB, round1, 2, 15, 0.75, 0.15, () ->
-              checkVoteResult teamC, round1, 5, 8, 0.4, -0.2, () ->
-                checkVoteResult teamD, round1, 4, 11, 0.55, -0.05, () ->
-                  checkVoteResult teamE, round1, 1, 16, 0.8, 0.2, () ->
-                    checkVoteResult teamF, round1, 5, 8, 0.4, -0.2, () ->
+          checkVoteResult teamA, round1, 3, 14, 0.583, 0.083, () ->
+            checkVoteResult teamB, round1, 2, 15, 0.625, 0.125, () ->
+              checkVoteResult teamC, round1, 5, 8, 0.333, -0.167, () ->
+                checkVoteResult teamD, round1, 4, 11, 0.458, -0.042, () ->
+                  checkVoteResult teamE, round1, 1, 16, 0.667, 0.167, () ->
+                    checkVoteResult teamF, round1, 5, 8, 0.333, -0.167, () ->
                       Round.findById(round1.id).exec (err, round) ->
                         throw err if err
                         round.vote_count.should.eql 72

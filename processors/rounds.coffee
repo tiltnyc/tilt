@@ -110,7 +110,7 @@ process = (round, done) ->
 
           #process votes
           Vote.find(round: round.id).distinct "competitor", (err, voters) ->
-            bestVoteScore = Math.max(voters.length, 1)
+            bestVoteScore = Math.max(voters.length, 1) #note: this includes competitors voting for own teams :(
             Vote.find(round: round.id).populate("competitor").populate("team").exec (err, votes) ->
               return done err if err
               votes.forEach (vote) ->
