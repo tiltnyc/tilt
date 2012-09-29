@@ -83,9 +83,10 @@ class RoundsController extends BaseController
       response.redirect redirect      
 
   allocate: (request, response) ->
-    Allocation.process request.currentEvent, request.round, new Number(request.body.allocate.amount), (err) ->
+    Allocation.process request.currentEvent, request.round, new Number(request.body.allocate.amount), request.body.allocate.investor, (err) ->
       throw err if err
-      request.flash 'notice', 'Allocated funds to all users for round ' + request.round.number.toString() + '.'
+      msg = if request.body.allocate.investor then 'Allocated funds to one investor' else 'Allocated funds to all investors'
+      request.flash 'notice', "#{msg} in round #{request.round.number.toString()}."
       response.redirect redirect
 
   reset: (request, response) ->

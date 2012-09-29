@@ -10,6 +10,9 @@ li.round(class=klazz)
         hr
         form(method="post", action="/round/" + round.number + "/allocate")
           input(type="text", name="allocate[amount]") 
+          &nbsp
+          select(name="allocate[investor]", id="allocate[investor]")
+          &nbsp
           button allocate  
         hr 
         form(method="post", action="/round/" + round.number)

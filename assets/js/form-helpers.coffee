@@ -80,3 +80,4 @@ $ ->
   loadListFor "investment", "investor", ["user","username"]
   loadListFor "allocate", "user", "username"    
   loadListFor "user", "role", "label"
+  loadListFor "allocate", "investor", ["user", "username"]
