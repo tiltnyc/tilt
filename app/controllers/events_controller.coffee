@@ -77,7 +77,7 @@ class EventsController extends BaseController
     response.render 'events/admin',
       title: "Administer #{request.event.name}"
       event: request.event
-      numPasscodes: Object.keys(request.session.passcodes).length
+      numPasscodes: Object.keys(request.session.passcodes ? {}).length
 
   mail: (request, response) ->
     Competitor.find(event: request.event.id).populate("user").exec (err, competitors) ->
