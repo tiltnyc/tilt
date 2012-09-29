@@ -109,50 +109,51 @@ process = (round, done) ->
           factor = if round.is_first or Number(firstRound.total_funds) is 0 then 1 else total / firstRound.total_funds
 
           #process votes
-          Vote.find(round: round.id).populate("competitor").populate("team").exec (err, votes) ->
-            return done err if err
-            bestVoteScore = (teamCount - 1) * competitorsPerTeam #JM: this is rough - not always 4 team members
-            votes.forEach (vote) ->
-              results[vote.team.id].votes++
-              totalVotes++
-              voterList.push vote.competitor.id unless voterList.indexOf(vote.competitor.id) >= 0
-
-            averageVotes = totalVotes / teamCount
-            averageVotePercent = averageVotes / bestVoteScore
-
-            for key, r of results
-              r.votePercent = r.votes / bestVoteScore
-              r.voteMovement = r.votePercent - averageVotePercent
-
-            saveResults results, 0, (err) ->
+          Vote.find(round: round.id).distinct "competitor", (err, voters) ->
+            bestVoteScore = Math.max(voters.length, 1) #note: this includes competitors voting for own teams :(
+            Vote.find(round: round.id).populate("competitor").populate("team").exec (err, votes) ->
               return done err if err
+              votes.forEach (vote) ->
+                results[vote.team.id].votes++
+                totalVotes++
+                voterList.push vote.competitor.id unless voterList.indexOf(vote.competitor.id) >= 0
 
-              #set ranks
-              Team.find(event: round.event, out_since: 0).sort("last_price", "descending").exec (err, teams) ->
+              averageVotes = totalVotes / teamCount
+              averageVotePercent = averageVotes / bestVoteScore
+
+              for key, r of results
+                r.votePercent = r.votes / bestVoteScore
+                r.voteMovement = r.votePercent - averageVotePercent
+
+              saveResults results, 0, (err) ->
                 return done err if err
-                lastScore = 0
-                rank = 1
-                updateRank = (i, complete) ->
-                  return complete() if i >= teams.length
-                  team = teams[i]
-                  rank++ if team.last_price < lastScore 
-                  team.rank = rank 
-                  lastScore = team.last_price
-                  team.save (err) -> updateRank i+1, complete
-                updateRank 0, () ->
-                  round.standard_deviation = cumulativeDistanceFromAverage / teamCount
-                  round.total_funds = total
-                  round.investor_count = investerList.length
-                  round.average = averagePercentage
-                  round.factor = factor
-                  round.vote_count = totalVotes
-                  round.average_team_votes = averageVotes 
-                  round.is_open = false
-                  round.save (err) ->
-                    return done err if err
-                    rewardUsersForInvestments investments, 0, (err) ->
+
+                #set ranks
+                Team.find(event: round.event, out_since: 0).sort("last_price", "descending").exec (err, teams) ->
+                  return done err if err
+                  lastScore = 0
+                  rank = 1
+                  updateRank = (i, complete) ->
+                    return complete() if i >= teams.length
+                    team = teams[i]
+                    rank++ if team.last_price < lastScore 
+                    team.rank = rank 
+                    lastScore = team.last_price
+                    team.save (err) -> updateRank i+1, complete
+                  updateRank 0, () ->
+                    round.standard_deviation = cumulativeDistanceFromAverage / teamCount
+                    round.total_funds = total
+                    round.investor_count = investerList.length
+                    round.average = averagePercentage
+                    round.factor = factor
+                    round.vote_count = totalVotes
+                    round.average_team_votes = averageVotes 
+                    round.is_open = false
+                    round.save (err) ->
                       return done err if err
-                      done()
+                      rewardUsersForInvestments investments, 0, (err) ->
+                        return done err if err
+                        done()
 
 module.exports =
   process: process
