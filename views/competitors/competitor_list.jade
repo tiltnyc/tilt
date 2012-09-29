@@ -9,9 +9,6 @@ div
     if (aCompetitor.team)
       div 
         a(href='/team/'+aCompetitor.team.id, title=aCompetitor.team.name) #{aCompetitor.team.name}
-    if (aCompetitor.user.twitter)
-      a(href="https://twitter.com/"+aCompetitor.user.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{aCompetitor.user.twitter}
-
     if (is_admin)
       br 
       br
