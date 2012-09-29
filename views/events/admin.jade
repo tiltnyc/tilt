@@ -1,3 +1,5 @@
+h2 populate
+
 form(method="post", action="/event/#{event._id}/populate")
   
   p
@@ -11,3 +13,19 @@ form(method="post", action="/event/#{event._id}/populate")
     textarea(name="userlist", id="userlist")
 
   button submit
+
+h4
+
+h2 email
+
+form(method="post", action="/event/#{event._id}/mail")
+  p
+    strong event 
+    span= event.name
+
+  p
+    strong codes in memory: 
+    &nbsp
+    span= numPasscodes
+
+  button send out emails

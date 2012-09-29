@@ -60,9 +60,9 @@ describe "Event Population", () ->
   it "must do something", (done) ->
     @timeout(5000)
     populator userlist, event, 4, (results) ->
-      results.length.should.eql 4
-      results[0].competitors.length.should.eql 4
-      results[1].competitors.length.should.eql 4
-      results[2].competitors.length.should.eql 4
-      results[3].competitors.length.should.eql 1
+      results.teams.length.should.eql 4
+      results.teams[0].competitors.length.should.eql 4
+      results.teams[1].competitors.length.should.eql 4
+      results.teams[2].competitors.length.should.eql 4
+      results.teams[3].competitors.length.should.eql 1
       done()
