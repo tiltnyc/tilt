@@ -9,7 +9,7 @@ class TeamsController extends BaseController
 
   setParam: (request, response, next, id) ->
     Team.findById(id).populate('competitors').exec (err, team) ->
-      UserHelpers.populate team.competitors, () ->
+      UserHelpers.populate (if team then team.competitors else []) , () ->
         return next(err)  if err
         return next(new Error('Failed loading team ' + id)) unless team
         request.team = team
