@@ -10,8 +10,8 @@ exports.loadCurrentEvent = (req, res, next) ->
     next()
 
   return setCurrentEvent(req.session.currentEvent) if req.session.currentEvent
-
-  Event.find({date:{$gte: new Date(new Date().setHours(0,0,0,0))}}).sort("date","ascending").limit(1).exec (err, events) ->
+  Event.find().sort("date", "descending").limit(1).exec (err, events) ->
+  #Event.find({date:{$gte: new Date(new Date().setHours(0,0,0,0))}}).sort("date","ascending").limit(1).exec (err, events) ->
     throw err if err
     setCurrentEvent(events[0])
 
