@@ -15,12 +15,12 @@ li
     
     br
     if (event.teams)
-      if (event.date > new Date())
+      if (event.date >= new Date())
         |leading team: &nbsp
       else
         |winning team: &nbsp
 
-      if (event.teams.length && event.teams.rank)
+      if (event.teams.length && event.teams[0].rank)
         strong= event.teams[0].name
       else
         |?
