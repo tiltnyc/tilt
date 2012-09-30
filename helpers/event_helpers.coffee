@@ -3,9 +3,10 @@ Team = require "../models/team"
 
 exports.loadCurrentEvent = (req, res, next) ->
   setCurrentEvent = (evt) ->
-    evt.id = evt._id if !evt.id
-    req.currentEvent = evt
-    res.local('currentEvent', evt)
+    if evt
+      evt.id = evt._id if !evt.id
+      req.currentEvent = evt
+      res.local('currentEvent', evt)
     next()
 
   return setCurrentEvent(req.session.currentEvent) if req.session.currentEvent
