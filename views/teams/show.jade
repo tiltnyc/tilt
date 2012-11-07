@@ -10,7 +10,7 @@ h2 Team details
   span.tagline #{team.tagline}
   if (team.twitter)
       a(href="https://twitter.com/"+team.twitter, class="twitter-follow-button",data-show-count="false") Follow &#64;#{team.twitter}
-  div.desc= team.desc
+  div.desc!= team.desc
 
 if (typeof(currentCompetitor) != 'undefined' && currentCompetitor.team._id.toString() == team._id.toString())
   a(href='/team/'+team._id+'/edit', title="edit") Edit Your Team
