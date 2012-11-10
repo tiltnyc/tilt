@@ -1,28 +1,28 @@
-Allocation        = require '../processors/allocation'
-AuthHelpers       = require '../helpers/auth_helpers'
-Investment        = require '../models/investment'
-EventsController  = require '../app/controllers/events_controller'
-InvestorsController  = require '../app/controllers/investors_controller'
-TeamsController   = require '../app/controllers/teams_controller'
-RoundsController  = require '../app/controllers/rounds_controller'
-ResultsController = require '../app/controllers/results_controller'
+Allocation            = require '../processors/allocation'
+AuthHelpers           = require '../helpers/auth_helpers'
+Investment            = require '../models/investment'
+EventsController      = require '../app/controllers/events_controller'
+InvestorsController   = require '../app/controllers/investors_controller'
+TeamsController       = require '../app/controllers/teams_controller'
+RoundsController      = require '../app/controllers/rounds_controller'
+ResultsController     = require '../app/controllers/results_controller'
 InvestmentsController = require '../app/controllers/investments_controller'
 CompetitorsController = require '../app/controllers/competitors_controller'
-HomeController    = require '../app/controllers/home_controller'
-VotesController    = require '../app/controllers/votes_controller'
-Process           = require '../processors/investments'
-Result            = require '../models/result'
-Round             = require '../models/round'
-RoundHelpers      = require '../helpers/round_helpers'
-EventHelpers      = require '../helpers/event_helpers'
-SystemHelpers     = require '../helpers/system_helpers'
-UploadHelpers     = require '../helpers/upload_helpers'
-CompetitorHelpers = require '../helpers/competitor_helpers'
-InvestorHelpers   = require '../helpers/investor_helpers'
-TeamHelpers       = require '../helpers/team_helpers'
-Transaction       = require '../models/transaction'
-UsersController   = require '../app/controllers/users_controller'
-UserHelpers       = require '../helpers/user_helpers'
+HomeController        = require '../app/controllers/home_controller'
+VotesController       = require '../app/controllers/votes_controller'
+Process               = require '../processors/investments'
+Result                = require '../models/result'
+Round                 = require '../models/round'
+RoundHelpers          = require '../helpers/round_helpers'
+EventHelpers          = require '../helpers/event_helpers'
+SystemHelpers         = require '../helpers/system_helpers'
+UploadHelpers         = require '../helpers/upload_helpers'
+CompetitorHelpers     = require '../helpers/competitor_helpers'
+InvestorHelpers       = require '../helpers/investor_helpers'
+TeamHelpers           = require '../helpers/team_helpers'
+Transaction           = require '../models/transaction'
+UsersController       = require '../app/controllers/users_controller'
+UserHelpers           = require '../helpers/user_helpers'
 
 
 module.exports = (app) ->
@@ -67,7 +67,7 @@ module.exports = (app) ->
     path: '/event/:event_id.:format?'
     action: 'show'
   ,
-    path: '/event/:event_id/load'
+    path: '/event/:vent_id/load'
   ,
     path: '/event/:event_id/edit'
     middleware: AuthHelpers.restricted
@@ -75,7 +75,7 @@ module.exports = (app) ->
     path: '/events/:event_id'
     method: 'put'
     action: 'update'
-    middleware: [AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("events"), UploadHelpers.uploader]
+    middleware: [ AuthHelpers.restricted, UploadHelpers.uniquifyObjectNames("events"), UploadHelpers.uploader ]
   ,
     path: '/event/:event_id'
     method: 'del'
@@ -92,13 +92,13 @@ module.exports = (app) ->
     path: '/event/:event_id/mail'
     middleware: AuthHelpers.restricted
     method: 'post'
-  ]   
+  ]
 
 
   mapToController UsersController,
   [
     path: '/user/profile'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
+    middleware: [ AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound ]
   ,
     path: '/user/:id/profile'
   ,
@@ -273,10 +273,10 @@ module.exports = (app) ->
   mapToController InvestmentsController, 
   [
     path: '/investment/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, InvestorHelpers.isInvestor] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, InvestorHelpers.isInvestor]
   ,
     path: '/investments.:format?'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound]
     method: 'post'  
     action: 'create'
   ]
@@ -284,10 +284,10 @@ module.exports = (app) ->
   mapToController VotesController, 
   [
     path: '/vote/new'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor]
   ,
     path: '/votes.:format?'
-    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor] 
+    middleware: [AuthHelpers.loggedIn, RoundHelpers.loadCurrentRound, CompetitorHelpers.isCompetitor, CompetitorHelpers.loadCompetitor]
     method: 'post'  
     action: 'create'
   ]

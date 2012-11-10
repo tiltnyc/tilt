@@ -1,6 +1,8 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
 
-Investment = new Schema(
+{ mongoose, Schema, ObjectId } = require './db_connect'
+
+Investment = new Schema
   percentage:
     type: Number
     required: true
@@ -30,5 +32,7 @@ Investment = new Schema(
   updated_at:
     type: Date
     default: Date.now
-)
-exports = module.exports = mongoose.model("Investment", Investment)
+
+Investment = timestamps(Investment)
+
+exports = module.exports = mongoose.model('Investment', Investment)

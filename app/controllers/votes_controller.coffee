@@ -48,7 +48,7 @@ class VotesController extends BaseController
             throw err if err
             votes.push v
             processVote i+1, done
-            console.log "here", i  
+            #console.log "here", i  
 
         processVote 0, () ->
           if request.params.format is 'json'

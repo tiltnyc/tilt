@@ -24,7 +24,7 @@ exports.resizeImages = (width = 100) ->
         width:   width
       , (err, stdout, stderr) ->
         if err
-          console.log err
+          #console.log err
           return next err
         file.path += suffix
         fs.stat file.path, (err, stat) ->

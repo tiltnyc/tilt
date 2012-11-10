@@ -1,7 +1,9 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
 
-Investor = require("./investor")
-Round = require("./round")
+Investor   = require './investor'
+Round      = require './round'
+
+{ mongoose, Schema, ObjectId } = require './db_connect'
 
 Transaction = new Schema
   amount:
@@ -10,31 +12,25 @@ Transaction = new Schema
 
   investor:
     type: ObjectId
-    ref: "Investor"
+    ref: 'Investor'
     required: true
 
   event:
     type: ObjectId
-    ref: "Event"
-    required: true 
+    ref: 'Event'
+    required: true
 
   round:
     type: ObjectId
-    ref: "Round"
+    ref: 'Round'
     required: true
 
   label:
     type: String
 
-  created_at:
-    type: Date
-    default: Date.now
+Transaction = timestamps(Transaction)
 
-  updated_at:
-    type: Date
-    default: Date.now
-
-Transaction.pre "save", (next) ->
+Transaction.pre 'save', (next) ->
   transaction = @
   Round.findById(transaction.round).exec (err, round) ->
     return next(err) if err
@@ -45,4 +41,4 @@ Transaction.pre "save", (next) ->
         return next err if err
         next()
 
-exports = module.exports = mongoose.model("Transaction", Transaction)
+exports = module.exports = mongoose.model('Transaction', Transaction)

@@ -1,30 +1,23 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
 
-mongooseAuth = require("mongoose-auth")
+{ mongoose, Schema, ObjectId } = require './db_connect'
 
-Investor = new Schema(
+Investor = new Schema
   user:
     type: ObjectId
-    ref: "User"
+    ref: 'User'
     required: true
 
   event:
     type: ObjectId 
-    ref:  "Event"
+    ref:  'Event'
     required: true
 
   funds:
     type: [ Number ]
     default: []
 
-  created_at:
-    type: Date
-    default: Date.now
-
-  updated_at:
-    type: Date
-    default: Date.now
-)
+Investor = timestamps(Investor)
 
 Investor.methods.getFundsForRoundNbr = (roundNbr) ->
   @funds[roundNbr - 1] ? 0
@@ -37,4 +30,4 @@ Investor.methods.addFundsForRoundNbr = (roundNbr, funds) ->
   _funds[i] += funds
   @funds = _funds
 
-exports = module.exports = mongoose.model("Investor", Investor)
+exports = module.exports = mongoose.model('Investor', Investor)

@@ -1,7 +1,10 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+Sluggize   = require '../lib/sluggable'
+timestamps = require '../lib/timestamps'
+
+{ mongoose, Schema, ObjectId } = require './db_connect'
 
 Event = new Schema
-  name: 
+  name:
     type: String
     required: true
 
@@ -12,17 +15,12 @@ Event = new Schema
     type: String
 
   theme:
-    type: String 
-      
-  picture: 
     type: String
 
-  created_at:
-    type: Date
-    default: Date.now
+  picture:
+    type: String
 
-  updated_at:
-    type: Date
-    default: Date.now
+Event = timestamps(Event)
+Event = Sluggize.sluggable(Event, 'name')
 
-exports = module.exports = mongoose.model("Event", Event)
+module.exports = Sluggize.findable(mongoose.model('Event', Event))

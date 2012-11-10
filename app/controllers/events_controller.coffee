@@ -1,11 +1,11 @@
 BaseController = require './base_controller'
 Event          = require '../../models/event'
 UploadHelpers  = require '../../helpers/upload_helpers'
-EventHelpers  = require '../../helpers/event_helpers'
-Investor      = require '../../models/investor'
-Competitor   = require '../../models/competitor'
-MailHelpers  = require '../../helpers/mail_helpers'
-populater = require '../../processors/populate'
+EventHelpers   = require '../../helpers/event_helpers'
+Investor       = require '../../models/investor'
+Competitor     = require '../../models/competitor'
+MailHelpers    = require '../../helpers/mail_helpers'
+populater      = require '../../processors/populate'
 
 class EventsController extends BaseController
 
@@ -102,13 +102,13 @@ class EventsController extends BaseController
       for recip in recipients
         email = recip.user.email
         if !request.session.passcodes[email]
-          console.log "no passcode for <#{email}>. skipped."
+          #console.log "no passcode for <#{email}>. skipped."
           continue
         fullname = if recip.user.fname and recip.user.fname then "\"#{recip.user.fname} #{recip.user.lname}\"" else "" 
         password = request.session.passcodes[email]
         body = msg.replace(":password:", password).replace(":fname:", recip.user.fname).replace(":lname:", recip.user.lname).replace(":email:", email)
         MailHelpers.send [email, fullname], [fromEmail, from], "your TILT login", body, [fromEmail]
-        console.log "sending to #{fullname} <#{email}>"
+        #console.log "sending to #{fullname} <#{email}>"
       request.flash 'notice', "Emailed #{recipients.length} Recipients"
       response.redirect '/events'
 
@@ -117,7 +117,7 @@ class EventsController extends BaseController
       if typeof results is 'string'
         request.flash 'error', results
       else
-        console.log results.passcodes
+        #console.log results.passcodes
         request.session.passcodes = results.passcodes
         request.flash 'notice', "Populated"
       response.redirect '/events'

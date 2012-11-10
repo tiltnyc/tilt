@@ -1,15 +1,17 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
 
-Round = new Schema(
+{ mongoose, Schema, ObjectId } = require './db_connect'
+
+Round = new Schema
   number:
     type: Number
     required: true
 
   event:
-    type: ObjectId 
-    ref:  "Event"
-    required: true 
-    
+    type: ObjectId
+    ref:  'Event'
+    required: true
+
   is_current:
     type: Boolean
     default: false
@@ -40,7 +42,7 @@ Round = new Schema(
   average_team_votes:
     type: Number
     default: 0
-    
+
   factor:
     type: Number
     default: 1
@@ -49,19 +51,12 @@ Round = new Schema(
     type: Number
     default: 0
 
-  created_at:
-    type: Date
-    default: Date.now
+Round = timestamps(Round)
 
-  updated_at:
-    type: Date
-    default: Date.now
-)
-
-Round.virtual("processed").get ->
+Round.virtual('processed').get ->
   @standard_deviation?
 
-Round.virtual("is_first").get ->
+Round.virtual('is_first').get ->
   Number(@number) is 1
 
-exports = module.exports = mongoose.model("Round", Round)
+exports = module.exports = mongoose.model('Round', Round)

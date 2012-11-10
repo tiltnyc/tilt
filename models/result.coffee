@@ -1,19 +1,21 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
 
-Result = new Schema(
+{ mongoose, Schema, ObjectId } = require './db_connect'
+
+Result = new Schema
   team:
     type: ObjectId
-    ref: "Team"
+    ref: 'Team'
     required: true
 
   event:
-    type: ObjectId 
-    ref:  "Event"
-    required: true 
-    
+    type: ObjectId
+    ref:  'Event'
+    required: true
+
   round:
     type: ObjectId
-    ref: "Round"
+    ref: 'Round'
     required: true
 
   before_price:
@@ -48,12 +50,6 @@ Result = new Schema(
     type: Number
     required: true
 
-  created_at:
-    type: Date
-    default: Date.now
+Result = timestamps(Result)
 
-  updated_at:
-    type: Date
-    default: Date.now
-)
-exports = module.exports = mongoose.model("Result", Result)
+exports = module.exports = mongoose.model('Result', Result)

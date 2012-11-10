@@ -19,4 +19,4 @@ exports.send = (to, from, subject, body, bcc = []) ->
     text: body
     bcc: bcc
   , (success, msg) ->
-    console.log msg if !success  
+    #console.log msg if !success  

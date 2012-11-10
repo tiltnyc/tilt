@@ -1,37 +1,30 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
+Team       = require './team'
 
-mongooseAuth = require("mongoose-auth")
+{ mongoose, Schema, ObjectId } = require('./db_connect')
 
-Competitor = new Schema(
+Competitor = new Schema
   user:
     type: ObjectId
-    ref: "User"
+    ref: 'User'
     required: true
 
   event:
-    type: ObjectId 
-    ref:  "Event"
+    type: ObjectId
+    ref:  'Event'
     required: true
-  
+
   team:
     type: ObjectId
-    ref: "Team"
+    ref: 'Team'
 
-  created_at:
-    type: Date
-    default: Date.now
-
-  updated_at:
-    type: Date
-    default: Date.now
-)
+Competitor = timestamps(Competitor)
 
 Competitor.methods.addToTeam = (team) ->
   @oldTeam = @team
   @team = team
 
-Team = require("./team")
-Competitor.pre "save", (next) ->
+Competitor.pre 'save', (next) ->
   leaveTeam = (competitor, callback) ->
     return callback() unless competitor.oldTeam
     Team.findById competitor.oldTeam, (err, team) ->
@@ -55,4 +48,4 @@ Competitor.pre "save", (next) ->
     if err then next err
     else joinTeam competitor, (err) -> next(err ? null)
 
-exports = module.exports = mongoose.model("Competitor", Competitor)
+exports = module.exports = mongoose.model('Competitor', Competitor)

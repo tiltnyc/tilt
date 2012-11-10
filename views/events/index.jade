@@ -8,6 +8,6 @@ ul.no-bullets.items#events
     != partial('_event_list', {collection: events, as: 'event'})
   else
     #no-results No events found. 
-  
+
   if (is_admin)
     a(href='/events/new') Create one here.

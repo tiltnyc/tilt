@@ -1,17 +1,20 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
+
+{ mongoose, Schema, ObjectId } = require './db_connect'
+
 Team = new Schema
   name:
     type: String
     required: true
 
-  event: 
+  event:
     type: ObjectId
-    ref: "Event"
+    ref: 'Event'
     required: true
-       
+
   competitors: [
     type: ObjectId
-    ref: "Competitor"
+    ref: 'Competitor'
   ]
 
   out_since:
@@ -23,22 +26,22 @@ Team = new Schema
 
   desc:
     type: String
-  
+
   twitter:
     type: String
-    
-  picture: 
+
+  picture:
     type: String
-    default: "https://s3.amazonaws.com/tiltnyc/teams/generic-team.jpg"
-    
+    default: 'https://s3.amazonaws.com/tiltnyc/teams/generic-team.jpg'
+
   last_price:
     type: Number
     default: 1.00
 
-  rank: 
+  rank:
     type: Number
     default: 0
-    
+
   movement:
     type: Number
     default: 0
@@ -47,14 +50,8 @@ Team = new Schema
     type: Number
     default: 0
 
-  created_at:
-    type: Date
-    default: Date.now
+Team = timestamps(Team)
 
-  updated_at:
-    type: Date
-    default: Date.now
+Team.virtual('is_out').get -> @out_since > 0
 
-Team.virtual("is_out").get -> @out_since > 0
-
-exports = module.exports = mongoose.model("Team", Team)
+exports = module.exports = mongoose.model('Team', Team)

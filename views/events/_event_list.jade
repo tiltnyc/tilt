@@ -12,7 +12,7 @@ li
     br
     br
     strong= event.theme
-    
+
     br
     if (event.teams)
       if (event.date >= new Date())
@@ -24,7 +24,7 @@ li
         strong= event.teams[0].name
       else
         |?
-    
+
     br
     a(href="/event/#{event._id}/load", title="load") Load Event 
 

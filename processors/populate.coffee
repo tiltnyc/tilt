@@ -38,7 +38,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
           hash = bcrypt.hashSync(passcode, salt)
           passcodes[email.trim()] = passcode
           if user
-            console.log "found user #{email}, updating"
+            #console.log "found user #{email}, updating"
             user.fname = fname
             user.lname = lname
             user.role = role
@@ -47,7 +47,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
             user.salt = salt
             user.hash = hash
           else
-            console.log "creating user #{email}"
+            #console.log "creating user #{email}"
             user = new User
               fname: fname
               lname: lname
@@ -84,7 +84,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
             event: event.id
             name: popRandomData().city
           team.save (err, team) ->
-            console.log "created team: " + team.name if usersInTeam > 1
+            #console.log "created team: " + team.name if usersInTeam > 1
             processCompetitor = (c, competitorDone) ->
               return competitorDone() if c >= usersInTeam
               user = popUser() 
@@ -95,7 +95,7 @@ module.exports = (userlist, event, usersInTeam, done) ->
                 team: team.id
               competitor.save (err, competitor) ->
                 processCompetitor c+1, competitorDone
-                console.log "added competitor #{user.email} to #{team.name}" if usersInTeam > 1
+                #console.log "added competitor #{user.email} to #{team.name}" if usersInTeam > 1
             processCompetitor 0, () ->
               processTeams i+1, teamsDone  
               

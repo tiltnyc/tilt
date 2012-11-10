@@ -28,7 +28,7 @@ class CompetitorsController extends BaseController
 
   show: (request, response) ->
     Vote.find(competitor: request.competitor.id).populate("team").populate("round").sort("round.number","ascending").exec (err, votes) ->
-      console.log votes
+      #console.log votes
       response.render 'competitors/dash',
         title: 'Competitor Dashboard'
         competitor: request.competitor
@@ -48,7 +48,7 @@ class CompetitorsController extends BaseController
   create: (request, response) ->
     uid = if request.user.is_admin and request.body.theUser then request.body.theUser.id else request.user.id
     User.findById(uid).exec (err, user) =>
-      console.log err if err
+      #console.log err if err
       user.joinAsCompetitor request.currentEvent, (err) =>
         return @error(request, response, "cannot join event.", redirect(request)) if err 
         request.flash 'notice', 'Joined the event.'

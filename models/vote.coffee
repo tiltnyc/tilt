@@ -1,23 +1,28 @@
-{mongoose, Schema, ObjectId} = require("./db_connect")
+timestamps = require '../lib/timestamps'
+
+{ mongoose, Schema, ObjectId } = require './db_connect'
+
 Vote = new Schema
   competitor:
     type: ObjectId
-    ref: "Competitor"
+    ref: 'Competitor'
     required: true
 
   team:
     type: ObjectId
-    ref: "Team"
+    ref: 'Team'
     required: true
 
   round:
     type: ObjectId
-    ref: "Round"
+    ref: 'Round'
     required: true
 
   event:
-    type: ObjectId 
-    ref:  "Event"
+    type: ObjectId
+    ref:  'Event'
     required: true
 
-exports = module.exports = mongoose.model("Vote", Vote)
+Vote = timestamps(Vote)
+
+exports = module.exports = mongoose.model('Vote', Vote)
