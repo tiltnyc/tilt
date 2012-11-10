@@ -1,7 +1,7 @@
 slug = require 'slug'
 
 module.exports =
-  sluggable: (schema, field) ->
+  sluggable: ( schema, field ) ->
 
     schema.add({ _slug: { type: String } })
 
@@ -18,10 +18,13 @@ module.exports =
     model.__findById = model.findById
 
     model.findById = (idOrSlug, next) ->
-      model.findBySlug idOrSlug, (error, doc) ->
-        if doc
-          next(error, doc)
-        else
-          model.__findById idOrSlug, next
+      if typeof idOrSlug == 'string'
+        model.findBySlug idOrSlug, (error, doc) ->
+          if doc
+            next(error, doc)
+          else
+            model.__findById idOrSlug, next
+      else
+        model.__findById idOrSlug, next
 
     model
