@@ -1,5 +1,5 @@
 Sluggize   = require '../lib/sluggable'
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -20,7 +20,7 @@ Event = new Schema
   picture:
     type: String
 
-Event = timestamps(Event)
+Event = addTimestamps(Event)
 Event = Sluggize.sluggable(Event, 'name')
 
 module.exports = Sluggize.findable(mongoose.model('Event', Event))

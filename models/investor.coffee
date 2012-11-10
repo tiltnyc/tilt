@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -17,7 +17,7 @@ Investor = new Schema
     type: [ Number ]
     default: []
 
-Investor = timestamps(Investor)
+Investor = addTimestamps(Investor)
 
 Investor.methods.getFundsForRoundNbr = (roundNbr) ->
   @funds[roundNbr - 1] ? 0

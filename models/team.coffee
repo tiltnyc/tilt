@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -50,7 +50,7 @@ Team = new Schema
     type: Number
     default: 0
 
-Team = timestamps(Team)
+Team = addTimestamps(Team)
 
 Team.virtual('is_out').get -> @out_since > 0
 

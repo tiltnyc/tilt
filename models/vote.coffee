@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -23,6 +23,6 @@ Vote = new Schema
     ref:  'Event'
     required: true
 
-Vote = timestamps(Vote)
+Vote = addTimestamps(Vote)
 
 exports = module.exports = mongoose.model('Vote', Vote)

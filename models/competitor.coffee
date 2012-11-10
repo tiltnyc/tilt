@@ -1,5 +1,5 @@
-timestamps = require '../lib/timestamps'
-Team       = require './team'
+addTimestamps = require '../lib/timestamps'
+Team          = require './team'
 
 { mongoose, Schema, ObjectId } = require('./db_connect')
 
@@ -18,7 +18,7 @@ Competitor = new Schema
     type: ObjectId
     ref: 'Team'
 
-Competitor = timestamps(Competitor)
+Competitor = addTimestamps(Competitor)
 
 Competitor.methods.addToTeam = (team) ->
   @oldTeam = @team

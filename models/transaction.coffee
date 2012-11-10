@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 Investor   = require './investor'
 Round      = require './round'
@@ -28,7 +28,7 @@ Transaction = new Schema
   label:
     type: String
 
-Transaction = timestamps(Transaction)
+Transaction = addTimestamps(Transaction)
 
 Transaction.pre 'save', (next) ->
   transaction = @

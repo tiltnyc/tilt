@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -33,6 +33,6 @@ Investment = new Schema
     type: Date
     default: Date.now
 
-Investment = timestamps(Investment)
+Investment = addTimestamps(Investment)
 
 exports = module.exports = mongoose.model('Investment', Investment)

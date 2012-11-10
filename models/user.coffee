@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -42,7 +42,7 @@ UserSchema = new Schema
     type: Boolean
     default: false
 
-UserSchema = timestamps(UserSchema)
+UserSchema = addTimestamps(UserSchema)
 
 UserSchema.methods.joinAsCompetitor = (event, done) ->
   Competitor.findOne(event: event.id, user: @id).exec (err, comp) =>

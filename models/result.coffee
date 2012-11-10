@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -50,6 +50,6 @@ Result = new Schema
     type: Number
     required: true
 
-Result = timestamps(Result)
+Result = addTimestamps(Result)
 
 exports = module.exports = mongoose.model('Result', Result)

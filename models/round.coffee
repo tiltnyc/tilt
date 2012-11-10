@@ -1,4 +1,4 @@
-timestamps = require '../lib/timestamps'
+addTimestamps = require '../lib/timestamps'
 
 { mongoose, Schema, ObjectId } = require './db_connect'
 
@@ -51,7 +51,7 @@ Round = new Schema
     type: Number
     default: 0
 
-Round = timestamps(Round)
+Round = addTimestamps(Round)
 
 Round.virtual('processed').get ->
   @standard_deviation?
