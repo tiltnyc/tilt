@@ -9,12 +9,16 @@ module.exports =
       this._slug = slug this[field].toLowerCase()
       next()
 
+    schema.static 'findBySlug', (slug, next) ->
+      this.findOne({ _slug: slug }, next)
+
     schema
 
   findable: ( model ) ->
     model.__findById = model.findById
+
     model.findById = (idOrSlug, next) ->
-      model.findOne { slug: idOrSlug }, (error, doc) ->
+      model.findBySlug idOrSlug, (error, doc) ->
         if doc
           next(error, doc)
         else
