@@ -27,7 +27,7 @@ bootApplication = (app) ->
     app.use express.methodOverride()
     app.use express.cookieParser()
     app.use express.session
-      secret: process.env.TILT_SESSION_SECRET
+      secret: process.env.TILT_SESSION_SECRET || 'asdfasdf'
       cookie:
         maxAge: oneday * 5
       store: new RedisStore
@@ -46,10 +46,8 @@ bootApplication = (app) ->
     #TODO figure out how to have unzipped assets in test
     #app.use require("connect-assets")({ minifyBuilds: false, build: false })
     app.set 'showStackError', false
-    
+
     app.use express.static(__dirname + '/public', { maxAge: 31557600000 })
-
-
 
   app.dynamicHelpers
     request: (req) ->

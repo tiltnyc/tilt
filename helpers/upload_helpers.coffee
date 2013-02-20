@@ -34,9 +34,9 @@ exports.resizeImages = (width = 100) ->
     process 0, () -> next()
 
 exports.uploader = connectStreamS3
-  accessKeyId     : process.env.S3_KEY,
-  secretAccessKey : process.env.S3_SECRET,
-  awsAccountId    : process.env.AWS_ACCOUNT_ID,
+  accessKeyId     : process.env.S3_KEY || 'bs',
+  secretAccessKey : process.env.S3_SECRET || 'bs',
+  awsAccountId    : process.env.AWS_ACCOUNT_ID || 'bs',
   region          : amazon.US_EAST_1,
   bucketName      : 'tiltnyc',
   concurrency     : 2
